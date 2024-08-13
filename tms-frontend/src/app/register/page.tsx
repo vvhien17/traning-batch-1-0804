@@ -1,3 +1,5 @@
+import Container from "@components/components/container";
+
 export default function RegisterPage() {
-  return <div>Register</div>;
+  return <Container>Register</Container>;
 }
