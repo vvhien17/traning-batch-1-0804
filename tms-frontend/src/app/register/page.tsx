@@ -38,7 +38,7 @@ export default function RegisterPage() {
   return (
     <Container>
       <div className="px-96 mt-20">
-        <div className="p-4 rounded-xl border-solid border-stone-300 border-2 bg-stone-100">
+        <div className="p-4 rounded-xl border-stone-300 border-2 bg-stone-100">
           <h2 className="uppercase text-3xl text-center font-bold text-title">
             Register
           </h2>
