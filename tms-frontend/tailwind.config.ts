@@ -34,6 +34,12 @@ const config: Config = {
         slideIn: "slideIn 0.5s ease forwards",
         slideOut: "slideOut 0.5s ease forwards",
       },
+      backgroundColor: {
+        main: "rgb(79 70 229)",
+      },
+      textColor: {
+        title: "rgb(49 46 129)",
+      },
     },
   },
   plugins: [],
