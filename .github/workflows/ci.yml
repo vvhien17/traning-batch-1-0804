@@ -39,8 +39,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            training-batch1-08-04/tms-backend/node_modules/.pnpm-store
-            training-batch1-08-04/tms-backend/node_modules/.cache/pnpm
+          /tms-backend/node_modules/.pnpm-store
+           /tms-backend/node_modules/.cache/pnpm
           key: ${{ runner.os }}-pnpm-${{ hashFiles('training-batch1-08-04/tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
@@ -76,12 +76,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage-backend
-          path: training-batch1-08-04/tms-backend/coverage/
+          path: /tms-backend/coverage/
         continue-on-error: true
 
       - name: Upload frontend coverage report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-frontend
-          path: training-batch1-08-04/tms-frontend/coverage/
+          path: /tms-frontend/coverage/
         continue-on-error: true
