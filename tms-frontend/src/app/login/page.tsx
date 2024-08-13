@@ -1,25 +1,20 @@
 "use client";
+import Container from "@components/components/container";
 import Input from "@components/components/form-items/Input";
-import Select from "@components/components/form-items/Select";
-import Textarea from "@components/components/form-items/Textarea";
-import { useForm } from "react-hook-form";
+import PATH from "@components/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState } from "react";
-import Drawer from "@components/components/drawer/Drawer";
 
 const LoginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(1, "Password must be at least 8 characters"),
-  description: z.string().optional(),
-  role: z.enum(["admin", "user"]).optional(),
 });
 
 type LoginForm = z.infer<typeof LoginSchema>;
 
 export default function LoginPage() {
-  const [open, setOpen] = useState(false);
-
   const { handleSubmit, register, formState } = useForm<LoginForm>({
     defaultValues: {
       email: "",
@@ -33,55 +28,51 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <form className="mt-6 grid gap-4">
-        <Input
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="Email"
-          register={register}
-          error={formState.errors.email?.message}
-        />
-        <Input
-          label="Password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          register={register}
-          error={formState.errors.password?.message}
-        />
-        <Textarea
-          name="description"
-          label="description"
-          placeholder="Description"
-          register={register}
-          error={formState.errors.description?.message}
-        />
-        <Select
-          name="role"
-          label="Role"
-          options={[
-            { value: "admin", label: "Admin" },
-            { value: "user", label: "User" },
-          ]}
-          register={register}
-          error={formState.errors.role?.message}
-        />
-      </form>
-      <button onClick={() => setOpen(true)}>Open Drawer</button>
+    <Container>
+      <div className="px-96 mt-20">
+        <div className="p-4 rounded-xl border-stone-300 border-2 bg-stone-100">
+          <h2 className="uppercase text-3xl text-center font-bold text-title">
+            Login
+          </h2>
 
-      <Drawer open={open} onClose={() => setOpen(false)}>
-        <div>Content</div>
-      </Drawer>
+          <form className="mt-6 grid gap-4">
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              register={register}
+              error={formState.errors.email?.message}
+            />
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              register={register}
+              error={formState.errors.password?.message}
+            />
+          </form>
 
-      <button
-        type="submit"
-        className="mt-6 w-full rounded-md bg-indigo-600 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        onClick={handleSubmit(onSubmit)}
-      >
-        Login
-      </button>
-    </div>
+          <div className="mt-3 justify-center flex items-center">
+            <p className="text-sm">Don&apos;t have an account?</p>
+            <Link
+              className="text-sm ml-2 underline decoration-solid decoration-sky-500 text-sky-500"
+              href={PATH.register}
+            >
+              Register
+            </Link>
+          </div>
+
+          <button
+            onClick={handleSubmit(onSubmit)}
+            type="submit"
+            className="mt-6 w-full rounded-md bg-main py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+    </Container>
   );
 }
