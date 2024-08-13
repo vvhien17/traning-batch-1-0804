@@ -27,6 +27,7 @@ export default function RegisterPage() {
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(RegisterSchema),
   });
