@@ -33,7 +33,7 @@ jobs:
 
       - name: Run backend tests
         working-directory: tms-backend
-        run: pnpm test --coverage
+        run: pnpm run test
 
       - name: Cache backend pnpm store
         uses: actions/cache@v3
@@ -52,7 +52,7 @@ jobs:
 
       - name: Run frontend tests
         working-directory: tms-frontend
-        run: pnpm test --coverage
+        run: pnpm run test
 
       - name: Cache frontend pnpm store
         uses: actions/cache@v3
