@@ -17,6 +17,7 @@ const mockUser = { id: 1, name: 'John Doe', email: 'john.doe@example.com' };
 
 describe('ActivitiesController', () => {
   let service: ActivitiesService;
+  let activityRepository: Repository<Activity>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ActivitiesService,
@@ -35,11 +36,9 @@ describe('ActivitiesController', () => {
       ],
 
     }).compile();
-
+    service = module.get<ActivitiesService>(ActivitiesService);
+    activityRepository = module.get<Repository<Activity>>(getRepositoryToken(Activity));
   });
-
-  let activityRepository: Repository<Activity>;
-  let userRepository: Repository<User>;
 
   it('Activity service should be defined', () => {
     expect(service).toBeDefined();
