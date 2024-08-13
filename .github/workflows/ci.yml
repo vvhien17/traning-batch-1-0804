@@ -28,60 +28,60 @@ jobs:
 
       # Backend
       - name: Install backend dependencies
-        working-directory: training-batch1-08-04/tms-backend
+        working-directory: tms-backend
         run: pnpm install
 
       - name: Run backend tests
-        working-directory: training-batch1-08-04/tms-backend
+        working-directory: tms-backend
         run: pnpm test --coverage
 
       - name: Cache backend pnpm store
         uses: actions/cache@v3
         with:
           path: |
-          /tms-backend/node_modules/.pnpm-store
-           /tms-backend/node_modules/.cache/pnpm
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('training-batch1-08-04/tms-backend/**/pnpm-lock.yaml') }}
+            tms-backend/node_modules/.pnpm-store
+            tms-backend/node_modules/.cache/pnpm
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
       # Frontend
       - name: Install frontend dependencies
-        working-directory: /tms-frontend
+        working-directory: tms-frontend
         run: pnpm install
 
       - name: Run frontend tests
-        working-directory: /tms-frontend
+        working-directory: tms-frontend
         run: pnpm test --coverage
 
       - name: Cache frontend pnpm store
         uses: actions/cache@v3
         with:
           path: |
-            /tms-frontend/node_modules/.pnpm-store
-            /tms-frontend/node_modules/.cache/pnpm
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('training-batch1-08-04/tms-frontend/**/pnpm-lock.yaml') }}
+            tms-frontend/node_modules/.pnpm-store
+            tms-frontend/node_modules/.cache/pnpm
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-frontend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
       - name: Check for vulnerabilities in backend
-        working-directory: training-batch1-08-04/tms-backend
+        working-directory: tms-backend
         run: pnpm audit --audit-level=high
 
       - name: Check for vulnerabilities in frontend
-        working-directory: training-batch1-08-04/tms-frontend
+        working-directory: tms-frontend
         run: pnpm audit --audit-level=high
 
       - name: Upload backend coverage report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-backend
-          path: /tms-backend/coverage/
+          path: tms-backend/coverage/
         continue-on-error: true
 
       - name: Upload frontend coverage report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-frontend
-          path: /tms-frontend/coverage/
+          path: tms-frontend/coverage/
         continue-on-error: true
