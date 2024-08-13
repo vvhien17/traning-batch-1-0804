@@ -1,10 +1,10 @@
-// src/users/users.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
+import { BadRequestException } from '@nestjs/common'; // Import BadRequestException
 
 const mockRepository = () => ({
   create: jest.fn(),
@@ -30,10 +30,6 @@ describe('UsersService', () => {
     repository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('create', () => {
     it('should create and return a new user', async () => {
       const createUserDto: CreateUserDto = {
@@ -56,6 +52,42 @@ describe('UsersService', () => {
       expect(await service.create(createUserDto)).toEqual(user);
       expect(repository.create).toHaveBeenCalledWith(createUserDto);
       expect(repository.save).toHaveBeenCalledWith(user);
+    });
+
+    it('should throw an error if email is empty', async () => {
+      const createUserDto: CreateUserDto = {
+        email: '',
+        userName: 'testuser',
+        passWord: 'password123',
+      };
+
+      await expect(service.create(createUserDto)).rejects.toThrow(
+        new BadRequestException('Email is required'),
+      );
+    });
+
+    it('should throw an error if userName is empty', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'test@example.com',
+        userName: '',
+        passWord: 'password123',
+      };
+
+      await expect(service.create(createUserDto)).rejects.toThrow(
+        new BadRequestException('Username is required'),
+      );
+    });
+
+    it('should throw an error if passWord is empty', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'test@example.com',
+        userName: 'testuser',
+        passWord: '',
+      };
+
+      await expect(service.create(createUserDto)).rejects.toThrow(
+        new BadRequestException('Password is required'),
+      );
     });
   });
 });
