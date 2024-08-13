@@ -7,14 +7,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-const RegisterSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(1, "Password must be at least 8 characters"),
-  confirmPassword: z.string().min(1, "Password must be at least 8 characters"),
-});
-
 type RegisterForm = z.infer<typeof RegisterSchema>;
+
+const RegisterSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email"),
+    password: z.string().min(1, "Password must be at least 8 characters"),
+    confirmPassword: z
+      .string()
+      .min(1, "Password must be at least 8 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export default function RegisterPage() {
   const { handleSubmit, register, formState } = useForm<RegisterForm>({
