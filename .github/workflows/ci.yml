@@ -47,19 +47,19 @@ jobs:
 
       # Frontend
       - name: Install frontend dependencies
-        working-directory: training-batch1-08-04/tms-frontend
+        working-directory: /tms-frontend
         run: pnpm install
 
       - name: Run frontend tests
-        working-directory: training-batch1-08-04/tms-frontend
+        working-directory: /tms-frontend
         run: pnpm test --coverage
 
       - name: Cache frontend pnpm store
         uses: actions/cache@v3
         with:
           path: |
-            training-batch1-08-04/tms-frontend/node_modules/.pnpm-store
-            training-batch1-08-04/tms-frontend/node_modules/.cache/pnpm
+            /tms-frontend/node_modules/.pnpm-store
+            /tms-frontend/node_modules/.cache/pnpm
           key: ${{ runner.os }}-pnpm-${{ hashFiles('training-batch1-08-04/tms-frontend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
