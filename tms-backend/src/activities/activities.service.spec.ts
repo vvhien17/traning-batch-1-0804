@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ActivitiesService } from './activities.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Activity } from './entities/activity.entity';
-import { User } from '../../src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 const currentDate = new Date()
@@ -13,7 +12,6 @@ const mockActivities = [
   { id: 2, name: 'Activity 2', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: 1723532400000, endedAt: 1723539600000, description: 'test desc' },
 ];
 
-const mockUser = { id: 1, name: 'John Doe', email: 'john.doe@example.com' };
 
 describe('ActivitiesController', () => {
   let service: ActivitiesService;
@@ -26,12 +24,6 @@ describe('ActivitiesController', () => {
           useValue: {
             find: jest.fn().mockResolvedValue(mockActivities),
           }
-        },
-        {
-          provide: getRepositoryToken(User),
-          useValue: {
-            findOne: jest.fn().mockResolvedValue(mockUser),
-          },
         },
       ],
 
