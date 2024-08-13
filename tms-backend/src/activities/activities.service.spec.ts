@@ -36,7 +36,7 @@ describe('ActivitiesController', () => {
     expect(service).toBeDefined();
   });
 
-  describe('user finf all activity', () => {
+  describe('user find all activity', () => {
     it('should return an array of activities for a specific user', async () => {
       const activities = await service.findAll(1);
       expect(activities).toEqual(mockActivities);
