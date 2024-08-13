@@ -8,7 +8,7 @@ export class ActivitiesService {
     return 'This action adds a new activity';
   }
 
-  findAll() {
+  async findAll(userId: number) {
     return `This action returns all activities`;
   }
 

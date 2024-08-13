@@ -5,16 +5,16 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Controller('activities')
 export class ActivitiesController {
-  constructor(private readonly activitiesService: ActivitiesService) {}
+  constructor(private readonly activitiesService: ActivitiesService) { }
 
   @Post()
   create(@Body() createActivityDto: CreateActivityDto) {
     return this.activitiesService.create(createActivityDto);
   }
 
-  @Get()
-  findAll() {
-    return this.activitiesService.findAll();
+  @Get(':userId')
+  findAll(@Param('userId') userId: string) {
+    return this.activitiesService.findAll(+userId);
   }
 
   @Get(':id')
