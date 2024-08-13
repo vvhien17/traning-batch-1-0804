@@ -29,7 +29,9 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
     repository = module.get<Repository<User>>(getRepositoryToken(User));
   });
-
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
   describe('create', () => {
     it('should create and return a new user', async () => {
       const createUserDto: CreateUserDto = {
