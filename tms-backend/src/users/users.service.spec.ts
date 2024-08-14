@@ -9,6 +9,7 @@ import { BadRequestException } from '@nestjs/common'; // Import BadRequestExcept
 const mockRepository = () => ({
   create: jest.fn(),
   save: jest.fn(),
+  findOne: jest.fn(), // Add findOne to mock repository
 });
 
 describe('UsersService', () => {
@@ -89,6 +90,22 @@ describe('UsersService', () => {
 
       await expect(service.create(createUserDto)).rejects.toThrow(
         new BadRequestException('Password is required'),
+      );
+    });
+    it('should throw an error if user with the same email already exists', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'test@example.com',
+        userName: 'testuser',
+        passWord: 'password123',
+      };
+
+      // Simulate that a user with the same email already exists
+      const existingUser = new User();
+      existingUser.email = createUserDto.email;
+      repository.findOne = jest.fn().mockResolvedValue(existingUser);
+
+      await expect(service.create(createUserDto)).rejects.toThrow(
+        new BadRequestException('Email already exists'),
       );
     });
   });
