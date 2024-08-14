@@ -47,7 +47,7 @@ export default function LoginPage() {
     <Container>
       <div className="px-96 mt-20">
         <div className="p-4 rounded-xl border-stone-300 border-2 bg-stone-100">
-          <h2 className="uppercase text-3xl text-center font-bold text-title">
+          <h2 className="uppercase text-3xl text-center font-bold text-text-title">
             Login
           </h2>
 

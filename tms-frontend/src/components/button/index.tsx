@@ -21,7 +21,7 @@ const Button = ({
       onClick={onClick}
       type={type}
       className={classcat([
-        "flex items-center justify-center gap-2 mt-6 w-full rounded-md bg-main py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+        "flex items-center justify-center gap-2 mt-6 w-full rounded-md bg-colors-main py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
         ,
         className,
         isLoading && "opacity-50",
