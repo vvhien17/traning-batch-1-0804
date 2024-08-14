@@ -5,8 +5,8 @@ import { AuthService } from './auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UnauthorizedException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
-import { ErrorMessage } from '../common/utils/error-const';
 import { config as envConfig } from 'dotenv'
+import { ErrorMessage } from '../common/utils/message-const';
 
 envConfig()
 describe('AuthService', () => {
