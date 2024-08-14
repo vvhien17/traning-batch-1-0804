@@ -11,5 +11,5 @@ export class CreateUserDto {
 
   @IsString()
   @Length(6, 255)
-  passWord: string;
+  password: string;
 }

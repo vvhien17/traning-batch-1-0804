@@ -41,14 +41,14 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
         userName: 'testuser',
-        passWord: 'password123',
+        password: 'password123',
       };
 
       const user = new User();
       user.id = 1;
       user.email = createUserDto.email;
       user.userName = createUserDto.userName;
-      user.passWord = createUserDto.passWord;
+      user.password = createUserDto.password;
       user.createdAt = new Date();
       user.updatedAt = new Date();
 
@@ -71,7 +71,7 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         email: '',
         userName: 'testuser',
-        passWord: 'password123',
+        password: 'password123',
       };
 
       const expectedResponse: BaseResponse = buildError(
@@ -85,7 +85,7 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
         userName: '',
-        passWord: 'password123',
+        password: 'password123',
       };
 
       const expectedResponse: BaseResponse = buildError(
@@ -95,11 +95,11 @@ describe('UsersService', () => {
       expect(await service.create(createUserDto)).toEqual(expectedResponse);
     });
 
-    it('should return error if passWord is empty', async () => {
+    it('should return error if password is empty', async () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
         userName: 'testuser',
-        passWord: '',
+        password: '',
       };
 
       const expectedResponse: BaseResponse = buildError(
@@ -113,7 +113,7 @@ describe('UsersService', () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
         userName: 'testuser',
-        passWord: 'password123',
+        password: 'password123',
       };
 
       // Simulate that a user with the same email already exists
