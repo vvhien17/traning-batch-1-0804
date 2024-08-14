@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@components/components/button";
 import Container from "@components/components/container";
 import Input from "@components/components/form-items/Input";
 import PATH from "@components/constants";
@@ -26,7 +27,8 @@ const RegisterSchema = z
   });
 
 export default function RegisterPage() {
-  const { mutate: registerMutate } = authQuery.mutation.useRegister();
+  const { mutate: registerMutate, isPending } =
+    authQuery.mutation.useRegister();
 
   const { handleSubmit, register, formState } = useForm<RegisterForm>({
     resolver: zodResolver(RegisterSchema),
@@ -35,7 +37,7 @@ export default function RegisterPage() {
   const onSubmit = (data: RegisterForm) => {
     registerMutate(data, {
       onSuccess: (data) => {
-        toast("Wow so easy!", {
+        toast(data.message, {
           type: "success",
         });
       },
@@ -45,7 +47,7 @@ export default function RegisterPage() {
         });
       },
     });
-    console.error(data);
+    console.log(data);
   };
 
   return (
@@ -102,13 +104,12 @@ export default function RegisterPage() {
             </Link>
           </div>
 
-          <button
+          <Button
+            name="Register"
+            isLoading={isPending}
             onClick={handleSubmit(onSubmit)}
             type="submit"
-            className="mt-6 w-full rounded-md bg-main py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Register
-          </button>
+          />
         </div>
       </div>
     </Container>

@@ -10,7 +10,7 @@ import { TBaseResponse } from "@components/types/types";
 const api = {
   login: (data: TLoginRequest): Promise<TBaseResponse<TLoginResponse>> =>
     axiosClient.post("/user/login", data),
-  register: (data: TRegisterRequest) =>
+  register: (data: TRegisterRequest): Promise<TBaseResponse<null>> =>
     axiosClient.post("/user/register", data),
 };
 
