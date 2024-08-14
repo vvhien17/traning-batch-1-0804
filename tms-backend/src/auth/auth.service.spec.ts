@@ -3,9 +3,12 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
+import { config as envConfig } from 'dotenv'
+import { ErrorMessage } from '../common/utils/message-const';
 
+envConfig()
 describe('AuthService', () => {
   let service: AuthService;
   let userRepository: Repository<User>;
@@ -21,6 +24,7 @@ describe('AuthService', () => {
 
   const user = {
     id: 1,
+    email: 'tyler@gmail.com',
     username: 'tyler@gmail.com',
     password: 'abc123'
   };
@@ -48,27 +52,18 @@ describe('AuthService', () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
       jest.spyOn(jwtService, 'signAsync').mockResolvedValue('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw');
 
-      const result = await service.login(user.username, user.password);
+      const result = await service.login(user.email, user.password);
 
-      expect(result).toEqual({ access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw' });
-      expect(jwtService.signAsync).toHaveBeenCalledWith({ id: user.id, username: user.username });
-    });
-
-    it('should throw BadRequestException if user is not found', async () => {
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
-
-      await expect(service.login('nonexistentuser', 'password'))
-        .rejects
-        .toThrow(new BadRequestException('User not found'));
+      expect(result).toEqual({ access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw', user: user });
+      expect(jwtService.signAsync).toHaveBeenCalledWith({ id: user.id, email: user.email, username: user.username }, { secret: process.env.SECRET_KEY });
     });
 
     it('should throw UnauthorizedException if password is incorrect', async () => {
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
-      jest.spyOn(jwtService, 'signAsync').mockResolvedValue('mocked_token');
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
 
-      await expect(service.login(user.username, 'wrongpassword'))
-        .rejects
-        .toThrow(new UnauthorizedException('UserName or password incorrect'));
+      await expect(service.login(user.email, 'wrongpassword')).rejects.toThrow(
+        new UnauthorizedException(ErrorMessage.USERNAME_PASSWORD_INCORRECT),
+      );
     });
   });
 });

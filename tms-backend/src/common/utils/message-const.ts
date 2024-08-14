@@ -4,8 +4,9 @@ export enum ErrorMessage {
   EMAIL_IS_REQUIRED = 'Email is required',
   USERNAME_IS_REQUIRED = 'Username is required',
   PASSWORD_IS_REQUIRED = 'Password is required',
-  CATEGORIES_NOT_FOUND = 'Categories not found',
   USER_NOT_FOUND = 'User not found',
+  USERNAME_PASSWORD_INCORRECT = 'username or password incorrect',
+  CATEGORIES_NOT_FOUND = 'Categories not found',
   ACTIVITY_NOT_FOUND = 'Activity not found',
 }
 

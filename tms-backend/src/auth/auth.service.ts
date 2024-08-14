@@ -3,7 +3,11 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
+import { ILoginResponse } from './dto/loginResponse.dto';
+import { config as envConfig } from 'dotenv'
+import { ErrorMessage } from '../common/utils/message-const';
 
+envConfig()
 @Injectable()
 export class AuthService {
   constructor(
@@ -13,19 +17,19 @@ export class AuthService {
   ) { }
 
   async login(
-    username: string,
+    email: string,
     password: string,
-  ): Promise<{ access_token: string }> {
-    const user = await this.usersRepository.findOne({ where: { username: username } });
+  ): Promise<ILoginResponse> {
+    const user = await this.usersRepository.findOne({ where: { email, password } });
+
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new UnauthorizedException(ErrorMessage.USERNAME_PASSWORD_INCORRECT);
     }
-    if (user?.password !== password) {
-      throw new UnauthorizedException('UserName or password incorrect');
-    }
-    const payload = { id: user.id, username: user.username };
+    delete user.password;
+    const payload = { id: user.id, username: user.username, email: user.email };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: await this.jwtService.signAsync(payload, { secret: process.env.SECRET_KEY }),
+      user
     };
   }
 }
