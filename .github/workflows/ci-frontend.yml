@@ -33,7 +33,7 @@ jobs:
 
       - name: Run frontend tests
         working-directory: tms-frontend
-        run: pnpm run test
+        run: pnpm run test --watchAll
 
       - name: Cache frontend pnpm store
         uses: actions/cache@v3
