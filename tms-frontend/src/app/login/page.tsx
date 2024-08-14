@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { authQuery } from "@components/hooks/auth";
 
 const LoginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -15,6 +16,8 @@ const LoginSchema = z.object({
 type LoginForm = z.infer<typeof LoginSchema>;
 
 export default function LoginPage() {
+  const { mutate: login } = authQuery.mutation.useLogin();
+
   const { handleSubmit, register, formState } = useForm<LoginForm>({
     defaultValues: {
       email: "",
@@ -24,6 +27,15 @@ export default function LoginPage() {
   });
 
   const onSubmit = (data: LoginForm) => {
+    login(data, {
+      onSuccess: (data) => {
+        console.log(data);
+        console.log("success");
+      },
+      onError: () => {
+        console.log("error");
+      },
+    });
     console.log(data);
   };
 
