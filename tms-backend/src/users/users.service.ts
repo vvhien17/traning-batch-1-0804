@@ -13,24 +13,31 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, userName, passWord } = createUserDto;
+    // Check if the email already exists
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: createUserDto.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
+    }
 
     // Validate required fields
-    if (!email) {
+    if (!createUserDto.email) {
       throw new BadRequestException('Email is required');
     }
-    if (!userName) {
+    if (!createUserDto.userName) {
       throw new BadRequestException('Username is required');
     }
-    if (!passWord) {
+    if (!createUserDto.passWord) {
       throw new BadRequestException('Password is required');
     }
 
     // Create a new user instance
     const user = this.usersRepository.create(createUserDto);
 
-    // Save the user to the database
-    return this.usersRepository.save(user);
+    // Save the new user
+    return await this.usersRepository.save(user);
   }
 
   findAll() {
