@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { authQuery } from "@components/hooks/auth";
+import { toast } from "react-toastify";
+import Button from "@components/components/button";
 
 const LoginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -16,7 +18,7 @@ const LoginSchema = z.object({
 type LoginForm = z.infer<typeof LoginSchema>;
 
 export default function LoginPage() {
-  const { mutate: login } = authQuery.mutation.useLogin();
+  const { mutate: login, isPending } = authQuery.mutation.useLogin();
 
   const { handleSubmit, register, formState } = useForm<LoginForm>({
     defaultValues: {
@@ -29,9 +31,15 @@ export default function LoginPage() {
   const onSubmit = (data: LoginForm) => {
     login(data, {
       onSuccess: (data) => {
-        console.log(data);
+        toast(data.message, {
+          type: "success",
+        });
       },
-      onError: () => {},
+      onError: (data) => {
+        toast(data.message, {
+          type: "error",
+        });
+      },
     });
   };
 
@@ -72,13 +80,11 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <button
+          <Button
+            name="Login"
             onClick={handleSubmit(onSubmit)}
-            type="submit"
-            className="mt-6 w-full rounded-md bg-main py-2 px-4 text-sm font-semibold text-white shadow-sm hover:bg-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Login
-          </button>
+            isLoading={isPending}
+          />
         </div>
       </div>
     </Container>

@@ -9,6 +9,6 @@ export type TLoginResponse = {
 
 export type TRegisterRequest = {
   email: string;
-  password: string;
   username: string;
+  password: string;
 };
