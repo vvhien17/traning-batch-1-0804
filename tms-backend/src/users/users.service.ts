@@ -6,7 +6,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
-import { ErrorMessage } from '../common/utils/error-const';
+import { ErrorMessage } from '../common/utils/message-const';
 
 @Injectable()
 export class UsersService {
