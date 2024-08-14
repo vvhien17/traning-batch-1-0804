@@ -1,4 +1,4 @@
-name: CI
+name: CI Front End
 
 on:
   push:
@@ -27,20 +27,20 @@ jobs:
         run: npm install -g pnpm
 
       # Backend
-      - name: Install backend dependencies
-        working-directory: tms-backend
+      - name: Install frontend dependencies
+        working-directory: tms-frontend
         run: pnpm install
 
-      - name: Run backend tests
-        working-directory: tms-backend
+      - name: Run frontend tests
+        working-directory: tms-frontend
         run: pnpm run test
 
-      - name: Cache backend pnpm store
+      - name: Cache frontend pnpm store
         uses: actions/cache@v3
         with:
           path: |
-            tms-backend/node_modules/.pnpm-store
-            tms-backend/node_modules/.cache/pnpm
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
+            tms-frontend/node_modules/.pnpm-store
+            tms-frontend/node_modules/.cache/pnpm
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-frontend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
