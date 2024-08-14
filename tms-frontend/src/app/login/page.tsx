@@ -30,13 +30,9 @@ export default function LoginPage() {
     login(data, {
       onSuccess: (data) => {
         console.log(data);
-        console.log("success");
       },
-      onError: () => {
-        console.log("error");
-      },
+      onError: () => {},
     });
-    console.log(data);
   };
 
   return (
