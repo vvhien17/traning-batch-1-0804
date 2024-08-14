@@ -56,8 +56,19 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+
+    let user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user) {
+      return buildError(ErrorMessage.USER_NOT_FOUND);
+    }
+
+    return {
+      data: user,
+      isSuccess: true,
+      message: 'User found successfully',
+    };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

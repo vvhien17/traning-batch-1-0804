@@ -4,4 +4,6 @@ export enum ErrorMessage {
   EMAIL_IS_REQUIRED = 'Email is required',
   USERNAME_IS_REQUIRED = 'Username is required',
   PASSWORD_IS_REQUIRED = 'Password is required',
+  USER_NOT_FOUND = 'User not found',
+  USERNAME_PASSWORD_INCORRECT = 'username or password incorrect',
 }

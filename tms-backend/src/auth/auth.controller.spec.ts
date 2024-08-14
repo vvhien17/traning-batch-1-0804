@@ -36,12 +36,17 @@ describe('AuthController', () => {
     it('should return a JWT token when credentials are valid', async () => {
       const mockToken = 'mocked_token';
       const signInDto = { username: 'testuser', password: 'password' };
+      const user = {
+        id: 1,
+        email: "tyler@gmail.com",
+        username: "tyler@gmail.com",
+      }
 
-      jest.spyOn(authService, 'login').mockResolvedValue({ access_token: mockToken });
+      jest.spyOn(authService, 'login').mockResolvedValue({ access_token: mockToken, user: user });
 
       const result = await controller.signIn(signInDto);
 
-      expect(result).toEqual({ access_token: mockToken });
+      expect(result).toEqual({ access_token: mockToken, user: user });
       expect(authService.login).toHaveBeenCalledWith(signInDto.username, signInDto.password);
     });
 

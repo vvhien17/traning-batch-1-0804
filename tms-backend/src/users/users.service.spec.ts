@@ -128,4 +128,32 @@ describe('UsersService', () => {
       expect(await service.create(createUserDto)).toEqual(expectedResponse);
     });
   });
+
+  // api get user
+  describe('getUser', () => {
+    it('should return user by id', async () => {
+      const userId = 1;
+      const user = new User();
+      user.id = userId;
+      repository.findOne = jest.fn().mockResolvedValue(user);
+
+      const expectedResponse: BaseResponse = {
+        data: user,
+        isSuccess: true,
+        message: 'User found successfully',
+      };
+
+      expect(await service.findOne(userId)).toEqual(expectedResponse);
+    });
+
+    it('should return error if user not found', async () => {
+      const userId = 1;
+      repository.findOne = jest.fn().mockResolvedValue(null);
+
+      const expectedResponse: BaseResponse = buildError(ErrorMessage.USER_NOT_FOUND);
+
+      expect(await service.findOne(userId)).toEqual(expectedResponse);
+    });
+  });
+
 });
