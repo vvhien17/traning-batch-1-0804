@@ -19,7 +19,6 @@ type LoginForm = z.infer<typeof LoginSchema>;
 
 export default function LoginPage() {
   const { mutate: login, isPending } = authQuery.mutation.useLogin();
-  console.log("LoginPage ➜ isPending:>>", isPending);
 
   const { handleSubmit, register, formState } = useForm<LoginForm>({
     defaultValues: {
