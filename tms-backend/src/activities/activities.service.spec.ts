@@ -3,13 +3,14 @@ import { ActivitiesService } from './activities.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Activity } from './entities/activity.entity';
 import { Repository } from 'typeorm';
+import { BadRequestException } from '@nestjs/common';
 
 const currentDate = new Date()
 const mockActivities = [
   {
-    id: 1, name: 'Activity 1', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: currentDate, endedAt: currentDate, description: 'test desc', isDelete: false, categoryId: 1
+    id: 1, name: 'Activity 1', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: currentDate, endedAt: currentDate, description: 'test desc'
   },
-  { id: 2, name: 'Activity 2', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: currentDate, endedAt: currentDate, description: 'test desc', isDelete: false, categoryId: 1 },
+  { id: 2, name: 'Activity 2', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: currentDate, endedAt: currentDate, description: 'test desc' },
 ];
 
 
@@ -22,7 +23,8 @@ describe('ActivitiesController', () => {
         {
           provide: getRepositoryToken(Activity),
           useValue: {
-            find: jest.fn(),
+            find: jest.fn().mockResolvedValue(mockActivities),
+            findOne: jest.fn(),
           }
         },
       ],
@@ -49,4 +51,23 @@ describe('ActivitiesController', () => {
       expect(activities).toEqual([]);
     });
   });
+
+  describe('user find activity by activityId', () => {
+    it('should return an activity for a specific user', async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(mockActivities[0] as Activity);
+      const activity = await service.findOne(1, 1);
+      expect(activity).toEqual(mockActivities[0]);
+    });
+
+    it("should return message not found if the user does not exist", async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
+      await expect(service.findOne(1, 2)).rejects.toThrow(new BadRequestException('Not found'));
+    });
+
+    it('should return message not found if the activity does not exist', async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
+      await expect(service.findOne(3, 1)).rejects.toThrow(new BadRequestException('Not found'));
+    })
+
+  })
 });
