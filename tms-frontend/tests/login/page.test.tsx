@@ -1,8 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import LoginPage from "../page";
-import { authQuery } from "@components/hooks/auth";
 import "@testing-library/jest-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import LoginPage from "@components/app/login/page";
 
 describe("LoginPage", () => {
   it("renders the login form with email and password fields", () => {
