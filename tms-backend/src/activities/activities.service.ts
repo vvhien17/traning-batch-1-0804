@@ -4,6 +4,7 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Activity } from './entities/activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 
 @Injectable()
 export class ActivitiesService {
@@ -16,8 +17,13 @@ export class ActivitiesService {
     return 'This action adds a new activity';
   }
 
-  async findAll(userId: number): Promise<Activity[]> {
-    return await this.activityRepository.find({ where: { userId } });
+  async findAll(userId: number) {
+    let result = await this.activityRepository.find({ where: { userId } })
+    return {
+      data: result,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    }
   }
 
   async findOne(id: number, userId: number) {
@@ -27,10 +33,13 @@ export class ActivitiesService {
         user: false
       }
     })
-    if (result) {
-      return result;
-    } else {
-      throw new BadRequestException("Not found");
+    if (!result) {
+      throw new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND);
+    }
+    return {
+      data: result,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
     }
   }
 

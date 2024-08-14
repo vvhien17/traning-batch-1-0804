@@ -4,4 +4,9 @@ export enum ErrorMessage {
   EMAIL_IS_REQUIRED = 'Email is required',
   USERNAME_IS_REQUIRED = 'Username is required',
   PASSWORD_IS_REQUIRED = 'Password is required',
+  ACTIVITY_NOT_FOUND = 'Activity not found',
+}
+
+export enum SuccessMessage {
+  GET_DATA_SUCCESS = "Get data success",
 }
