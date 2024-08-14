@@ -4,6 +4,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseResponse } from '../common/base-response/base-response.dto';
+import { buildError } from '../common/utils/Utility';
+import { ErrorMessage } from '../common/utils/error-const';
 
 @Injectable()
 export class UsersService {
@@ -12,25 +15,41 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, userName, passWord } = createUserDto;
+  async create(createUserDto: CreateUserDto): Promise<BaseResponse> {
+    try {
+      const existingUser = await this.usersRepository.findOne({
+        where: { email: createUserDto.email },
+      });
 
-    // Validate required fields
-    if (!email) {
-      throw new BadRequestException('Email is required');
-    }
-    if (!userName) {
-      throw new BadRequestException('Username is required');
-    }
-    if (!passWord) {
-      throw new BadRequestException('Password is required');
-    }
+      if (existingUser) {
+        return buildError(ErrorMessage.EMAIL_ALREADY_EXISTS);
+      }
 
-    // Create a new user instance
-    const user = this.usersRepository.create(createUserDto);
+      // Validate required fields
+      if (!createUserDto.email) {
+        return buildError(ErrorMessage.EMAIL_IS_REQUIRED);
+      }
+      if (!createUserDto.userName) {
+        return buildError(ErrorMessage.USERNAME_IS_REQUIRED);
+      }
+      if (!createUserDto.passWord) {
+        return buildError(ErrorMessage.PASSWORD_IS_REQUIRED);
+      }
 
-    // Save the user to the database
-    return this.usersRepository.save(user);
+      // Create a new user instance
+      const user = this.usersRepository.create(createUserDto);
+
+      // Save the new user
+      const savedUser = await this.usersRepository.save(user);
+
+      return {
+        data: savedUser,
+        isSuccess: true,
+        message: 'User created successfully',
+      };
+    } catch (error) {
+      return buildError(error.message);
+    }
   }
 
   findAll() {
