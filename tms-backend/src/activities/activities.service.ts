@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Activity } from './entities/activity.entity';
@@ -20,8 +20,18 @@ export class ActivitiesService {
     return await this.activityRepository.find({ where: { userId } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} activity`;
+  async findOne(id: number, userId: number) {
+    let result = await this.activityRepository.findOne({
+      where: { id: id, userId: userId }, relations: {
+        category: false,
+        user: false
+      }
+    })
+    if (result) {
+      return result;
+    } else {
+      throw new BadRequestException("Not found");
+    }
   }
 
   update(id: number, updateActivityDto: UpdateActivityDto) {
