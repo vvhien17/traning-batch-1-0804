@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
-import { ErrorMessage } from '../common/utils/error-const';
 import { User } from '../users/entities/user.entity';
+import { ErrorMessage } from '../common/utils/message-const';
 
 @Injectable()
 export class CategoriesService {

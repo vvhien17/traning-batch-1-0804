@@ -5,7 +5,7 @@ import { Category } from '../categories/entities/category.entity';
 import { Repository } from 'typeorm';
 import { BaseResponse } from '@/common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
-import { ErrorMessage } from '../common/utils/error-const';
+import { ErrorMessage } from '../common/utils/message-const';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { User } from '../users/entities/user.entity';
 
