@@ -3,16 +3,17 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import { setHours, setMinutes, setSeconds } from "date-fns";
 
-const DateTimePickerCustom = () => {
-  const [startDate, setStartDate] = useState(
-    setHours(setMinutes(new Date(), 30), 16)
-  );
+interface Props {
+  dateTime: Date;
+  setDateTime: (val: Date) => void;
+}
 
+const DateTimePickerCustom = ({ dateTime, setDateTime }: Props) => {
   return (
     <DatePicker
       className="border rounded-md pl-5 pt-1 pb-1 flex items-center justify-center"
-      selected={startDate}
-      onChange={(date) => setStartDate(date || new Date())}
+      selected={dateTime}
+      onChange={(date) => setDateTime(date || new Date())}
       showTimeSelect
       timeFormat="HH:mm:ss"
       injectTimes={[
