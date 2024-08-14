@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { ErrorMessage } from '../common/utils/error-const';
 import { ILoginResponse } from './dto/loginResponse.dto';
 import { config as envConfig } from 'dotenv'
+import { ErrorMessage } from '../common/utils/message-const';
 
 envConfig()
 @Injectable()
