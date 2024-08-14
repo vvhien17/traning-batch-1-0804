@@ -40,14 +40,14 @@ describe('UsersService', () => {
     it('should create and return a new user', async () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
-        userName: 'testuser',
+        username: 'testuser',
         password: 'password123',
       };
 
       const user = new User();
       user.id = 1;
       user.email = createUserDto.email;
-      user.userName = createUserDto.userName;
+      user.username = createUserDto.username;
       user.password = createUserDto.password;
       user.createdAt = new Date();
       user.updatedAt = new Date();
@@ -70,7 +70,7 @@ describe('UsersService', () => {
     it('should return error if email is empty', async () => {
       const createUserDto: CreateUserDto = {
         email: '',
-        userName: 'testuser',
+        username: 'testuser',
         password: 'password123',
       };
 
@@ -81,10 +81,10 @@ describe('UsersService', () => {
       expect(await service.create(createUserDto)).toEqual(expectedResponse);
     });
 
-    it('should return error if userName is empty', async () => {
+    it('should return error if username is empty', async () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
-        userName: '',
+        username: '',
         password: 'password123',
       };
 
@@ -98,7 +98,7 @@ describe('UsersService', () => {
     it('should return error if password is empty', async () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
-        userName: 'testuser',
+        username: 'testuser',
         password: '',
       };
 
@@ -112,7 +112,7 @@ describe('UsersService', () => {
     it('should return error if user with the same email already exists', async () => {
       const createUserDto: CreateUserDto = {
         email: 'test@example.com',
-        userName: 'testuser',
+        username: 'testuser',
         password: 'password123',
       };
 

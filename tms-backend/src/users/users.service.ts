@@ -29,7 +29,7 @@ export class UsersService {
       if (!createUserDto.email) {
         return buildError(ErrorMessage.EMAIL_IS_REQUIRED);
       }
-      if (!createUserDto.userName) {
+      if (!createUserDto.username) {
         return buildError(ErrorMessage.USERNAME_IS_REQUIRED);
       }
       if (!createUserDto.password) {

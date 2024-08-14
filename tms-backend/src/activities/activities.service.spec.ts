@@ -41,7 +41,7 @@ describe('ActivitiesController', () => {
       jest.spyOn(activityRepository, 'find').mockResolvedValue(mockActivities as Activity[]);
       const activities = await service.findAll(1);
       expect(activities).toEqual(mockActivities);
-    });
+    }); 
 
     it('should return an empty array if the user has no activities', async () => {
       jest.spyOn(activityRepository, 'find').mockResolvedValue([]);
