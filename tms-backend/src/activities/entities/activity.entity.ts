@@ -17,6 +17,8 @@ export class Activity {
   @Column()
   categoryId: number;
   @Column()
+  name: string;
+  @Column()
   userId: number;
   @Column({ type: 'timestamptz' })
   startedAt: Date;

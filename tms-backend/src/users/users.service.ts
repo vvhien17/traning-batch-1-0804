@@ -13,7 +13,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<BaseResponse> {
     try {
@@ -32,7 +32,7 @@ export class UsersService {
       if (!createUserDto.userName) {
         return buildError(ErrorMessage.USERNAME_IS_REQUIRED);
       }
-      if (!createUserDto.passWord) {
+      if (!createUserDto.password) {
         return buildError(ErrorMessage.PASSWORD_IS_REQUIRED);
       }
 

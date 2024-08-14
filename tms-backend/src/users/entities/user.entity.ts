@@ -20,7 +20,7 @@ export class User {
   @Column({ type: 'varchar', length: 255, unique: true })
   userName: string;
   @Column({ type: 'varchar', length: 255 })
-  passWord: string;
+  password: string;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()

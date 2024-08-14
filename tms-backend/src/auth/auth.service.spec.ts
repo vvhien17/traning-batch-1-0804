@@ -22,7 +22,7 @@ describe('AuthService', () => {
   const user = {
     id: 1,
     userName: 'tyler@gmail.com',
-    passWord: 'abc123'
+    password: 'abc123'
   };
 
   beforeEach(async () => {
@@ -48,7 +48,7 @@ describe('AuthService', () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
       jest.spyOn(jwtService, 'signAsync').mockResolvedValue('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw');
 
-      const result = await service.login(user.userName, user.passWord);
+      const result = await service.login(user.userName, user.password);
 
       expect(result).toEqual({ access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw' });
       expect(jwtService.signAsync).toHaveBeenCalledWith({ id: user.id, username: user.userName });
