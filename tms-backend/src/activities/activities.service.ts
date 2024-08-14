@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Activity } from './entities/activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 
 @Injectable()
 export class ActivitiesService {
@@ -16,12 +17,30 @@ export class ActivitiesService {
     return 'This action adds a new activity';
   }
 
-  async findAll(userId: number): Promise<Activity[]> {
-    return await this.activityRepository.find({ where: { userId } });
+  async findAll(userId: number) {
+    let result = await this.activityRepository.find({ where: { userId } })
+    return {
+      data: result,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} activity`;
+  async findOne(id: number, userId: number) {
+    let result = await this.activityRepository.findOne({
+      where: { id: id, userId: userId }, relations: {
+        category: false,
+        user: false
+      }
+    })
+    if (!result) {
+      throw new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND);
+    }
+    return {
+      data: result,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    }
   }
 
   update(id: number, updateActivityDto: UpdateActivityDto) {

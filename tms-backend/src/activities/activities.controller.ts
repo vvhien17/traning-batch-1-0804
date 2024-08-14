@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ActivitiesService } from '../activities/activities.service'
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
@@ -12,14 +12,14 @@ export class ActivitiesController {
     return this.activitiesService.create(createActivityDto);
   }
 
+  @Get('byId')
+  findOne(@Query('id') id: string, @Query('userId') userId: string) {
+    return this.activitiesService.findOne(+id, +userId);
+  }
+
   @Get(':userId')
   findAll(@Param('userId') userId: string) {
     return this.activitiesService.findAll(+userId);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.activitiesService.findOne(+id);
   }
 
   @Patch(':id')

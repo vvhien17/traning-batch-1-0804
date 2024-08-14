@@ -6,4 +6,9 @@ export enum ErrorMessage {
   PASSWORD_IS_REQUIRED = 'Password is required',
   CATEGORIES_NOT_FOUND = 'Categories not found',
   USER_NOT_FOUND = 'User not found',
+  ACTIVITY_NOT_FOUND = 'Activity not found',
+}
+
+export enum SuccessMessage {
+  GET_DATA_SUCCESS = 'Get data success',
 }
