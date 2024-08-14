@@ -35,7 +35,8 @@ const config: Config = {
         slideOut: "slideOut 0.5s ease forwards",
       },
       backgroundColor: {
-        main: "rgb(79 70 229)",
+        main: "#65558F",
+        primary: "rgb(140 127 174)",
       },
       textColor: {
         title: "rgb(49 46 129)",
