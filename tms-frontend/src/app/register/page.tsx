@@ -3,15 +3,18 @@
 import Container from "@components/components/container";
 import Input from "@components/components/form-items/Input";
 import PATH from "@components/constants";
+import { authQuery } from "@components/hooks/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as z from "zod";
 type RegisterForm = z.infer<typeof RegisterSchema>;
 
 const RegisterSchema = z
   .object({
     email: z.string().email("Please enter a valid email"),
+    username: z.string().min(1, "Please enter username"),
     password: z.string().min(1, "Password must be at least 8 characters"),
     confirmPassword: z
       .string()
@@ -23,17 +26,26 @@ const RegisterSchema = z
   });
 
 export default function RegisterPage() {
+  const { mutate: registerMutate } = authQuery.mutation.useRegister();
+
   const { handleSubmit, register, formState } = useForm<RegisterForm>({
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
     resolver: zodResolver(RegisterSchema),
   });
 
   const onSubmit = (data: RegisterForm) => {
-    console.log(data);
+    registerMutate(data, {
+      onSuccess: (data) => {
+        toast("Wow so easy!", {
+          type: "success",
+        });
+      },
+      onError: () => {
+        toast("error", {
+          type: "error",
+        });
+      },
+    });
+    console.error(data);
   };
 
   return (
@@ -45,6 +57,14 @@ export default function RegisterPage() {
           </h2>
 
           <form className="mt-6 grid gap-4">
+            <Input
+              label="Username"
+              name="username"
+              placeholder="Username"
+              register={register}
+              error={formState.errors.username?.message}
+            />
+
             <Input
               label="Email"
               name="email"

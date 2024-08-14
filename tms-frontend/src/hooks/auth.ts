@@ -11,7 +11,7 @@ const api = {
   login: (data: TLoginRequest): Promise<TBaseResponse<TLoginResponse>> =>
     axiosClient.post("/user/login", data),
   register: (data: TRegisterRequest) =>
-    axiosClient.post("/user/createUser", data),
+    axiosClient.post("/user/register", data),
 };
 
 const useLogin = () => {
