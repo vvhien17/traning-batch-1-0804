@@ -14,13 +14,13 @@ export class AuthService {
 
   async login(
     userName: string,
-    passWord: string,
+    password: string,
   ): Promise<{ access_token: string }> {
     const user = await this.usersRepository.findOne({ where: { userName: userName } });
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    if (user?.passWord !== passWord) {
+    if (user?.password !== password) {
       throw new UnauthorizedException('UserName or password incorrect');
     }
     const payload = { id: user.id, username: user.userName };

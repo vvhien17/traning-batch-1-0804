@@ -7,9 +7,9 @@ import { Repository } from 'typeorm';
 const currentDate = new Date()
 const mockActivities = [
   {
-    id: 1, name: 'Activity 1', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: 1723532400000, endedAt: 1723539600000, description: 'test desc'
+    id: 1, name: 'Activity 1', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: currentDate, endedAt: currentDate, description: 'test desc', isDelete: false, categoryId: 1
   },
-  { id: 2, name: 'Activity 2', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: 1723532400000, endedAt: 1723539600000, description: 'test desc' },
+  { id: 2, name: 'Activity 2', userId: 1, createdAt: currentDate, updatedAt: currentDate, startedAt: currentDate, endedAt: currentDate, description: 'test desc', isDelete: false, categoryId: 1 },
 ];
 
 
@@ -22,7 +22,7 @@ describe('ActivitiesController', () => {
         {
           provide: getRepositoryToken(Activity),
           useValue: {
-            find: jest.fn().mockResolvedValue(mockActivities),
+            find: jest.fn(),
           }
         },
       ],
@@ -38,6 +38,7 @@ describe('ActivitiesController', () => {
 
   describe('user find all activity', () => {
     it('should return an array of activities for a specific user', async () => {
+      jest.spyOn(activityRepository, 'find').mockResolvedValue(mockActivities as Activity[]);
       const activities = await service.findAll(1);
       expect(activities).toEqual(mockActivities);
     });
