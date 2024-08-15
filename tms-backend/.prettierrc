@@ -1,4 +1,7 @@
 {
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "max-line-length": 80,
+  "tabWidth": 2,
+  "parser": "typescript"
 }

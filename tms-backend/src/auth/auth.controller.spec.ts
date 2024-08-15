@@ -38,24 +38,34 @@ describe('AuthController', () => {
       const signInDto = { username: 'testuser', password: 'password' };
       const user = {
         id: 1,
-        email: "tyler@gmail.com",
-        username: "tyler@gmail.com",
-      }
+        email: 'tyler@gmail.com',
+        username: 'tyler@gmail.com',
+      };
 
-      jest.spyOn(authService, 'login').mockResolvedValue({ access_token: mockToken, user: user });
+      jest
+        .spyOn(authService, 'login')
+        .mockResolvedValue({ access_token: mockToken, user: user });
 
       const result = await controller.signIn(signInDto);
 
       expect(result).toEqual({ access_token: mockToken, user: user });
-      expect(authService.login).toHaveBeenCalledWith(signInDto.username, signInDto.password);
+      expect(authService.login).toHaveBeenCalledWith(
+        signInDto.username,
+        signInDto.password,
+      );
     });
 
     it('should handle login failures', async () => {
       const signInDto = { username: 'testuser', password: 'wrongpassword' };
+      jest
+        .spyOn(authService, 'login')
+        .mockRejectedValue(
+          new UnauthorizedException('UserName or password incorrect'),
+        );
 
-      jest.spyOn(authService, 'login').mockRejectedValue(new UnauthorizedException('UserName or password incorrect'));
-
-      await expect(controller.signIn(signInDto)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.signIn(signInDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
