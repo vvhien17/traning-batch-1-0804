@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
-import QueryProvider from "@components/query-provider";
+import QueryProvider from "@components/Provider/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +23,6 @@ export default function RootLayout({
       <QueryProvider>
         <body className={inter.className}>
           {children}
-
           <ToastContainer autoClose={1000} />
         </body>
       </QueryProvider>

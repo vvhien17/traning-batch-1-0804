@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes } from "react";
 import classcat from "classcat";
-import Loader from "../loader";
+import Loader from "../Loader";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;

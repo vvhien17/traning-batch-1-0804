@@ -1,6 +1,5 @@
 "use client";
-import Container from "@components/components/container";
-import Input from "@components/components/form-items/Input";
+import Container from "@components/components/Container";
 import PATH from "@components/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -8,7 +7,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { authQuery } from "@components/hooks/auth";
 import { toast } from "react-toastify";
-import Button from "@components/components/button";
+import Button from "@components/components/Button";
+import Input from "@components/components/Input";
 
 const LoginSchema = z.object({
   email: z.string().email("Please enter a valid email"),

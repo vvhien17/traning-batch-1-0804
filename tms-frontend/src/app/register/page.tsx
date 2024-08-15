@@ -1,8 +1,8 @@
 "use client";
 
-import Button from "@components/components/button";
-import Container from "@components/components/container";
-import Input from "@components/components/form-items/Input";
+import Button from "@components/components/Button";
+import Container from "@components/components/Container";
+import Input from "@components/components/Input";
 import PATH from "@components/constants";
 import { authQuery } from "@components/hooks/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
