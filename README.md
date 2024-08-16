@@ -24,6 +24,6 @@
 2. FE: NextJS
 
 ### HOW TO USE:
-1. FrontEnd: Reading readme.md in folder tms-backend
-2. BackEnd: Reading readme.md in folder tms-frontend
+1. Front-End: Reading readme.md in folder tms-frontend
+2. Back-End: Reading readme.md in folder tms-backend
  
