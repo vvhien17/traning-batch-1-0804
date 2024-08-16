@@ -8,6 +8,8 @@ Time Management System - Back End
 $ pnpm install
 ```
 
+### Coding Convention
+<a href="https://github.com/basarat/typescript-book/blob/master/docs/styleguide/styleguide.md">Check out <strong>here</strong> </a>
 ## Running the app
 
 1. **Install Docker**
@@ -46,7 +48,6 @@ $ pnpm run test:e2e
 # test coverage
 $ pnpm run test:cov
 ```
-
 ## License
 
 Nest is [MIT licensed](LICENSE).
