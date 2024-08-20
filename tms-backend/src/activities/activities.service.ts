@@ -11,28 +11,29 @@ export class ActivitiesService {
   constructor(
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
-  ) { }
+  ) {}
 
   create(createActivityDto: CreateActivityDto) {
     return 'This action adds a new activity';
   }
 
   async findAll(userId: number) {
-    let result = await this.activityRepository.find({ where: { userId } })
+    const result = await this.activityRepository.find({ where: { userId } });
     return {
       data: result,
       isSuccess: true,
       message: SuccessMessage.GET_DATA_SUCCESS,
-    }
+    };
   }
 
   async findOne(id: number, userId: number) {
-    let result = await this.activityRepository.findOne({
-      where: { id: id, userId: userId }, relations: {
+    const result = await this.activityRepository.findOne({
+      where: { id: id, userId: userId },
+      relations: {
         category: false,
-        user: false
-      }
-    })
+        user: false,
+      },
+    });
     if (!result) {
       throw new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND);
     }
@@ -40,7 +41,7 @@ export class ActivitiesService {
       data: result,
       isSuccess: true,
       message: SuccessMessage.GET_DATA_SUCCESS,
-    }
+    };
   }
 
   update(id: number, updateActivityDto: UpdateActivityDto) {

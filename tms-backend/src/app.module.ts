@@ -5,10 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { ActivitiesModule } from './activities/activities.module';
 import { CategoriesModule } from './categories/categories.module';
-import { config as envConfig } from 'dotenv'
+import { config as envConfig } from 'dotenv';
 import { AuthModule } from './auth/auth.module';
 
-envConfig()
+envConfig();
 
 @Module({
   imports: [
@@ -31,7 +31,8 @@ envConfig()
     ActivitiesModule,
     CategoriesModule,
     AuthModule,
-  ], controllers: [AppController],
+  ],
+  controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

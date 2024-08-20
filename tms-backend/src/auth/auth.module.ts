@@ -5,8 +5,8 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { config as envConfig } from 'dotenv'
-envConfig()
+import { config as envConfig } from 'dotenv';
+envConfig();
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
@@ -21,4 +21,4 @@ envConfig()
   controllers: [AuthController],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

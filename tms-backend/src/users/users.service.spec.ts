@@ -4,7 +4,6 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { BadRequestException } from '@nestjs/common'; // Import BadRequestException
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
 import { ErrorMessage } from '../common/utils/message-const';
@@ -150,10 +149,11 @@ describe('UsersService', () => {
       const userId = 1;
       repository.findOne = jest.fn().mockResolvedValue(null);
 
-      const expectedResponse: BaseResponse = buildError(ErrorMessage.USER_NOT_FOUND);
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.USER_NOT_FOUND,
+      );
 
       expect(await service.findOne(userId)).toEqual(expectedResponse);
     });
   });
-
 });
