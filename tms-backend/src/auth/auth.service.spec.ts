@@ -7,6 +7,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { User } from '../user/entities/user.entity';
 import { config as envConfig } from 'dotenv';
 import { ErrorMessage } from '../common/utils/message-const';
+import { BaseResponse } from '@/common/base-response/base-response.dto';
 
 envConfig();
 describe('AuthService', () => {
@@ -49,6 +50,7 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should return a JWT token if credentials are valid', async () => {
+      // Mock the userRepository and jwtService as needed
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(user as User);
       jest
         .spyOn(jwtService, 'signAsync')
@@ -56,13 +58,24 @@ describe('AuthService', () => {
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw',
         );
 
+      // Create an instance of BaseResponse with the expected shape
+      const expectedResponse: BaseResponse = {
+        data: {
+          access_token:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw',
+          user: user,
+        },
+        isSuccess: true,
+        message: 'Login successfully',
+      };
+
+      // Ensure the login method returns the correct BaseResponse
       const result = await service.login(user.email, user.password);
 
-      expect(result).toEqual({
-        access_token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJ0eWxlckBnbWFpbC5jb20iLCJpYXQiOjE3MjM1NDI2NzcsImV4cCI6MTcyMzU0ODY3N30.5QjgKedoYQLvPMuq0L2PLhx2SB1JhCLu3Y74ZIaEWlw',
-        user: user,
-      });
+      // Match the result with the expected response
+      expect(result).toEqual(expectedResponse);
+
+      // Verify the signAsync method was called with the correct arguments
       expect(jwtService.signAsync).toHaveBeenCalledWith(
         { id: user.id, email: user.email, username: user.username },
         { secret: process.env.SECRET_KEY },
