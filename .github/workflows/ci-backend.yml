@@ -53,7 +53,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: linux-latest
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') # Deploy only on `main` branch or `release/**` branches
 
     steps:
