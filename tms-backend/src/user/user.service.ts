@@ -9,15 +9,15 @@ import { buildError } from '../common/utils/Utility';
 import { ErrorMessage } from '../common/utils/message-const';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<BaseResponse> {
     try {
-      const existingUser = await this.usersRepository.findOne({
+      const existingUser = await this.userRepository.findOne({
         where: { email: createUserDto.email },
       });
 
@@ -37,10 +37,10 @@ export class UsersService {
       }
 
       // Create a new user instance
-      const user = this.usersRepository.create(createUserDto);
+      const user = this.userRepository.create(createUserDto);
 
       // Save the new user
-      const savedUser = await this.usersRepository.save(user);
+      const savedUser = await this.userRepository.save(user);
 
       return {
         data: savedUser,
@@ -57,7 +57,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
       return buildError(ErrorMessage.USER_NOT_FOUND);

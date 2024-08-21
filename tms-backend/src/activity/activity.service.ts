@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 
 @Injectable()
-export class ActivitiesService {
+export class ActivityService {
   constructor(
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,

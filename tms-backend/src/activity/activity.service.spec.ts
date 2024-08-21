@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ActivitiesService } from './activities.service';
+import { ActivityService } from './activity.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Activity } from './entities/activity.entity';
 import { Repository } from 'typeorm';
@@ -31,12 +31,12 @@ const mockActivities = [
 ];
 
 describe('ActivitiesController', () => {
-  let service: ActivitiesService;
+  let service: ActivityService;
   let activityRepository: Repository<Activity>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ActivitiesService,
+        ActivityService,
         {
           provide: getRepositoryToken(Activity),
           useValue: {
@@ -46,7 +46,7 @@ describe('ActivitiesController', () => {
         },
       ],
     }).compile();
-    service = module.get<ActivitiesService>(ActivitiesService);
+    service = module.get<ActivityService>(ActivityService);
     activityRepository = module.get<Repository<Activity>>(
       getRepositoryToken(Activity),
     );

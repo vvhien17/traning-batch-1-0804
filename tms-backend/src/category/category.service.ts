@@ -5,11 +5,11 @@ import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
-import { User } from '../users/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { ErrorMessage } from '../common/utils/message-const';
 
 @Injectable()
-export class CategoriesService {
+export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
@@ -36,16 +36,16 @@ export class CategoriesService {
     };
   }
 
-  async findCategoriesByUserId(userId: number): Promise<BaseResponse> {
+  async findCategoryByUserId(userId: number): Promise<BaseResponse> {
     const data = await this.categoryRepository.find({ where: { userId } });
     if (data.length > 0) {
       return {
         data,
         isSuccess: true,
-        message: 'Categories found successfully',
+        message: 'Category found successfully',
       };
     } else {
-      return buildError(ErrorMessage.CATEGORIES_NOT_FOUND);
+      return buildError(ErrorMessage.CATEGORY_NOT_FOUND);
     }
   }
 }

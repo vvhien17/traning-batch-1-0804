@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UnauthorizedException } from '@nestjs/common';
-import { User } from '../users/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { config as envConfig } from 'dotenv';
 import { ErrorMessage } from '../common/utils/message-const';
 

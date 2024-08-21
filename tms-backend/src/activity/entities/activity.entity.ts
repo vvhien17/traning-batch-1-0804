@@ -1,5 +1,6 @@
-import { Category } from '../../categories/entities/category.entity';
-import { User } from '../../users/entities/user.entity';
+import { GoalOnActivity } from '../../goal-on-activity/entities/goalOnActivity.entity';
+import { Category } from '../../category/entities/category.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,6 +8,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -35,4 +37,6 @@ export class Activity {
   category: Category;
   @ManyToOne(() => User, (user) => user.activities)
   user: User;
+  @OneToMany(() => GoalOnActivity, (goalOnActivity) => goalOnActivity.activity)
+  goalOnActivities: GoalOnActivity[];
 }
