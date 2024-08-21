@@ -42,13 +42,19 @@ describe('AuthController', () => {
         username: 'tyler@gmail.com',
       };
 
-      jest
-        .spyOn(authService, 'login')
-        .mockResolvedValue({ access_token: mockToken, user: user });
+      jest.spyOn(authService, 'login').mockResolvedValue({
+        data: { access_token: mockToken, user: user },
+        isSuccess: true,
+        message: 'Login successfully',
+      });
 
       const result = await controller.signIn(signInDto);
 
-      expect(result).toEqual({ access_token: mockToken, user: user });
+      expect(result).toEqual({
+        data: { access_token: mockToken, user: user },
+        isSuccess: true,
+        message: 'Login successfully',
+      });
       expect(authService.login).toHaveBeenCalledWith(
         signInDto.username,
         signInDto.password,
