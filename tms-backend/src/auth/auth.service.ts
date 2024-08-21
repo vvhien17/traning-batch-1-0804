@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ILoginResponse } from './dto/loginResponse.dto';
 import { config as envConfig } from 'dotenv';
@@ -12,12 +12,12 @@ envConfig();
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
   async login(email: string, password: string): Promise<ILoginResponse> {
-    const user = await this.usersRepository.findOne({
+    const user = await this.userRepository.findOne({
       where: { email, password },
     });
 

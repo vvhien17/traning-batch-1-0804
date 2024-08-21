@@ -1,5 +1,5 @@
-import { Activity } from '../../activities/entities/activity.entity';
-import { User } from '../../users/entities/user.entity';
+import { Activity } from '../../activity/entities/activity.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

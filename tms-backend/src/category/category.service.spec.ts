@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoriesService } from './categories.service';
+import { CategoryService } from './category.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Category } from '../categories/entities/category.entity';
+import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { BaseResponse } from '@/common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
 import { ErrorMessage } from '../common/utils/message-const';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { User } from '../users/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 
-describe('CategoriesService', () => {
-  let service: CategoriesService;
+describe('CategoryService', () => {
+  let service: CategoryService;
   let repository: Repository<Category>;
   let userRepository: Repository<User>;
 
@@ -27,7 +27,7 @@ describe('CategoriesService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CategoriesService,
+        CategoryService,
         {
           provide: getRepositoryToken(Category),
           useValue: mockCategoryRepository,
@@ -39,7 +39,7 @@ describe('CategoriesService', () => {
       ],
     }).compile();
 
-    service = module.get<CategoriesService>(CategoriesService);
+    service = module.get<CategoryService>(CategoryService);
     repository = module.get<Repository<Category>>(getRepositoryToken(Category));
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
@@ -57,12 +57,12 @@ describe('CategoriesService', () => {
           { id: 2, name: 'Category2', userId: 1 },
         ],
         isSuccess: true,
-        message: 'Categories found successfully',
+        message: 'Category found successfully',
       } as BaseResponse;
 
       mockCategoryRepository.find.mockResolvedValue(mockCategories.data);
 
-      const result = await service.findCategoriesByUserId(userId);
+      const result = await service.findCategoryByUserId(userId);
       expect(result).toEqual(mockCategories);
       expect(repository.find).toHaveBeenCalledWith({ where: { userId } });
     });
@@ -70,12 +70,12 @@ describe('CategoriesService', () => {
     it('should return an error response if no categories are found', async () => {
       const userId = 2;
       const mockErrorResponse = buildError(
-        ErrorMessage.CATEGORIES_NOT_FOUND,
+        ErrorMessage.CATEGORY_NOT_FOUND,
       ) as BaseResponse;
 
       mockCategoryRepository.find.mockResolvedValue([]);
 
-      const result = await service.findCategoriesByUserId(userId);
+      const result = await service.findCategoryByUserId(userId);
       expect(result).toEqual(mockErrorResponse);
       expect(repository.find).toHaveBeenCalledWith({ where: { userId } });
     });

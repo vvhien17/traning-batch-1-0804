@@ -1,12 +1,13 @@
-import { Activity } from '../../activities/entities/activity.entity';
-import { Category } from '../../categories/entities/category.entity';
+import { Activity } from '../../activity/entities/activity.entity';
+import { Category } from '../../category/entities/category.entity';
+import { Goal } from '../../goal/entities/goal.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  OneToMany,
+  PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -28,4 +29,6 @@ export class User {
   categories: Category[];
   @OneToMany(() => Activity, (activity) => activity.user)
   activities: Activity[];
+  @OneToMany(() => Goal, (goal) => goal.user)
+  goals: Goal[];
 }

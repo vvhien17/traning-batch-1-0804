@@ -6,7 +6,7 @@ export enum ErrorMessage {
   PASSWORD_IS_REQUIRED = 'Password is required',
   USER_NOT_FOUND = 'User not found',
   USERNAME_PASSWORD_INCORRECT = 'username or password incorrect',
-  CATEGORIES_NOT_FOUND = 'Categories not found',
+  CATEGORY_NOT_FOUND = 'Category not found',
   ACTIVITY_NOT_FOUND = 'Activity not found',
 }
 

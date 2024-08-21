@@ -2,11 +2,14 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
-import { ActivitiesModule } from './activities/activities.module';
-import { CategoriesModule } from './categories/categories.module';
+import { UserModule } from './user/user.module';
+import { ActivityModule } from './activity/activity.module';
+import { CategoryModule } from './category/category.module';
 import { config as envConfig } from 'dotenv';
 import { AuthModule } from './auth/auth.module';
+import { GoalModule } from './goal/goal.module';
+import { GoalOnActivityController } from './goal-on-activity/goal-on-activity.controller';
+import { GoalOnActivityModule } from './goal-on-activity/goal-on-activity.module';
 
 envConfig();
 
@@ -27,12 +30,14 @@ envConfig();
       // entities: ['src/**/*.entity{.ts,.js}'],
       // migrations: ['migrations/*{.ts,.js}'],
     }),
-    UsersModule,
-    ActivitiesModule,
-    CategoriesModule,
+    UserModule,
+    ActivityModule,
+    CategoryModule,
     AuthModule,
+    GoalModule,
+    GoalOnActivityModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, GoalOnActivityController],
   providers: [AppService],
 })
 export class AppModule {}
