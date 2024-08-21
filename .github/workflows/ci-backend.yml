@@ -68,6 +68,9 @@ jobs:
       - name: Install dependencies
         working-directory: tms-backend
         run: |
+          curl -sL https://rpm.nodesource.com/setup_18.x | sudo bash -
+          sudo yum install -y nodejs
+          npm install -g pnpm
           pnpm install
 
       - name: Decode and set up SSH key
@@ -79,16 +82,13 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -i "modelty.pem" ec2-user@your-ec2-public-dns <<EOF
+          ssh -i "modelty.pem" ec2-user@http://18.232.111.71:3000 <<EOF
             cd /home/ec2-user/traning-batch-1-0804/tms-backend
             git pull origin main
-            curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
-            sudo yum install -y nodejs
-            npm install -g pnpm
+           
             pnpm install
             pnpm run build
             pm2 start dist/main.js
             pm2 startup
             pm2 save
-            pm2 restart all
           EOF
