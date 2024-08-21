@@ -78,7 +78,7 @@ jobs:
           ls -l ~/.ssh
       - name: Deploy to EC2
         env:
-          SSH_HOST: http://18.232.111.71:3000
+          SSH_HOST: 18.232.111.71
           SSH_USER: ec2-user
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} <<EOF
