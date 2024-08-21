@@ -3,3 +3,17 @@ export type TBaseResponse<T> = {
   message: string;
   data: T;
 };
+
+interface TypeDateError {
+  error: string;
+  message: string;
+  statusCode: number;
+}
+
+export interface TypeErrorResponse {
+  response: {
+    data: TypeDateError;
+    status?: number;
+  };
+  message: string;
+}

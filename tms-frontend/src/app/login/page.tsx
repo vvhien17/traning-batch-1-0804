@@ -1,14 +1,19 @@
 "use client";
-import Container from "@components/components/Container";
-import PATH from "@components/constants";
+import Container from "@components/components/container";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { authQuery } from "@components/hooks/auth";
 import { toast } from "react-toastify";
-import Button from "@components/components/Button";
+import Button from "@components/components/button";
+import cookie from "@components/utils/cookie";
+import { TypeErrorResponse } from "@components/types/types";
+import { useContext } from "react";
+import { useRouter } from "next/navigation";
 import Input from "@components/components/Input";
+import PATH from "@components/constants/path";
+import { GlobalContext } from "@components/context";
 
 const LoginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -18,6 +23,8 @@ const LoginSchema = z.object({
 type LoginForm = z.infer<typeof LoginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { setIsAuthenticated, setUserInfo } = useContext(GlobalContext);
   const { mutate: login, isPending } = authQuery.mutation.useLogin();
 
   const { handleSubmit, register, formState } = useForm<LoginForm>({
@@ -31,12 +38,19 @@ export default function LoginPage() {
   const onSubmit = (data: LoginForm) => {
     login(data, {
       onSuccess: (data) => {
+        cookie.set("accessToken", data.data?.access_token);
+
+        setIsAuthenticated(true);
+        setUserInfo(data.data.user);
+        router.push(PATH.home);
+
         toast(data.message, {
           type: "success",
         });
       },
-      onError: (data) => {
-        toast(data.message, {
+      onError: (error: any) => {
+        const _error: TypeErrorResponse = error;
+        toast(_error.response.data.message, {
           type: "error",
         });
       },
@@ -45,7 +59,7 @@ export default function LoginPage() {
 
   return (
     <Container>
-      <div className="px-96 mt-20">
+      <div className="max-w-80 mt-10 m-auto">
         <div className="p-4 rounded-xl border-stone-300 border-2 bg-stone-100">
           <h2 className="uppercase text-3xl text-center font-bold text-text-title">
             Login

@@ -3,8 +3,17 @@ export type TLoginRequest = {
   password: string;
 };
 
+export type TProfile = {
+  id: number;
+  email: string;
+  username: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type TLoginResponse = {
-  accessToken: string;
+  access_token: string;
+  user: TProfile;
 };
 
 export type TRegisterRequest = {
