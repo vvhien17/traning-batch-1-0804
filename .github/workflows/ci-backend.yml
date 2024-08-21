@@ -82,6 +82,9 @@ jobs:
           ssh -i "modelty.pem" ec2-user@your-ec2-public-dns <<EOF
             cd /home/ec2-user/traning-batch-1-0804/tms-backend
             git pull origin main
+            curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
+            sudo yum install -y nodejs
+            npm install -g pnpm
             pnpm install
             pnpm run build
             pm2 start dist/main.js
