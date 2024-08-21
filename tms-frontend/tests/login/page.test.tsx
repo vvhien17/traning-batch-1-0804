@@ -3,6 +3,12 @@ import "@testing-library/jest-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LoginPage from "@components/app/login/page";
 
+// Mock the useRouter hook
+jest.mock("next/navigation", () => ({
+  ...require("next-router-mock"),
+  useSearchParams: () => [new URLSearchParams({ revalidate: "1" })],
+}));
+
 describe("LoginPage", () => {
   it("renders the login form with email and password fields", () => {
     render(
