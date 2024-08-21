@@ -33,7 +33,13 @@ jobs:
 
       - name: Run backend tests
         working-directory: tms-backend
-        run: pnpm run test
+        run: pnpm run test --coverage
+
+      - name: Upload test coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ./coverage
 
       - name: Cache backend pnpm store
         uses: actions/cache@v3
@@ -44,3 +50,38 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' # Manual trigger only
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        working-directory: tms-backend
+        run: |
+          pnpm install
+
+      - name: Decode and set up SSH key
+        env:
+          SSH_PRIVATE_KEY_BASE64: ${{ secrets.SSH_PRIVATE_KEY_BASE64 }}
+        run: |
+          echo "$SSH_PRIVATE_KEY_BASE64" | base64 -d > key.pem
+          chmod 600 modelty.pem
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i "modelty.pem" ec2-user@your-ec2-public-dns <<EOF
+            cd  /home/ec2-user/traning-batch-1-0804/tms-backend
+            git pull origin main
+            pnpm install
+            pnpm run start
+          EOF
