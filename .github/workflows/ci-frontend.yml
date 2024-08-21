@@ -33,13 +33,7 @@ jobs:
 
       - name: Run frontend tests
         working-directory: tms-frontend
-        run: pnpm run test --coverage
-
-      - name: Upload test coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: ./coverage
+        run: pnpm run test
 
       - name: Cache frontend pnpm store
         uses: actions/cache@v3
