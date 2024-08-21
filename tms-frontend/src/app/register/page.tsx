@@ -1,9 +1,9 @@
 "use client";
 
-import Button from "@components/components/Button";
-import Container from "@components/components/Container";
+import Button from "@components/components/button";
+import Container from "@components/components/container";
 import Input from "@components/components/Input";
-import PATH from "@components/constants";
+import PATH from "@components/constants/path";
 import { authQuery } from "@components/hooks/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -33,7 +33,7 @@ export default function RegisterPage() {
   const { mutate: registerMutate, isPending } =
     authQuery.mutation.useRegister();
 
-  const { handleSubmit, register, formState } = useForm<RegisterForm>({
+  const { handleSubmit, register, formState, reset } = useForm<RegisterForm>({
     resolver: zodResolver(RegisterSchema),
   });
 
@@ -41,21 +41,21 @@ export default function RegisterPage() {
     registerMutate(data, {
       onSuccess: (data) => {
         toast(data.message, {
-          type: "success",
+          type: data.isSuccess ? "success" : "error",
         });
+        data.isSuccess && reset();
       },
-      onError: () => {
-        toast("error", {
+      onError: (data) => {
+        toast(data.message, {
           type: "error",
         });
       },
     });
-    console.log(data);
   };
 
   return (
     <Container>
-      <div className="px-96 mt-20">
+      <div className="max-w-80 mt-10 m-auto">
         <div className="p-4 rounded-xl border-stone-300 border-2 bg-stone-100">
           <h2 className="uppercase text-3xl text-center font-bold text-text-title">
             Register

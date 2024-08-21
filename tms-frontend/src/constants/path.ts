@@ -1,7 +1,8 @@
 const PATH = {
   login: "/login",
   register: "/register",
-  activities: "/activities"
+  home: "/",
+  activities: "/activities",
 };
 
 export default PATH;
