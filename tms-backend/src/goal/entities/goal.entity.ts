@@ -20,6 +20,7 @@ export class Goal {
   startedTime: Date;
   @Column('timestamp')
   endedTime: Date;
+
   @Column()
   status: string;
   @Column()
