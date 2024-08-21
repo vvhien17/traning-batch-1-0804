@@ -13,22 +13,16 @@ import {
 export class GoalOnActivity {
   @PrimaryGeneratedColumn()
   id: number;
-
   @Column()
   goalId: number;
-
   @Column()
   totalSpend: number; // Save in minutes
-
   @CreateDateColumn()
   createdAt: Date;
-
   @UpdateDateColumn()
   updatedAt: Date;
-
   @ManyToOne(() => Activity, (activity) => activity.goalOnActivities)
   activity: Activity;
-
   @ManyToOne(() => Goal, (goal) => goal.goalOnActivities)
   goal: Goal;
 }

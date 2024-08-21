@@ -15,11 +15,11 @@ export class Goal {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  goalName: string;
+  name: string;
   @Column('timestamp')
-  goalStartedTime: Date;
+  startedTime: Date;
   @Column('timestamp')
-  goalEndedTime: Date;
+  endedTime: Date;
   @Column()
   status: string;
   @Column()
