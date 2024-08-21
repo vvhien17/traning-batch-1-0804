@@ -54,7 +54,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' # Manual trigger only
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') # Deploy only on `main` branch or `release/**` branches
 
     steps:
       - name: Checkout code
@@ -74,14 +74,18 @@ jobs:
         env:
           SSH_PRIVATE_KEY_BASE64: ${{ secrets.SSH_PRIVATE_KEY_BASE64 }}
         run: |
-          echo "$SSH_PRIVATE_KEY_BASE64" | base64 -d > key.pem
+          echo "$SSH_PRIVATE_KEY_BASE64" | base64 -d > modelty.pem
           chmod 600 modelty.pem
 
       - name: Deploy to EC2
         run: |
           ssh -i "modelty.pem" ec2-user@your-ec2-public-dns <<EOF
-            cd  /home/ec2-user/traning-batch-1-0804/tms-backend
+            cd /home/ec2-user/traning-batch-1-0804/tms-backend
             git pull origin main
             pnpm install
-            pnpm run start
+            pnpm run build
+            pm2 start dist/main.js
+            pm2 startup
+            pm2 save
+            pm2 restart all
           EOF
