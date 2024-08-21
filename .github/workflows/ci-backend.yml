@@ -78,10 +78,12 @@ jobs:
           ls -l ~/.ssh
       - name: Deploy to EC2
         env:
-          SSH_HOST: 18.232.111.71
-          SSH_USER: ec2-user
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} <<EOF
+            curl -fsSL https://get.pnpm.io/install.sh | sh
+            export PATH=\$HOME/.local/share/pnpm:$PATH
             cd /home/ec2-user/traning-batch-1-0804/tms-backend
             git pull origin main
             pnpm install
