@@ -6,6 +6,7 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   name?: string;
   register?: any;
+  placeholder?: string;
   error?: string;
   options: { value: string; label: string }[];
 }
@@ -15,6 +16,7 @@ const Select: React.FC<SelectProps> = ({
   name,
   register,
   error,
+  placeholder,
   className,
   options,
   ...props
@@ -31,10 +33,15 @@ const Select: React.FC<SelectProps> = ({
       )}
       <select
         id={name}
-        className="block w-full rounded-md border border-gray-300 px-4 py-2 text-sm"
+        className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-md"
         {...register?.(name)}
         {...props}
       >
+        {placeholder && (
+          <option value="" disabled selected className="text-gray-500">
+            {placeholder}
+          </option>
+        )}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

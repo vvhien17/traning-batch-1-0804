@@ -4,6 +4,8 @@ import {
   CogIcon,
   EyeIcon,
   BugAntIcon,
+  ChartBarIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/solid";
 import PATH from "@components/constants/path";
 
@@ -23,11 +25,6 @@ export const SideMenu: React.FC = () => {
       link: PATH.activities,
     },
     {
-      icon: <CogIcon className="size-5 text-black-500" />,
-      label: "Visualize",
-      link: PATH.activities,
-    },
-    {
       icon: <EyeIcon className="size-5 text-black-500" />,
       label: "Summary",
       link: PATH.activities,
@@ -35,6 +32,11 @@ export const SideMenu: React.FC = () => {
     {
       icon: <BugAntIcon className="size-5 text-black-500" />,
       label: "Goal Setting",
+      link: PATH.activities,
+    },
+    {
+      icon: <ChartBarIcon className="size-5 text-black-500" />,
+      label: "Visualize",
       link: PATH.activities,
     },
   ];
@@ -51,9 +53,13 @@ export const SideMenu: React.FC = () => {
     >
       <button
         onClick={toggleMenu}
-        className="absolute top-4 right-[-12px] bg-white rounded-full px-2 py-1 text-gray-500 shadow-md"
+        className="absolute top-1/2 -translate-y-1/2 right-[-12px] bg-white rounded-full p-1 text-gray-500 shadow-md"
       >
-        {isOpen ? "<" : ">"}
+        {isOpen ? (
+          <ChevronRightIcon className="w-6 h-6" />
+        ) : (
+          <ChevronRightIcon className="w-6 h-6 rotate-180" />
+        )}
       </button>
       <ul className={`${isOpen ? "w-80" : "w-16"} py-1`}>
         {menuItems.map((item, index) => (
