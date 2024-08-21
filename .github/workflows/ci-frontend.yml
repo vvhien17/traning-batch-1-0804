@@ -1,0 +1,46 @@
+name: CI Front End
+
+on:
+  push:
+    branches:
+      - main
+      - "release/**"
+  pull_request:
+    branches:
+      - main
+      - "release/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # Node.js version updated to meet pnpm requirements
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # front end
+      - name: Install frontend dependencies
+        working-directory: tms-frontend
+        run: pnpm install
+
+      - name: Run frontend tests
+        working-directory: tms-frontend
+        run: pnpm run test
+
+      - name: Cache frontend pnpm store
+        uses: actions/cache@v3
+        with:
+          path: |
+            tms-frontend/node_modules/.pnpm-store
+            tms-frontend/node_modules/.cache/pnpm
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-frontend/**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
