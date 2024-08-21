@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import "react-datepicker/dist/react-datepicker.css";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
-import QueryProvider from "@components/query-provider";
+import { ToastContainer } from "react-toastify";
+import QueryProvider from "@components/Provider/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <QueryProvider>
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          {children}
+          <ToastContainer autoClose={1000} />
+        </body>
       </QueryProvider>
     </html>
   );

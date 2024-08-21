@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
-const authUrls = ["/login", "/register"];
+const authUrls = ["/login", "/register", "/activities"];
 
 export default function middleware(request: NextRequest) {
   const { cookies } = request;

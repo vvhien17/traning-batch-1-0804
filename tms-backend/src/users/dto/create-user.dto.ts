@@ -1,1 +1,15 @@
-export class CreateUserDto {}
+// src/users/dto/create-user.dto.ts
+import { IsString, IsEmail, Length } from 'class-validator';
+
+export class CreateUserDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @Length(4, 255)
+  username: string;
+
+  @IsString()
+  @Length(6, 255)
+  password: string;
+}

@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-
+import colors from "./src/assets/styles/index";
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -34,6 +34,7 @@ const config: Config = {
         slideIn: "slideIn 0.5s ease forwards",
         slideOut: "slideOut 0.5s ease forwards",
       },
+      colors: colors,
     },
   },
   plugins: [],
