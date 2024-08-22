@@ -31,9 +31,17 @@ jobs:
         working-directory: tms-backend
         run: pnpm install
 
+      - name: Ensure coverage directory exists
+        working-directory: tms-backend
+        run: mkdir -p ./coverage
+
+      - name: Run backend tests
+        working-directory: tms-backend
+        run: pnpm run test --coverage
+
       - name: List coverage directory
         working-directory: tms-backend
-        run: ls -R ./coverage
+        run: ls -R ./coverage || echo "Coverage directory does not exist."
 
       - name: Upload test coverage report
         uses: actions/upload-artifact@v3
