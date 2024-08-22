@@ -11,6 +11,7 @@ export enum ErrorMessage {
   ACTIVITY_IS_EXISTS = 'Activity already exists',
   BAD_REQUEST = 'Bad request',
   GOAL_NOT_FOUND = 'Goals not found',
+  VALIDATION_FAILED = 'Validation failed',
 }
 
 export enum SuccessMessage {

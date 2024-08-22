@@ -68,7 +68,7 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(true);
-    expect(result.message).toBe('Goal created successfully');
+    expect(result.message).toBe(SuccessMessage.CREATE_DATA_SUCCESS);
     expect(result.data).toEqual(mockGoal);
   });
 
@@ -83,7 +83,7 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
-    expect(result.message).toContain('Validation failed');
+    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
   });
 
   it('should return an error if user is not found', async () => {
@@ -99,7 +99,7 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
-    expect(result.message).toBe('User not found');
+    expect(result.message).toBe(ErrorMessage.USER_NOT_FOUND);
   });
 
   it('should get all goals by user successfully', async () => {

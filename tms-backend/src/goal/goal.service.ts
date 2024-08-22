@@ -6,6 +6,7 @@ import { BaseResponse } from '../common/base-response/base-response.dto';
 import { User } from '../user/entities/user.entity'; // Assuming you need to check user existence
 import { buildError } from '../common/utils/Utility';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
+import { CreateGoalDto } from './dto/create-goal.dto';
 
 @Injectable()
 export class GoalService {
@@ -16,22 +17,12 @@ export class GoalService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createGoalDto: {
-    name: string;
-    startedTime: Date;
-    endedTime: Date;
-    status: string;
-    userId: number;
-  }): Promise<BaseResponse> {
+  async create(createGoalDto: CreateGoalDto): Promise<BaseResponse> {
     const { name, startedTime, endedTime, status, userId } = createGoalDto;
 
     // Validate input fields
     if (!name || !startedTime || !endedTime || !status || !userId) {
-      return {
-        data: null,
-        isSuccess: false,
-        message: 'Validation failed: All fields are required.',
-      };
+      return buildError(ErrorMessage.VALIDATION_FAILED);
     }
 
     // Check if user exists
@@ -39,11 +30,7 @@ export class GoalService {
       where: { id: userId },
     });
     if (!userExists) {
-      return {
-        data: null,
-        isSuccess: false,
-        message: 'User not found',
-      };
+      return buildError(ErrorMessage.USER_NOT_FOUND);
     }
 
     try {
@@ -60,7 +47,7 @@ export class GoalService {
       return {
         data: savedGoal,
         isSuccess: true,
-        message: 'Goal created successfully',
+        message: SuccessMessage.CREATE_DATA_SUCCESS,
       };
     } catch (error) {
       return {
@@ -72,20 +59,28 @@ export class GoalService {
   }
 
   async findAllByUserId(userId: number): Promise<BaseResponse> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    try {
+      const user = await this.userRepository.findOne({ where: { id: userId } });
 
-    if (!user) {
-      return buildError(ErrorMessage.USER_NOT_FOUND);
+      if (!user) {
+        return buildError(ErrorMessage.USER_NOT_FOUND);
+      }
+      const goals = await this.goalRepository.find({ where: { userId } });
+      if (!goals) {
+        return buildError(ErrorMessage.GOAL_NOT_FOUND);
+      }
+      return {
+        data: goals,
+        isSuccess: true,
+        message: SuccessMessage.GET_DATA_SUCCESS,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        isSuccess: false,
+        message: 'Error get goals: ' + error.message,
+      };
     }
-    const goals = await this.goalRepository.find({ where: { userId } });
-    if (!goals) {
-      return buildError(ErrorMessage.GOAL_NOT_FOUND);
-    }
-    return {
-      data: goals,
-      isSuccess: true,
-      message: SuccessMessage.GET_DATA_SUCCESS,
-    };
   }
 
   async findOne(id: number) {
