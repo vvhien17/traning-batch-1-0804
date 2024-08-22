@@ -7,7 +7,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { User } from '../user/entities/user.entity';
 import { config as envConfig } from 'dotenv';
 import { ErrorMessage } from '../common/utils/message-const';
-import { BaseResponse } from '@/common/base-response/base-response.dto';
+import { BaseResponse } from '../common/base-response/base-response.dto';
 
 envConfig();
 describe('AuthService', () => {

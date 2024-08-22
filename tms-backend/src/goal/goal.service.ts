@@ -1,13 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Goal } from './entities/goal.entity';
-import { BaseResponse } from '@/common/base-response/base-response.dto';
+import { BaseResponse } from '../common/base-response/base-response.dto';
 import { User } from '../user/entities/user.entity'; // Assuming you need to check user existence
+import { buildError } from '../common/utils/Utility';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 
 @Injectable()
 export class GoalService {
@@ -73,9 +71,21 @@ export class GoalService {
     }
   }
 
-  async findAll() {
-    // Implementation to return all goals
-    return `This action returns all goals`;
+  async findAllByUserId(userId: number): Promise<BaseResponse> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return buildError(ErrorMessage.USER_NOT_FOUND);
+    }
+    const goals = await this.goalRepository.find({ where: { userId } });
+    if (!goals) {
+      return buildError(ErrorMessage.GOAL_NOT_FOUND);
+    }
+    return {
+      data: goals,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    };
   }
 
   async findOne(id: number) {

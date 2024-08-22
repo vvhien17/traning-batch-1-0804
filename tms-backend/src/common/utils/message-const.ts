@@ -10,9 +10,10 @@ export enum ErrorMessage {
   ACTIVITY_NOT_FOUND = 'Activity not found',
   ACTIVITY_IS_EXISTS = 'Activity already exists',
   BAD_REQUEST = 'Bad request',
+  GOAL_NOT_FOUND = 'Goals not found',
 }
 
 export enum SuccessMessage {
   GET_DATA_SUCCESS = 'Get data success',
-  CREATE_DATA_SUCCESS = "Create data success",
+  CREATE_DATA_SUCCESS = 'Create data success',
 }

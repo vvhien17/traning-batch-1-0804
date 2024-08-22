@@ -6,6 +6,7 @@ import { Goal } from './entities/goal.entity';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { User } from '../user/entities/user.entity';
 import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 
 describe('GoalService', () => {
   let service: GoalService;
@@ -21,12 +22,14 @@ describe('GoalService', () => {
           useValue: {
             create: jest.fn(),
             save: jest.fn(),
+            find: jest.fn(),
           },
         },
         {
           provide: getRepositoryToken(User),
           useValue: {
             findOne: jest.fn(),
+            find: jest.fn(),
           },
         },
       ],
@@ -97,5 +100,74 @@ describe('GoalService', () => {
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.message).toBe('User not found');
+  });
+
+  it('should get all goals by user successfully', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+    const mockGoals: Goal[] = [
+      {
+        id: 1,
+        name: 'Goal 1',
+        startedTime: new Date('2024-08-01T00:00:00Z'),
+        endedTime: new Date('2024-08-31T23:59:59Z'),
+        status: 'active',
+        userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        user: new User(), // Mock or create as needed
+        goalOnActivities: [new GoalOnActivity()], // Mock or create as needed
+      },
+    ];
+
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+    jest.spyOn(goalRepository, 'find').mockResolvedValue(mockGoals);
+    const result = await service.findAllByUserId(userId);
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toEqual(true);
+    expect(result.message).toEqual(SuccessMessage.GET_DATA_SUCCESS);
+    expect(result.data).toEqual(mockGoals);
+  });
+
+  it('should return with data is null if no goals are found', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+    jest.spyOn(goalRepository, 'find').mockResolvedValue(null);
+    const result = await service.findAllByUserId(userId);
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toEqual(false);
+    expect(result.message).toEqual(ErrorMessage.GOAL_NOT_FOUND);
+    expect(result.data).toEqual(null);
+  });
+
+  it('should return with data is null if user not found', async () => {
+    const userId = 9999; // User ID that does not exist
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(null); // Simulate user not found
+    const result = await service.findAllByUserId(userId);
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toEqual(false);
+    expect(result.message).toEqual(ErrorMessage.USER_NOT_FOUND);
+    expect(result.data).toEqual(null);
   });
 });
