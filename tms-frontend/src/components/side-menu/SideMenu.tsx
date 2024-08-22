@@ -48,7 +48,7 @@ export const SideMenu: React.FC = () => {
 
   return (
     <div
-      className={`min-h-screen bg-white shadow-lg fixed z-10 ${
+      className={`min-h-screen bg-white shadow-lg sticky z-10 ${
         isOpen ? "w-64" : "w-16"
       } transition-width duration-300`}
     >
