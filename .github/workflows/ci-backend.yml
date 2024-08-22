@@ -67,7 +67,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
   deploy:
-    if: startsWith(github.ref, 'refs/heads/release/') && needs.build.result == 'success' # Deploy only if tests pass and branch is `release/**`
+    if: startsWith(github.ref, 'refs/heads/release') && needs.build.result == 'success' # Deploy only if tests pass and branch is `release/**`
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 1
