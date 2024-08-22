@@ -103,8 +103,11 @@ jobs:
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} <<EOF
             curl -fsSL https://get.pnpm.io/install.sh | sh
             export PATH=\$HOME/.local/share/pnpm:$PATH
-            cd /home/ec2-user/traning-batch-1-0804/tms-backend
-            git pull origin release
+            cd /home/ec2-user/traning-batch-1-0804
+            git fetch origin
+            git checkout -b release origin/release
+            git pull
+            cd tms-backend
             npm install
             npm run build
             pm2 start dist/main.js || pm2 restart dist/main.js
