@@ -26,6 +26,15 @@ $ cd tms-backend
 3. ** Run all commands below: **
 
 ```bash
+# run docker 
+$ docker compose up
+
+# install dependencies
+$ pnpm i
+
+# run migration
+$ pnpm run migration:run
+
 # development
 $ pnpm run start
 
