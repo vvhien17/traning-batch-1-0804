@@ -48,8 +48,8 @@ jobs:
         with:
           name: coverage-report
           path: tms-backend/coverage
-          
-       - name: Upload coverage to Codecov
+
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           files: tms-backend/coverage/**/coverage-final.json # Adjust path if necessary
@@ -89,6 +89,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY_BASE64" | base64 -d > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ls -l ~/.ssh
+
       - name: Deploy to EC2
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
