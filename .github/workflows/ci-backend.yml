@@ -48,6 +48,11 @@ jobs:
         with:
           name: coverage-report
           path: tms-backend/coverage
+          
+       - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: tms-backend/coverage/**/coverage-final.json # Adjust path if necessary
 
       - name: Cache backend pnpm store
         uses: actions/cache@v3
