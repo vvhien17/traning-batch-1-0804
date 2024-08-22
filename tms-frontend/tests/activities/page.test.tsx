@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ActivitiesPage from "@components/app/activities/page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ActivitiesPage from "@components/app/(auth)/activities/page";
 
 describe("ActivitiesPage", () => {
   const queryClient = new QueryClient();
@@ -14,7 +14,7 @@ describe("ActivitiesPage", () => {
     );
 
   it("renders the ActivitiesPage with the correct elements", () => {
-    renderComponent()
+    renderComponent();
 
     expect(screen.getByText("Your activities")).toBeInTheDocument();
   });
