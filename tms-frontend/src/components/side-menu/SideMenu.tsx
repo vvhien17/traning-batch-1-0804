@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   BeakerIcon,
@@ -37,7 +38,7 @@ export const SideMenu: React.FC = () => {
     {
       icon: <ChartBarIcon className="size-5 text-black-500" />,
       label: "Visualize",
-      link: PATH.activities,
+      link: PATH.visualize,
     },
   ];
 
@@ -45,31 +46,34 @@ export const SideMenu: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
-    return (
-        <div
-            className={`min-h-screen bg-white shadow-lg ${isOpen ? "w-64" : "w-16"
-                } transition-width duration-300 relative`}
-        >
-            <button
-                onClick={toggleMenu}
-                className="absolute top-4 right-[-12px] bg-white rounded-full px-2 py-1 text-gray-500 shadow-md"
+  return (
+    <div
+      className={`min-h-screen bg-white shadow-lg fixed z-10 ${
+        isOpen ? "w-64" : "w-16"
+      } transition-width duration-300`}
+    >
+      <button
+        onClick={toggleMenu}
+        className="absolute top-4 right-[-12px] bg-white rounded-full px-2 py-1 text-gray-500 shadow-md"
+      >
+        {isOpen ? "<" : ">"}
+      </button>
+      <ul className={`${isOpen ? "w-64" : "w-16"} py-1`}>
+        {menuItems.map((item, index) => (
+          <li
+            key={index}
+            className={`${isOpen ? "hover:bg-gray-100" : ""} py-4 pl-4`}
+          >
+            <a
+              href={item.link}
+              className="flex items-center text-gray-700 hover:text-gray-900"
             >
-                {isOpen ? "<" : ">"}
-            </button>
-            <ul className={`${isOpen ? "w-64" : "w-16"
-                } py-1`}>
-                {menuItems.map((item, index) => (
-                    <li key={index} className={`${isOpen ? "hover:bg-gray-100" : ""} py-4 pl-4`}>
-                        <a
-                            href={item.link}
-                            className="flex items-center text-gray-700 hover:text-gray-900"
-                        >
-                            <span className="text-2xl">{item.icon}</span>
-                            {isOpen && <span className="ml-4 font-light">{item.label}</span>}
-                        </a>
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+              <span className="text-2xl">{item.icon}</span>
+              {isOpen && <span className="ml-4 font-light">{item.label}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
