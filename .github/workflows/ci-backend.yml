@@ -16,7 +16,8 @@ jobs:
   build:
     if: |
       github.ref == 'refs/heads/main' ||
-      startsWith(github.ref, 'refs/heads/release/')
+      startsWith(github.ref, 'refs/heads/release/') || 
+      github.ref == 'refs/heads/release"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
