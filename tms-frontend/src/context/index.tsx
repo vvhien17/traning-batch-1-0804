@@ -1,5 +1,5 @@
 "use client";
-import { AccessToken } from "@components/constants/common";
+import { ACCESS_TOKEN, USER_INFO } from "@components/constants/common";
 import { TProfile } from "@components/types/auth";
 import cookie from "@components/utils/cookie";
 import { createContext, useLayoutEffect, useState } from "react";
@@ -35,15 +35,15 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const reset = () => {
     setIsAuthenticated(false);
     setUserInfo(null);
-    localStorage.removeItem("userInfo");
+    localStorage.removeItem(USER_INFO);
   };
 
   useLayoutEffect(() => {
-    const token = cookie.get(AccessToken);
+    const token = cookie.get(ACCESS_TOKEN);
 
     if (token) {
       setIsAuthenticated(true);
-      const storedUserInfo = localStorage.getItem("userInfo");
+      const storedUserInfo = localStorage.getItem(USER_INFO);
       if (storedUserInfo) {
         setUserInfo(JSON.parse(storedUserInfo));
       }
@@ -52,9 +52,9 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
 
   useLayoutEffect(() => {
     if (userInfo) {
-      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      localStorage.setItem(USER_INFO, JSON.stringify(userInfo));
     } else {
-      localStorage.removeItem("userInfo");
+      localStorage.removeItem(USER_INFO);
     }
   }, [userInfo]);
 

@@ -4,4 +4,5 @@ export enum Status {
   InCompleted = "in-completed",
 }
 
-export const AccessToken = "accessToken";
+export const ACCESS_TOKEN = "accessToken";
+export const USER_INFO = "userInfo";

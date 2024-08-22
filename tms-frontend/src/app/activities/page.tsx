@@ -10,7 +10,7 @@ import { SideMenu } from "@components/components/side-menu";
 import { MultipleSelect } from "@components/components/multiple-select";
 import CreateOrEditActivityDrawer from "./components/CreateOrEditActivity";
 import cookie from "@components/utils/cookie";
-import { AccessToken } from "@components/constants/common";
+import { ACCESS_TOKEN } from "@components/constants/common";
 import { GlobalContext } from "@components/context";
 
 interface DetailsOption {
@@ -36,7 +36,7 @@ export default function ActivitiesPage() {
   };
 
   const handleLogout = () => {
-    cookie.delete(AccessToken);
+    cookie.delete(ACCESS_TOKEN);
     setIsAuthenticated(false);
   };
 

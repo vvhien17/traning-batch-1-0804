@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import Input from "@components/components/Input";
 import PATH from "@components/constants/path";
 import { GlobalContext } from "@components/context";
-import { AccessToken } from "@components/constants/common";
+import { ACCESS_TOKEN } from "@components/constants/common";
 
 const LoginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -39,7 +39,7 @@ export default function LoginPage() {
   const onSubmit = (data: LoginForm) => {
     login(data, {
       onSuccess: (data) => {
-        cookie.set(AccessToken, data.data?.access_token);
+        cookie.set(ACCESS_TOKEN, data.data?.access_token);
 
         setIsAuthenticated(true);
         setUserInfo(data.data.user);

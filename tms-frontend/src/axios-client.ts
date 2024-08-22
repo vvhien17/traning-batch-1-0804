@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import cookie from "./utils/cookie";
-import { AccessToken } from "./constants/common";
+import { ACCESS_TOKEN } from "./constants/common";
 
 const axiosClient = axios.create({
   // TODO: base url goes here
@@ -15,7 +15,7 @@ const axiosClient = axios.create({
 // Add a request interceptor
 axiosClient.interceptors.request.use(
   (config) => {
-    const accessToken = cookie.get(AccessToken);
+    const accessToken = cookie.get(ACCESS_TOKEN);
 
     if (accessToken) {
       config.headers["Authorization"] = accessToken;
@@ -31,7 +31,7 @@ axiosClient.interceptors.response.use(
   (response) => response.data,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      cookie.delete(AccessToken);
+      cookie.delete(ACCESS_TOKEN);
       return Promise.reject(error);
     }
     return Promise.reject(error);
