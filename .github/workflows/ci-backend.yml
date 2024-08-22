@@ -107,7 +107,7 @@ jobs:
             cd /home/ec2-user/traning-batch-1-0804/tms-backend
             rm -rf node_modules package-lock.json
             git fetch origin
-            git checkout origin/release
+            git checkout release
             git pull
             cd tms-backend
             npm install
