@@ -8,8 +8,11 @@ export enum ErrorMessage {
   USERNAME_PASSWORD_INCORRECT = 'username or password incorrect',
   CATEGORY_NOT_FOUND = 'Category not found',
   ACTIVITY_NOT_FOUND = 'Activity not found',
+  ACTIVITY_IS_EXISTS = 'Activity already exists',
+  BAD_REQUEST = 'Bad request',
 }
 
 export enum SuccessMessage {
   GET_DATA_SUCCESS = 'Get data success',
+  CREATE_DATA_SUCCESS = "Create data success",
 }
