@@ -1,8 +1,6 @@
 ## Project
 
 Time Management System - Back End
-## Coding convention
-The project following <a href="https://github.com/basarat/typescript-book/blob/master/docs/styleguide/styleguide.md"> this</a> 
 
 ## Installation
 
