@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Goal } from './entities/goal.entity';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { User } from '../user/entities/user.entity';
-import { GoalOnActivity } from '../goal-on-activity/entities/goalOnActivity.entity';
+import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
 
 describe('GoalService', () => {
   let service: GoalService;
