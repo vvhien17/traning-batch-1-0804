@@ -55,7 +55,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') # Deploy only on `main` branch or `release/**` branches
-
+    timeout-minutes: 1
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
