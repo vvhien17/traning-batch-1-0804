@@ -54,9 +54,6 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: tms-backend/coverage/**/coverage-final.json # Adjust path if necessary
-        retry:
-          max-retries: 3
-          delay-seconds: 30
 
       - name: Cache backend pnpm store
         uses: actions/cache@v3
