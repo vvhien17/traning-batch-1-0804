@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Header } from "@components/components/header";
 import { Tabs } from "@components/components/tabs";
 import Button from "@components/components/button";
@@ -9,6 +9,9 @@ import Container from "@components/components/container";
 import { SideMenu } from "@components/components/side-menu";
 import { MultipleSelect } from "@components/components/multiple-select";
 import CreateOrEditActivityDrawer from "./components/CreateOrEditActivity";
+import cookie from "@components/utils/cookie";
+import { ACCESS_TOKEN } from "@components/constants/common";
+import { GlobalContext } from "@components/context";
 
 interface DetailsOption {
   value: string;
@@ -22,6 +25,8 @@ interface DetailsTab {
 }
 
 export default function ActivitiesPage() {
+  const { setIsAuthenticated } = useContext(GlobalContext);
+
   const [userName, setUserName] = React.useState<string>("Baymax");
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [open, setOpen] = useState(false);
@@ -30,7 +35,10 @@ export default function ActivitiesPage() {
     setSelectedOptions(selected);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    cookie.delete(ACCESS_TOKEN);
+    setIsAuthenticated(false);
+  };
 
   const handleCreateNewActivity = () => {
     setOpen(true);

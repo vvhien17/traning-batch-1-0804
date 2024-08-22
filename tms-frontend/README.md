@@ -1,8 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Project
+
+Time Management System - Front-End
+
+## Clone the Repository
+
+```bash
+$ git clone https://github.com/XPODC/training-batch1-08-04.git
+$ cd tms-frontend
+```
+
+## Installation
+
+```bash
+$ pnpm install
+```
 
 ## Getting Started
 
-First, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
@@ -12,6 +27,14 @@ yarn dev
 pnpm dev
 # or
 bun dev
+```
+
+## Test
+
+```bash
+# unit tests
+$ pnpm run test
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

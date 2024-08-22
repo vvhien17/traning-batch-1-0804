@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import QueryProvider from "@components/Provider/QueryProvider";
+import { GlobalProvider } from "@components/context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,12 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <QueryProvider>
-        <body className={inter.className}>
-          {children}
-          <ToastContainer autoClose={1000} />
-        </body>
-      </QueryProvider>
+      <GlobalProvider>
+        <QueryProvider>
+          <body className={inter.className}>
+            {children}
+            <ToastContainer autoClose={1000} />
+          </body>
+        </QueryProvider>
+      </GlobalProvider>
     </html>
   );
 }
