@@ -2,7 +2,7 @@
 
 [![CI Back End](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-backend.yml/badge.svg)](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-backend.yml)
 [![CI Front End](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-frontend.yml)
-![Codecov](https://img.shields.io/codecov/c/github/vvhien17/traning-batch-1-0804?flag=coverage)
+![Codecov](https://img.shields.io/codecov/c/github/vvhien17/traning-batch-1-0804/main)
 
 ## Requirement
 
