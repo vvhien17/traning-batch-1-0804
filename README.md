@@ -4,6 +4,10 @@
 [![CI Front End](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-frontend.yml)
 ![Codecov](https://img.shields.io/codecov/c/github/vvhien17/traning-batch-1-0804/main)
 
+Result test coverage is <a href="https://app.codecov.io/github/vvhien17/traning-batch-1-0804?search=&displayType=list">here</a>
+
+
+
 ## Requirement
 
 Project Overview: Time Management System
