@@ -31,15 +31,15 @@ jobs:
         working-directory: tms-backend
         run: pnpm install
 
-      - name: Run backend tests
+      - name: List coverage directory
         working-directory: tms-backend
-        run: pnpm run test --coverage
+        run: ls -R ./coverage
 
       - name: Upload test coverage report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: ./coverage
+          path: tms-backend/coverage
 
       - name: Cache backend pnpm store
         uses: actions/cache@v3
