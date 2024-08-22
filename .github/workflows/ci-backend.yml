@@ -12,6 +12,7 @@ on:
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/main' # Build only on the `main` branch
     runs-on: ubuntu-latest
 
     steps:
@@ -66,9 +67,9 @@ jobs:
             ${{ runner.os }}-pnpm-
 
   deploy:
+    if: startsWith(github.ref, 'refs/heads/release/') && needs.build.result == 'success' # Deploy only if tests pass and branch is `release/**`
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') # Deploy only on `main` branch or `release/**` branches
     timeout-minutes: 1
     steps:
       - name: Checkout code
