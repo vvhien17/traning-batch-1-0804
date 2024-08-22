@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - release
+      - "release/**" # Add pattern for `release/` branches
   pull_request:
     branches:
       - main
       - release
+      - "release/**" # Add pattern for `release/` branches
 
 jobs:
   build:
@@ -22,7 +24,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18" # Node.js version updated to meet pnpm requirements
+          node-version: "18"
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -54,7 +56,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: tms-backend/coverage/**/coverage-final.json # Adjust path if necessary
+          files: tms-backend/coverage/**/coverage-final.json
 
       - name: Cache backend pnpm store
         uses: actions/cache@v3
@@ -67,7 +69,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
   deploy:
-    if: github.ref == 'refs/heads/release' # Deploy only if tests pass and branch is `release/**`
+    if: startsWith(github.ref, 'refs/heads/release') # Deploy for branches starting with `release`
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 1
