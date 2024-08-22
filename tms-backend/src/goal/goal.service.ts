@@ -72,4 +72,24 @@ export class GoalService {
       };
     }
   }
+
+  async findAll() {
+    // Implementation to return all goals
+    return `This action returns all goals`;
+  }
+
+  async findOne(id: number) {
+    // Implementation to return a specific goal
+    return `This action returns a #${id} goal`;
+  }
+
+  async update(id: number, updateGoalDto: any) {
+    // Implementation to update a specific goal
+    return `This action updates a #${id} goal`;
+  }
+
+  async remove(id: number) {
+    // Implementation to remove a specific goal
+    return `This action removes a #${id} goal`;
+  }
 }

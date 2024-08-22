@@ -21,9 +21,9 @@ export class User {
   username: string;
   @Column({ type: 'varchar', length: 255 })
   password: string;
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
   @OneToMany(() => Category, (category) => category.user)
   categories: Category[];
