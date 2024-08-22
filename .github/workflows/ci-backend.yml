@@ -105,6 +105,7 @@ jobs:
             curl -fsSL https://get.pnpm.io/install.sh | sh
             export PATH=\$HOME/.local/share/pnpm:$PATH
             cd /home/ec2-user/traning-batch-1-0804
+            rm -rf node_modules package-lock.json
             git fetch origin
             git checkout release
             git pull
