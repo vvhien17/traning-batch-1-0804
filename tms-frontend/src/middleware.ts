@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
+import { AccessToken } from "./constants/common";
 
 const authUrls = ["/login", "/register"];
 
@@ -7,7 +8,7 @@ export default function middleware(request: NextRequest) {
   const { cookies } = request;
   const url = new URL(request.url);
 
-  const accessToken = cookies.get("accessToken")?.value || "";
+  const accessToken = cookies.get(AccessToken)?.value || "";
 
   // Navigate to login page if not authenticated
   if (!accessToken && !authUrls.includes(url.pathname)) {

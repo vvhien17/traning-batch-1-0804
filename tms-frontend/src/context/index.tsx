@@ -1,4 +1,5 @@
 "use client";
+import { AccessToken } from "@components/constants/common";
 import { TProfile } from "@components/types/auth";
 import cookie from "@components/utils/cookie";
 import { createContext, useLayoutEffect, useState } from "react";
@@ -38,7 +39,7 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useLayoutEffect(() => {
-    const token = cookie.get("accessToken");
+    const token = cookie.get(AccessToken);
 
     if (token) {
       setIsAuthenticated(true);
