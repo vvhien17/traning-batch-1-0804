@@ -59,33 +59,29 @@ export default function ActivitiesPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-100 pl-32">
-      {/* <Header userName={userName} onLogout={handleLogout} /> */}
-      <div className="flex">
-        {/* <SideMenu /> */}
-        <Container className="pt-10 pb-14">
-          <div className="flex justify-between items-center pb-4 mb-6">
-            <div className="text-3xl font-bold">Your activities</div>
-            <div className="flex justify-center items-end gap-2">
-              <MultipleSelect
-                label="Filter categories"
-                name="exampleSelect"
-                options={categoryOptions}
-                selectedValues={selectedOptions}
-                onChange={handleSelectChange}
-                placeholder="Please select options"
-              />
-              <Button
-                className="w-max"
-                name="Create new activity"
-                onClick={handleCreateNewActivity}
-              />
-            </div>
+    <div>
+      <Container className="pt-10 pb-14">
+        <div className="flex justify-between items-center pb-4 mb-6">
+          <div className="text-3xl font-bold">Your activities</div>
+          <div className="flex justify-center items-end gap-2">
+            <MultipleSelect
+              label="Filter categories"
+              name="exampleSelect"
+              options={categoryOptions}
+              selectedValues={selectedOptions}
+              onChange={handleSelectChange}
+              placeholder="Please select options"
+            />
+            <Button
+              className="w-max"
+              name="Create new activity"
+              onClick={handleCreateNewActivity}
+            />
           </div>
-          {/* <Tabs tabs={tabOptions} /> */}
-          <ListContent />
-        </Container>
-      </div>
+        </div>
+        {/* <Tabs tabs={tabOptions} /> */}
+        <ListContent />
+      </Container>
       <CreateOrEditActivityDrawer open={open} setOpen={setOpen} />
     </div>
   );

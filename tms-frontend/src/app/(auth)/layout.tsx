@@ -9,8 +9,12 @@ export default function AuthLayout({
   return (
     <div>
       <Header />
-      <SideMenu />
-      {children}
+      <div className="flex">
+        <SideMenu />
+        <div className="min-h-screen bg-zinc-100 w-full pl-10">
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
