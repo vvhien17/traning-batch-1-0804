@@ -107,7 +107,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
           ))}
         </div>
         <div className="flex basis-1/4 justify-end">
-          <button onClick={onEdit}>
+          <button onClick={onEdit} aria-label="Edit activity">
             <PencilSquareIcon className="size-5 text-black-500" />
           </button>
           <button onClick={onDelete} className="px-3 py-1">
