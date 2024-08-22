@@ -38,7 +38,7 @@ const Select: React.FC<SelectProps> = ({
         {...props}
       >
         {placeholder && (
-          <option value="" disabled selected className="text-gray-500">
+          <option value="" disabled className="text-gray-500">
             {placeholder}
           </option>
         )}

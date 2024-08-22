@@ -22,7 +22,7 @@ function Content({
   const handleRemoveDOM = () => {
     setTimeout(() => {
       onClose();
-    }, 500);
+    }, 200);
   };
 
   return (
@@ -36,7 +36,7 @@ function Content({
       <div
         ref={wrapperRef}
         className={classcat([
-          "w-[60%] fixed top-0 right-0 h-screen overscroll-y-auto bg-white z-20",
+          "w-[50%] fixed top-0 right-0 h-screen overscroll-y-auto bg-white z-20",
           open ? "animate-slideIn" : "animate-slideOut",
         ])}
       >
