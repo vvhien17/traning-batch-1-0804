@@ -14,9 +14,10 @@ on:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/main' || github.ref == "refs/heads/release/**" # Build only on the `main` branch
+    if: |
+      github.ref == 'refs/heads/main' ||
+      startsWith(github.ref, 'refs/heads/release/')
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
