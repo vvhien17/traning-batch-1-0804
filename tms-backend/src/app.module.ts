@@ -10,8 +10,6 @@ import { AuthModule } from './auth/auth.module';
 import { GoalModule } from './goal/goal.module';
 import { GoalOnActivityModule } from './goal-on-activity/goal-on-activity.module';
 import { GoalOnActivityController } from './goal-on-activity/goal-on-activity.controller';
-import { GoalOnActivityModule } from './goal-on-activity/goal-on-activity.module';
-import { GoalModule } from './goal/goal.module';
 
 envConfig();
 
