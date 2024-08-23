@@ -1,17 +1,3 @@
-name: CI Back End
-
-on:
-  push:
-    branches:
-      - main
-      - release
-      - "release/**" # Add pattern for `release/` branches
-  pull_request:
-    branches:
-      - main
-      - release
-      - "release/**" # Add pattern for `release/` branches
-
 jobs:
   build:
     if: |
@@ -19,6 +5,8 @@ jobs:
       startsWith(github.ref, 'refs/heads/release/') || 
       github.ref == 'refs/heads/release'
     runs-on: ubuntu-latest
+    outputs:
+      artifact-path: ${{ steps.upload-artifact.outputs.artifact-path }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -31,7 +19,36 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      # Backend
+      - name: Install backend dependencies
+        working-directory: tms-backend
+        run: pnpm install
+
+      - name: Run backend build
+        working-directory: tms-backend
+        run: pnpm run build
+
+      - name: Upload build artifact
+        id: upload-artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifact
+          path: tms-backend/build
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install backend dependencies
         working-directory: tms-backend
         run: pnpm install
@@ -42,7 +59,14 @@ jobs:
 
       - name: Run backend tests
         working-directory: tms-backend
-        run: pnpm run test --coverage
+        run: pnpm run test --coverage --reporters=mocha-junit-reporter
+
+      - name: Export test suite and results
+        working-directory: tms-backend
+        run: |
+          # Assuming the tests are using Mocha and JUnit reporter
+          cp ./test-results/*.xml ./results/
+          # Adjust path based on your setup
 
       - name: List coverage directory
         working-directory: tms-backend
@@ -53,6 +77,12 @@ jobs:
         with:
           name: coverage-report
           path: tms-backend/coverage
+
+      - name: Upload test suite results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: tms-backend/results
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -71,10 +101,10 @@ jobs:
             ${{ runner.os }}-pnpm-
 
   deploy:
-    if: startsWith(github.ref, 'refs/heads/release') # Deploy for branches starting with `release`
+    if: startsWith(github.ref, 'refs/heads/release')
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 1
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -109,9 +139,8 @@ jobs:
             git fetch origin
             git checkout release
             git pull
-            cd tms-backend
-            npm install
-            npm run build
+            pnpm install
+            pnpm run build
             pm2 start dist/main.js || pm2 restart dist/main.js
             pm2 startup
             pm2 save

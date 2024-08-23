@@ -72,17 +72,140 @@ describe('GoalService', () => {
     expect(result.data).toEqual(mockGoal);
   });
 
-  it('should return an error if required fields are empty', async () => {
+  it('should return an error if name is empty', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+
     const result: BaseResponse = await service.create({
       name: '', // Empty name
+      startedTime: new Date(), // Valid date
+      endedTime: new Date(), // Valid date
+      status: 'active', // Valid status
+      userId: 1, // Valid userId
+    });
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+  });
+
+  // Test Case for Invalid StartedTime
+  it('should return an error if startedTime is invalid', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+
+    const result: BaseResponse = await service.create({
+      name: 'Test Event', // Valid name
       startedTime: null, // Invalid startedTime
+      endedTime: new Date(), // Valid endedTime
+      status: 'active', // Valid status
+      userId: userId, // Valid userId
+    });
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+  });
+
+  // Test Case for Invalid EndedTime
+  it('should return an error if endedTime is invalid', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+
+    const result: BaseResponse = await service.create({
+      name: 'Test Event', // Valid name
+      startedTime: new Date(), // Valid startedTime
       endedTime: null, // Invalid endedTime
+      status: 'active', // Valid status
+      userId: userId, // Valid userId
+    });
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+  });
+
+  // Test Case for Empty Status
+  it('should return an error if status is empty', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+
+    const result: BaseResponse = await service.create({
+      name: 'Test Event', // Valid name
+      startedTime: new Date(), // Valid startedTime
+      endedTime: new Date(), // Valid endedTime
       status: '', // Empty status
+      userId: userId, // Valid userId
+    });
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+
+    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+  });
+
+  // Test Case for Invalid UserId
+  it('should return an error if userId is invalid', async () => {
+    const result: BaseResponse = await service.create({
+      name: 'Test Event', // Valid name
+      startedTime: new Date(), // Valid startedTime
+      endedTime: new Date(), // Valid endedTime
+      status: 'active', // Valid status
       userId: null, // Invalid userId
     });
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+
     expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
   });
 
@@ -99,6 +222,8 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+
     expect(result.message).toBe(ErrorMessage.USER_NOT_FOUND);
   });
 
