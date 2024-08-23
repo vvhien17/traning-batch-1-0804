@@ -96,7 +96,7 @@ jobs:
         if: success() || failure()
         with:
           name: JEST Tests
-          path: tms-frontend/test-results/junit.xml
+          path: tms-frontend/test-results/unit.xml
           reporter: jest-junit
 
       - name: Upload test suite results
