@@ -81,13 +81,13 @@ jobs:
 
       - name: Run backend tests
         working-directory: tms-backend
-        run: pnpm run test --reporters=mocha-junit-reporter
+        run: pnpm run test
 
       - name: Export test suite and results
         working-directory: tms-backend
         run: |
           mkdir -p ./results
-          cp ./test-results/*.xml ./results/
+          cp ./test-results/junit.xml ./results/
 
       - name: Commit and push test results
         env:
@@ -128,7 +128,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
-
   deploy:
     if: startsWith(github.ref, 'refs/heads/release')
     needs: build
