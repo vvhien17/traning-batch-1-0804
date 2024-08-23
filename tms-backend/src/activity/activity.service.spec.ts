@@ -134,10 +134,11 @@ describe('ActivitiesController', () => {
   });
 
   describe('create activity', () => {
+    const userId = 1;
     const mockActivities = {
       id: 1,
       name: 'Activity 1',
-      userId: 1,
+      userId: userId,
       createdAt: currentDate,
       updatedAt: currentDate,
       startedAt: currentDate,
@@ -147,7 +148,6 @@ describe('ActivitiesController', () => {
     };
     const activityDto: CreateActivityDto = {
       name: 'Activity 1',
-      userId: 1,
       startedAt: currentDate,
       endedAt: endedAt,
       categoryId: 1,
@@ -161,7 +161,7 @@ describe('ActivitiesController', () => {
       jest
         .spyOn(activityRepository, 'create')
         .mockReturnValue({ description: null, ...mockActivities } as Activity);
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         description: null,
       });
@@ -177,7 +177,7 @@ describe('ActivitiesController', () => {
       jest
         .spyOn(activityRepository, 'create')
         .mockReturnValue(mockActivities as Activity);
-      const result: BaseResponse = await service.create(activityDto);
+      const result: BaseResponse = await service.create(userId, activityDto);
       expect(result.data).toEqual(mockActivities as Activity);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
@@ -187,7 +187,7 @@ describe('ActivitiesController', () => {
       const expectedResponse: BaseResponse = buildError(
         `StartedAt ${ErrorMessage.IS_REQUIRED}`,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         startedAt: null,
       });
@@ -198,7 +198,7 @@ describe('ActivitiesController', () => {
       const expectedResponse: BaseResponse = buildError(
         `EndedAt ${ErrorMessage.IS_REQUIRED}`,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         endedAt: null,
       });
@@ -209,7 +209,7 @@ describe('ActivitiesController', () => {
       const expectedResponse: BaseResponse = buildError(
         `Name ${ErrorMessage.IS_REQUIRED}`,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         name: null,
       });
@@ -223,7 +223,7 @@ describe('ActivitiesController', () => {
       jest
         .spyOn(activityRepository, 'create')
         .mockReturnValue({ categoryId: null, ...mockActivities } as Activity);
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         categoryId: null,
       });
@@ -239,7 +239,7 @@ describe('ActivitiesController', () => {
       jest
         .spyOn(activityRepository, 'create')
         .mockReturnValue(mockActivities as Activity);
-      const result: BaseResponse = await service.create(activityDto);
+      const result: BaseResponse = await service.create(userId, activityDto);
       expect(result.data).toEqual(mockActivities as Activity);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
@@ -251,7 +251,7 @@ describe('ActivitiesController', () => {
       const expectedResponse: BaseResponse = buildError(
         ErrorMessage.BAD_REQUEST,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         endedAt: endedAt,
       });
@@ -263,7 +263,7 @@ describe('ActivitiesController', () => {
       const expectedResponse: BaseResponse = buildError(
         ErrorMessage.USER_NOT_FOUND,
       );
-      const result: BaseResponse = await service.create(activityDto);
+      const result: BaseResponse = await service.create(userId, activityDto);
       expect(result).toEqual(expectedResponse);
     });
   });
