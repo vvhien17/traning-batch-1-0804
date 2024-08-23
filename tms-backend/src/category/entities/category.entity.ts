@@ -18,9 +18,9 @@ export class Category {
   name: string;
   @Column()
   userId: number;
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
   @ManyToOne(() => User, (user) => user.categories)
   user: User;

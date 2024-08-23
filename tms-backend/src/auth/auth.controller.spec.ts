@@ -3,6 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
+import { LoginDto } from './dto/login.dto';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -35,7 +36,7 @@ describe('AuthController', () => {
   describe('signIn', () => {
     it('should return a JWT token when credentials are valid', async () => {
       const mockToken = 'mocked_token';
-      const signInDto = { username: 'testuser', password: 'password' };
+      const signInDto: LoginDto = { email: 'testuser', password: 'password' };
       const user = {
         id: 1,
         email: 'tyler@gmail.com',
@@ -56,13 +57,16 @@ describe('AuthController', () => {
         message: 'Login successfully',
       });
       expect(authService.login).toHaveBeenCalledWith(
-        signInDto.username,
+        signInDto.email,
         signInDto.password,
       );
     });
 
     it('should handle login failures', async () => {
-      const signInDto = { username: 'testuser', password: 'wrongpassword' };
+      const signInDto: LoginDto = {
+        email: 'testuser',
+        password: 'wrongpassword',
+      };
       jest
         .spyOn(authService, 'login')
         .mockRejectedValue(

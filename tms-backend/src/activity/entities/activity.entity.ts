@@ -1,4 +1,4 @@
-import { GoalOnActivity } from '../../goal-on-activity/entities/goalOnActivity.entity';
+import { GoalOnActivity } from '../../goal-on-activity/entities/goal-on-activity.entity';
 import { Category } from '../../category/entities/category.entity';
 import { User } from '../../user/entities/user.entity';
 import {
@@ -15,21 +15,21 @@ import {
 export class Activity {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ nullable: true })
   categoryId: number;
   @Column()
   name: string;
   @Column()
   userId: number;
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamp' })
   startedAt: Date;
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamp' })
   endedAt: Date;
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
   @Column({ type: 'boolean', default: false })
   isDelete: boolean;
