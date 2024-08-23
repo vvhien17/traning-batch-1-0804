@@ -93,17 +93,10 @@ jobs:
 
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure()
         with:
           name: JEST Tests
           path: tms-frontend/test-results/junit.xml
           reporter: jest-junit
-
-      - name: Upload test suite results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: tms-frontend/results
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
