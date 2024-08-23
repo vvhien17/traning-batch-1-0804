@@ -15,7 +15,7 @@ import {
 export class Activity {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ nullable: true })
   categoryId: number;
   @Column()
   name: string;
@@ -25,7 +25,7 @@ export class Activity {
   startedAt: Date;
   @Column({ type: 'timestamp' })
   endedAt: Date;
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
