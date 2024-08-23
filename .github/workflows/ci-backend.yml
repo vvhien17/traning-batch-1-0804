@@ -1,6 +1,8 @@
 name: CI Back End
+
 permissions:
   checks: write
+
 on:
   push:
     branches:
@@ -17,7 +19,7 @@ jobs:
   build:
     if: |
       github.ref == 'refs/heads/main' ||
-      startsWith(github.ref, 'refs/heads/release/') || 
+      startsWith(github.ref, 'refs/heads/release/') ||
       github.ref == 'refs/heads/release'
     runs-on: ubuntu-latest
     outputs:
@@ -84,7 +86,7 @@ jobs:
         working-directory: tms-backend
         run: pnpm run test
 
-      - name: Run backend tests
+      - name: Run backend tests with coverage
         working-directory: tms-backend
         run: pnpm run test --coverage
 
@@ -93,11 +95,13 @@ jobs:
         with:
           name: coverage-report
           path: tms-backend/coverage
-      - name: Upload test coverage report
+
+      - name: Upload test suite results
         uses: actions/upload-artifact@v3
         with:
           name: test-report
           path: tms-backend/test-results
+
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure() # run this step even if previous step failed
@@ -127,6 +131,29 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+    permissions: write-all
+    needs: test # Ensure `release` depends on `test`
+    if: needs.test.result == 'success' # Check that `test` succeeded
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.CI_TOKEN }}
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+
   deploy:
     if: startsWith(github.ref, 'refs/heads/release')
     needs: build
