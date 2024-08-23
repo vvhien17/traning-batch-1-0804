@@ -6,7 +6,10 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
-import { ErrorMessage } from '../common/utils/message-const';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
 
 @Injectable()
 export class UserService {
@@ -26,18 +29,14 @@ export class UserService {
       }
 
       // Validate required fields
-      if (!createUserDto.email) {
-        return buildError(ErrorMessage.EMAIL_IS_REQUIRED);
-      }
-      if (!createUserDto.username) {
-        return buildError(ErrorMessage.USERNAME_IS_REQUIRED);
-      }
-      if (!createUserDto.password) {
-        return buildError(ErrorMessage.PASSWORD_IS_REQUIRED);
+      const validateUserDto = plainToInstance(CreateUserDto, createUserDto);
+      const errors = await validate(validateUserDto);
+      if (errors.length) {
+        return buildError(getCustomErrorMessage(errors[0]));
       }
 
       // Create a new user instance
-      const user = this.userRepository.create(createUserDto);
+      const user = await this.userRepository.create(createUserDto);
 
       // Save the new user
       const savedUser = await this.userRepository.save(user);
@@ -45,7 +44,7 @@ export class UserService {
       return {
         data: savedUser,
         isSuccess: true,
-        message: 'User created successfully',
+        message: SuccessMessage.CREATE_DATA_SUCCESS,
       };
     } catch (error) {
       return buildError(error.message);

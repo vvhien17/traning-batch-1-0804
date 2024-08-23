@@ -5,7 +5,7 @@ import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ILoginResponse } from './dto/loginResponse.dto';
 import { config as envConfig } from 'dotenv';
-import { ErrorMessage } from '../common/utils/message-const';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 
 envConfig();
@@ -35,7 +35,7 @@ export class AuthService {
         user,
       },
       isSuccess: true,
-      message: 'Login successfully',
+      message: SuccessMessage.LOGIN_SUCCESS,
     };
   }
 }
