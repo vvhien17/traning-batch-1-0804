@@ -17,9 +17,9 @@ export class GoalOnActivity {
   goalId: number;
   @Column()
   totalSpend: number; // Save in minutes
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
   @ManyToOne(() => Activity, (activity) => activity.goalOnActivities)
   activity: Activity;

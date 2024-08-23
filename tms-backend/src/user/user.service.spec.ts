@@ -6,7 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
-import { ErrorMessage } from '../common/utils/message-const';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 
 const mockRepository = () => ({
   create: jest.fn(),
@@ -54,7 +54,7 @@ describe('UserService', () => {
       const expectedResponse: BaseResponse = {
         data: user,
         isSuccess: true,
-        message: 'User created successfully',
+        message: SuccessMessage.CREATE_DATA_SUCCESS,
       };
 
       repository.findOne = jest.fn().mockResolvedValue(null); // Simulate no existing user
@@ -66,6 +66,20 @@ describe('UserService', () => {
       expect(repository.save).toHaveBeenCalledWith(user);
     });
 
+    it('should throw an error if invalid email', async () => {
+      const createUserDto: CreateUserDto = {
+        email: 'test@.com',
+        username: 'testuser',
+        password: 'password123',
+      };
+
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.EMAIL_INVALID,
+      );
+      const result = await service.create(createUserDto);
+      expect(result).toEqual(expectedResponse);
+    });
+
     it('should return error if email is empty', async () => {
       const createUserDto: CreateUserDto = {
         email: '',
@@ -73,11 +87,15 @@ describe('UserService', () => {
         password: 'password123',
       };
 
-      const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.EMAIL_IS_REQUIRED,
-      );
+      // const expectedResponse: BaseResponse = buildError(
+      //   ErrorMessage.EMAIL_IS_REQUIRED,
+      // );
 
-      expect(await service.create(createUserDto)).toEqual(expectedResponse);
+      const expectedResponse: BaseResponse = buildError(
+        `email ${ErrorMessage.IS_REQUIRED}`,
+      );
+      const result: BaseResponse = await service.create(createUserDto);
+      expect(result).toEqual(expectedResponse);
     });
 
     it('should return error if username is empty', async () => {
@@ -88,10 +106,10 @@ describe('UserService', () => {
       };
 
       const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.USERNAME_IS_REQUIRED,
+        `username ${ErrorMessage.IS_REQUIRED}`,
       );
-
-      expect(await service.create(createUserDto)).toEqual(expectedResponse);
+      const result: BaseResponse = await service.create(createUserDto);
+      expect(result).toEqual(expectedResponse);
     });
 
     it('should return error if password is empty', async () => {
@@ -102,10 +120,10 @@ describe('UserService', () => {
       };
 
       const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.PASSWORD_IS_REQUIRED,
+        `password ${ErrorMessage.IS_REQUIRED}`,
       );
-
-      expect(await service.create(createUserDto)).toEqual(expectedResponse);
+      const result: BaseResponse = await service.create(createUserDto);
+      expect(result).toEqual(expectedResponse);
     });
 
     it('should return error if user with the same email already exists', async () => {

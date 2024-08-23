@@ -1,4 +1,4 @@
-import { GoalOnActivity } from '../../goal-on-activity/entities/goalOnActivity.entity';
+import { GoalOnActivity } from '../../goal-on-activity/entities/goal-on-activity.entity';
 import { User } from '../../user/entities/user.entity';
 import {
   Entity,
@@ -16,17 +16,17 @@ export class Goal {
   id: number;
   @Column()
   name: string;
-  @Column('timestamp')
+  @Column({ type: 'timestamp' })
   startedTime: Date;
-  @Column('timestamp')
+  @Column({ type: 'timestamp' })
   endedTime: Date;
   @Column()
   status: string;
   @Column()
   userId: number;
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
   @ManyToOne(() => User, (user) => user.goals)
   user: User;

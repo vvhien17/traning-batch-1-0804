@@ -3,10 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { ILoginResponse } from './dto/loginResponse.dto';
 import { config as envConfig } from 'dotenv';
-import { ErrorMessage } from '../common/utils/message-const';
-import { BaseResponse } from '@/common/base-response/base-response.dto';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
+import { BaseResponse } from '../common/base-response/base-response.dto';
 
 envConfig();
 @Injectable()
@@ -20,12 +19,12 @@ export class AuthService {
   async login(email: string, password: string): Promise<BaseResponse> {
     const user = await this.userRepository.findOne({
       where: { email, password },
+      select: ['id', 'email', 'username'],
     });
 
     if (!user) {
       throw new UnauthorizedException(ErrorMessage.USERNAME_PASSWORD_INCORRECT);
     }
-    delete user.password;
     const payload = { id: user.id, username: user.username, email: user.email };
     return {
       data: {
@@ -35,7 +34,7 @@ export class AuthService {
         user,
       },
       isSuccess: true,
-      message: 'Login successfully',
+      message: SuccessMessage.LOGIN_SUCCESS,
     };
   }
 }
