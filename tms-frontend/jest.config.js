@@ -19,6 +19,13 @@ const customJestConfig = {
   moduleDirectories: ["node_modules", "<rootDir>/"],
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: aliasMapper,
+  reporters: [
+    "default",
+    [
+      "jest-junit",
+      { outputDirectory: "./test-results", outputName: "junit.xml" },
+    ],
+  ],
 };
 
 module.exports = createJestConfig(customJestConfig);
