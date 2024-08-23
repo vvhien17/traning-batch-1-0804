@@ -33,6 +33,10 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
+      - name: Delete package-lock.json
+        working-directory: tms-backend
+        run: rm -f package-lock.json
+
       - name: Install backend dependencies
         working-directory: tms-backend
         run: pnpm install
@@ -62,6 +66,10 @@ jobs:
 
       - name: Install pnpm
         run: npm install -g pnpm
+
+      - name: Delete package-lock.json
+        working-directory: tms-backend
+        run: rm -f package-lock.json
 
       - name: Install backend dependencies
         working-directory: tms-backend
