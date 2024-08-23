@@ -97,6 +97,7 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
     expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
   });
 
@@ -126,6 +127,7 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
     expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
   });
 
@@ -155,6 +157,7 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
     expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
   });
 
@@ -184,6 +187,8 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+
     expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
   });
 
@@ -199,6 +204,8 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+
     expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
   });
 
@@ -215,6 +222,8 @@ describe('GoalService', () => {
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+
     expect(result.message).toBe(ErrorMessage.USER_NOT_FOUND);
   });
 
