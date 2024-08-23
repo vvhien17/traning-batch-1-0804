@@ -12,6 +12,7 @@ export enum ErrorMessage {
   BAD_REQUEST = 'Bad request',
   GOAL_NOT_FOUND = 'Goals not found',
   VALIDATION_FAILED = 'Validation failed',
+  IS_REQUIRED = 'is required',
 }
 
 export enum SuccessMessage {
