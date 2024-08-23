@@ -97,6 +97,8 @@ jobs:
           name: JEST Tests
           path: tms-frontend/test-results/junit.xml
           reporter: jest-junit
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
