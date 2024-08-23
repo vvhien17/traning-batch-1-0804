@@ -73,7 +73,7 @@ jobs:
 
       - name: Run backend tests
         working-directory: tms-backend
-        run: pnpm run test --coverage --reporters=mocha-junit-reporter
+        run: pnpm run test --reporters=mocha-junit-reporter
 
       - name: Export test suite and results
         working-directory: tms-backend
