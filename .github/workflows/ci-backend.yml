@@ -83,23 +83,9 @@ jobs:
         working-directory: tms-backend
         run: pnpm run test
 
-      - name: Export test suite and results
+      - name: Run backend tests
         working-directory: tms-backend
-        run: |
-          mkdir -p ./results
-          cp ./test-results/junit.xml ./results/
-
-      - name: Commit and push test results
-        env:
-          GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git checkout -b test-results || git checkout test-results
-          cp ./results/*.xml ./test-results/
-          git add ./test-results/*.xml
-          git commit -m "Add test results" || echo "No changes to commit"
-          git push origin test-results
+        run: pnpm run test --coverage
 
       - name: Upload test coverage report
         uses: actions/upload-artifact@v3
