@@ -20,12 +20,12 @@ export class AuthService {
   async login(email: string, password: string): Promise<BaseResponse> {
     const user = await this.userRepository.findOne({
       where: { email, password },
+      select: ['id', 'email', 'username'],
     });
 
     if (!user) {
       throw new UnauthorizedException(ErrorMessage.USERNAME_PASSWORD_INCORRECT);
     }
-    delete user.password;
     const payload = { id: user.id, username: user.username, email: user.email };
     return {
       data: {
