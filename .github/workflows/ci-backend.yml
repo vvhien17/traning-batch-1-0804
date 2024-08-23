@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: tms-backend/build
+          path: tms-backend/dist
 
   test:
     runs-on: ubuntu-latest
