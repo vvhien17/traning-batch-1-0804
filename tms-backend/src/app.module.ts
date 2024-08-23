@@ -37,7 +37,7 @@ envConfig();
     GoalModule,
     GoalOnActivityModule,
   ],
-  controllers: [AppController, GoalOnActivityController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
