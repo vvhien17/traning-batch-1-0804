@@ -1,16 +1,6 @@
 import { ErrorMessage } from '../../common/utils/message-const';
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
-
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreateActivityDto {
-  @IsNumber()
-  userId: number;
-
   @IsOptional()
   categoryId?: number;
 
@@ -18,11 +8,11 @@ export class CreateActivityDto {
   @IsNotEmpty({ message: `Name ${ErrorMessage.IS_REQUIRED}` })
   name: string;
 
-  @IsDate()
+  // @IsDate()
   @IsNotEmpty({ message: `StartedAt ${ErrorMessage.IS_REQUIRED}` })
   startedAt: Date;
 
-  @IsDate()
+  // @IsDate()
   @IsNotEmpty({ message: `EndedAt ${ErrorMessage.IS_REQUIRED}` })
   endedAt: Date;
 

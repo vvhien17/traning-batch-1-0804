@@ -21,8 +21,11 @@ export class ActivityService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createActivityDto: CreateActivityDto): Promise<BaseResponse> {
-    const { name, startedAt, endedAt, description, categoryId, userId } =
+  async create(
+    userId: number,
+    createActivityDto: CreateActivityDto,
+  ): Promise<BaseResponse> {
+    const { name, startedAt, endedAt, description, categoryId } =
       createActivityDto;
     const activityDto = plainToInstance(CreateActivityDto, createActivityDto);
     const errors = await validate(activityDto);
@@ -84,7 +87,7 @@ export class ActivityService {
   }
 
   update(id: number, updateActivityDto: UpdateActivityDto) {
-    return `This action updates a #${id} activity`;
+    return `This action updates a #${id} #${updateActivityDto} activity`;
   }
 
   remove(id: number) {

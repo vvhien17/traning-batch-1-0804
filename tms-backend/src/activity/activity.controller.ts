@@ -3,35 +3,41 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
-  Query,
+  UseGuards,
+  Request,
+  Put,
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { AuthGuard } from '../middleware/auth.guard';
 
 @Controller('activity')
+@UseGuards(AuthGuard)
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
   @Post()
-  create(@Body() createActivityDto: CreateActivityDto) {
-    return this.activityService.create(createActivityDto);
+  create(@Request() req, @Body() createActivityDto: CreateActivityDto) {
+    const userId = +req.user.id;
+    return this.activityService.create(userId, createActivityDto);
   }
 
-  @Get('byId')
-  findOne(@Query('id') id: string, @Query('userId') userId: string) {
+  @Get(':id')
+  findOne(@Request() req, @Param('id') id: string) {
+    const userId = +req.user.id;
     return this.activityService.findOne(+id, +userId);
   }
 
-  @Get(':userId')
-  findAll(@Param('userId') userId: string) {
-    return this.activityService.findAll(+userId);
+  @Get()
+  findAll(@Request() req) {
+    const userId = +req.user.id;
+    return this.activityService.findAll(userId);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateActivityDto: UpdateActivityDto,
