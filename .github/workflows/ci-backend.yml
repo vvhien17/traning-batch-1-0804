@@ -189,10 +189,10 @@ jobs:
             curl -fsSL https://get.pnpm.io/install.sh | sh
             export PATH=\$HOME/.local/share/pnpm:$PATH
             cd /home/ec2-user/traning-batch-1-0804/tms-backend
-            rm -rf node_modules pnpm-lock.yaml
             git fetch origin
             git checkout release
-            git pull
+            git reset --hard origin/release
+            rm -rf node_modules pnpm-lock.yaml
             pnpm install
             pnpm run build
             pm2 start dist/main.js || pm2 restart dist/main.js
