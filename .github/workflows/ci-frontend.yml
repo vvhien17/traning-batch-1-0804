@@ -1,5 +1,6 @@
 name: CI Front End
-
+permissions:
+  checks: write
 on:
   push:
     branches:
