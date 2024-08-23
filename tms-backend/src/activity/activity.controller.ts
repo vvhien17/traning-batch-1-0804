@@ -38,11 +38,8 @@ export class ActivityController {
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateActivityDto: UpdateActivityDto,
-  ) {
-    return this.activityService.update(+id, updateActivityDto);
+  update(@Body() updateActivityDto: UpdateActivityDto) {
+    return this.activityService.update(updateActivityDto);
   }
 
   @Delete(':id')
