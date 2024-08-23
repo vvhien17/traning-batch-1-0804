@@ -1,13 +1,6 @@
 // src/users/dto/create-user.dto.ts
 import { ErrorMessage } from '../../common/utils/message-const';
-import {
-  IsString,
-  IsEmail,
-  Length,
-  Matches,
-  IsDefined,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsString, IsEmail, Matches, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -18,12 +11,10 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  // @Length(4, 255)
   @IsNotEmpty({ message: `username ${ErrorMessage.IS_REQUIRED}` })
   username: string;
 
   @IsString()
-  // @Length(6, 255)
   @IsNotEmpty({ message: `password ${ErrorMessage.IS_REQUIRED}` })
   password: string;
 }

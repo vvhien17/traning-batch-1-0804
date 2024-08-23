@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { ILoginResponse } from './dto/loginResponse.dto';
 import { config as envConfig } from 'dotenv';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { BaseResponse } from '../common/base-response/base-response.dto';
