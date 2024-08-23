@@ -9,7 +9,6 @@ import { config as envConfig } from 'dotenv';
 import { AuthModule } from './auth/auth.module';
 import { GoalModule } from './goal/goal.module';
 import { GoalOnActivityModule } from './goal-on-activity/goal-on-activity.module';
-import { GoalOnActivityController } from './goal-on-activity/goal-on-activity.controller';
 
 envConfig();
 
@@ -37,7 +36,7 @@ envConfig();
     GoalModule,
     GoalOnActivityModule,
   ],
-  controllers: [AppController, GoalOnActivityController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
