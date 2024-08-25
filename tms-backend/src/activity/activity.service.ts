@@ -86,8 +86,12 @@ export class ActivityService {
     };
   }
 
-  update(id: number, updateActivityDto: UpdateActivityDto) {
-    return `This action updates a #${id} #${updateActivityDto} activity`;
+  async update(updateActivityDto: UpdateActivityDto): Promise<BaseResponse> {
+    return {
+      data: null,
+      isSuccess: false,
+      message: ErrorMessage.BAD_REQUEST,
+    };
   }
 
   remove(id: number) {
