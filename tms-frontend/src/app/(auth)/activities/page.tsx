@@ -26,8 +26,6 @@ interface DetailsTab {
 
 export default function ActivitiesPage() {
   const { setIsAuthenticated } = useContext(GlobalContext);
-
-  const [userName, setUserName] = React.useState<string>("Baymax");
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [open, setOpen] = useState(false);
 

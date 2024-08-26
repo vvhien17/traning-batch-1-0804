@@ -13,7 +13,6 @@ export const ListContent: React.FC<ListContentProps> = ({}) => {
   const [open, setOpen] = useState(false);
   const { data: activitiesData } = activityQuery.query.useGetActivities({});
   const activities = activitiesData?.data || [];
-  console.log({ activities });
 
   const handleEdit = (item: TActivity) => () => {
     setEditItem(item);
@@ -35,14 +34,14 @@ export const ListContent: React.FC<ListContentProps> = ({}) => {
       {activities.map((item, _index) => (
         <CardActivity
           key={item.id}
+          id={item.id}
           title={item.name}
           description={item.description}
           startedAt={item.startedAt}
           endedAt={item.endedAt}
-          categoryName={item.categoryId}
+          categoryName={item.category?.name}
           status="completed"
           onEdit={handleEdit(item)}
-          onDelete={handleDelete}
         />
       ))}
 

@@ -7,6 +7,8 @@ import { BaseResponse } from '../common/base-response/base-response.dto';
 import { User } from '../user/entities/user.entity';
 import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
+import { GoalStatus } from '../common/constants/goal-status';
+import { CreateGoalDto } from './dto/create-goal.dto';
 
 describe('GoalService', () => {
   let service: GoalService;
@@ -41,34 +43,44 @@ describe('GoalService', () => {
   });
 
   it('should create a goal with valid input and return BaseResponse', async () => {
+    const mockUser: User = {
+      id: 1,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
     const mockGoal: Goal = {
       id: 1,
       name: 'Valid Goal',
       startedTime: new Date('2024-08-01T00:00:00Z'),
       endedTime: new Date('2024-08-31T23:59:59Z'),
-      status: 'active',
+      status: GoalStatus.PENDING,
       userId: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
-      user: new User(), // Mock or create as needed
+      user: mockUser, // Mock or create as needed
       goalOnActivities: [new GoalOnActivity()], // Mock or create as needed
     };
 
     jest.spyOn(goalRepository, 'save').mockResolvedValue(mockGoal);
     jest.spyOn(goalRepository, 'create').mockReturnValue(mockGoal);
-    jest.spyOn(userRepository, 'findOne').mockResolvedValue(new User()); // Mock user exists
-
-    const result: BaseResponse = await service.create({
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); // Mock user exists
+    const dto: CreateGoalDto = {
       name: 'Valid Goal',
-      startedTime: new Date('2024-08-01T00:00:00Z'),
-      endedTime: new Date('2024-08-31T23:59:59Z'),
-      status: 'active',
-      userId: 1,
-    });
-
+      startedTime: new Date('2024-08-26T09:36:16.427Z').toISOString(),
+      endedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
+    };
+    console.log(dto);
+    const result: BaseResponse = await service.create(dto, 1);
+    console.log(result);
     expect(result).toBeDefined();
-    expect(result.isSuccess).toBe(true);
-    expect(result.message).toBe(SuccessMessage.CREATE_DATA_SUCCESS);
+    expect(result.isSuccess).toEqual(true);
+    expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
     expect(result.data).toEqual(mockGoal);
   });
 
@@ -86,19 +98,20 @@ describe('GoalService', () => {
       goals: [],
     };
 
-    const result: BaseResponse = await service.create({
-      name: '', // Empty name
-      startedTime: new Date(), // Valid date
-      endedTime: new Date(), // Valid date
-      status: 'active', // Valid status
-      userId: 1, // Valid userId
-    });
+    const result: BaseResponse = await service.create(
+      {
+        name: '', // Empty name
+        startedTime: new Date().toISOString(), // Valid date
+        endedTime: new Date().toISOString(), // Valid date
+      },
+      1,
+    );
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toContain(`Name ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid StartedTime
@@ -116,19 +129,20 @@ describe('GoalService', () => {
       goals: [],
     };
 
-    const result: BaseResponse = await service.create({
-      name: 'Test Event', // Valid name
-      startedTime: null, // Invalid startedTime
-      endedTime: new Date(), // Valid endedTime
-      status: 'active', // Valid status
-      userId: userId, // Valid userId
-    });
+    const result: BaseResponse = await service.create(
+      {
+        name: 'Test Event', // Valid name
+        startedTime: null, // Invalid startedTime
+        endedTime: new Date().toISOString(), // Valid endedTime
+      },
+      userId,
+    );
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toContain(`StartedTime ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid EndedTime
@@ -146,79 +160,51 @@ describe('GoalService', () => {
       goals: [],
     };
 
-    const result: BaseResponse = await service.create({
-      name: 'Test Event', // Valid name
-      startedTime: new Date(), // Valid startedTime
-      endedTime: null, // Invalid endedTime
-      status: 'active', // Valid status
-      userId: userId, // Valid userId
-    });
+    const result: BaseResponse = await service.create(
+      {
+        name: 'Test Event', // Valid name
+        startedTime: new Date().toISOString(), // Valid startedTime
+        endedTime: null, // Invalid endedTime
+      },
+      userId,
+    );
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
-  });
-
-  // Test Case for Empty Status
-  it('should return an error if status is empty', async () => {
-    const userId = 1;
-    const mockUser: User = {
-      id: userId,
-      email: 'test@example.com',
-      username: 'testuser',
-      password: 'password123',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      categories: [],
-      activities: [],
-      goals: [],
-    };
-
-    const result: BaseResponse = await service.create({
-      name: 'Test Event', // Valid name
-      startedTime: new Date(), // Valid startedTime
-      endedTime: new Date(), // Valid endedTime
-      status: '', // Empty status
-      userId: userId, // Valid userId
-    });
-    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
-
-    expect(result).toBeDefined();
-    expect(result.isSuccess).toBe(false);
-    expect(result.data).toEqual(null);
-
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toContain(`EndTime ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid UserId
   it('should return an error if userId is invalid', async () => {
-    const result: BaseResponse = await service.create({
-      name: 'Test Event', // Valid name
-      startedTime: new Date(), // Valid startedTime
-      endedTime: new Date(), // Valid endedTime
-      status: 'active', // Valid status
-      userId: null, // Invalid userId
-    });
+    const result: BaseResponse = await service.create(
+      {
+        name: 'Test Event', // Valid name
+        startedTime: new Date().toISOString(), // Valid startedTime
+        endedTime: new Date().toISOString(), // Valid endedTime
+      },
+      null,
+    );
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
 
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toEqual(`${ErrorMessage.USER_NOT_FOUND}`);
   });
 
   it('should return an error if user is not found', async () => {
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(null); // Simulate user not found
 
-    const result: BaseResponse = await service.create({
-      name: 'Goal with Nonexistent User',
-      startedTime: new Date(),
-      endedTime: new Date(),
-      status: 'active',
-      userId: 9999, // User ID that does not exist
-    });
+    const result: BaseResponse = await service.create(
+      {
+        name: 'Goal with Nonexistent User',
+        startedTime: new Date().toISOString(),
+        endedTime: new Date().toISOString(),
+      },
+      9999,
+    );
 
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
@@ -246,7 +232,7 @@ describe('GoalService', () => {
         name: 'Goal 1',
         startedTime: new Date('2024-08-01T00:00:00Z'),
         endedTime: new Date('2024-08-31T23:59:59Z'),
-        status: 'active',
+        status: GoalStatus.PENDING,
         userId,
         createdAt: new Date(),
         updatedAt: new Date(),

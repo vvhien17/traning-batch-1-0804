@@ -15,6 +15,7 @@ export enum ErrorMessage {
   IS_REQUIRED = 'is required',
   DATA_NOT_FOUND = 'Data not found',
   MUST_GREATER_THAN = 'must greater than',
+  INVALID_DATE = 'Invalid date',
 }
 
 export enum SuccessMessage {
@@ -22,4 +23,5 @@ export enum SuccessMessage {
   CREATE_DATA_SUCCESS = 'Create data success',
   LOGIN_SUCCESS = 'Login successfully',
   UPDATE_DATA_SUCCESS = 'Update data success',
+  DELETE_DATA_SUCCESS = 'Delete data success',
 }

@@ -59,9 +59,13 @@ const useUpdateActivity = () => {
   });
 };
 
-const useDeleteActivity = (id: string) => {
-  return useMutation<TBaseResponse<any>, Error, TCreateActivityRequest>({
-    mutationFn: () => activityApi.deleteActivity(id),
+const useDeleteActivity = () => {
+  const queryClient = useQueryClient();
+  return useMutation<TBaseResponse<any>, Error, string>({
+    mutationFn: activityApi.deleteActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["activities"] });
+    },
   });
 };
 
