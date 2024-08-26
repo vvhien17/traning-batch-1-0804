@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="15" failures="1" errors="0" time="3.899">
-  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T10:01:58" time="1.285" tests="2">
-    <testcase classname="RegisterPage shows success message when successful register" name="RegisterPage shows success message when successful register" time="0.126">
+<testsuites name="jest tests" tests="15" failures="1" errors="0" time="5.26">
+  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T13:37:20" time="1.485" tests="2">
+    <testcase classname="RegisterPage shows success message when successful register" name="RegisterPage shows success message when successful register" time="0.132">
     </testcase>
-    <testcase classname="RegisterPage shows success message when email exists" name="RegisterPage shows success message when email exists" time="0.061">
-    </testcase>
-  </testsuite>
-  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T10:01:58" time="1.415" tests="2">
-    <testcase classname="LoginPage renders the login form with email and password fields" name="LoginPage renders the login form with email and password fields" time="0.099">
-    </testcase>
-    <testcase classname="LoginPage shows validation errors when fields are empty and submit is clicked" name="LoginPage shows validation errors when fields are empty and submit is clicked" time="0.051">
+    <testcase classname="RegisterPage shows success message when email exists" name="RegisterPage shows success message when email exists" time="0.06">
     </testcase>
   </testsuite>
-  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T10:01:58" time="1.442" tests="2">
-    <testcase classname="LoginPage shows error message when email or password is wrong" name="LoginPage shows error message when email or password is wrong" time="0.21">
+  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T13:37:20" time="1.75" tests="2">
+    <testcase classname="LoginPage shows error message when email or password is wrong" name="LoginPage shows error message when email or password is wrong" time="0.204">
     </testcase>
-    <testcase classname="LoginPage shows success message and redirects on successful login" name="LoginPage shows success message and redirects on successful login" time="0.11">
-    </testcase>
-  </testsuite>
-  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T10:01:58" time="1.48" tests="4">
-    <testcase classname="RegisterPage renders the registration form with all fields" name="RegisterPage renders the registration form with all fields" time="0.107">
-    </testcase>
-    <testcase classname="RegisterPage shows validation errors for empty fields on submit" name="RegisterPage shows validation errors for empty fields on submit" time="0.053">
-    </testcase>
-    <testcase classname="RegisterPage shows validation error when email is invalid" name="RegisterPage shows validation error when email is invalid" time="0.057">
-    </testcase>
-    <testcase classname="RegisterPage shows validation error when passwords do not match" name="RegisterPage shows validation error when passwords do not match" time="0.048">
+    <testcase classname="LoginPage shows success message and redirects on successful login" name="LoginPage shows success message and redirects on successful login" time="0.106">
     </testcase>
   </testsuite>
-  <testsuite name="GoalPage" errors="0" failures="1" skipped="0" timestamp="2024-08-26T10:01:58" time="1.825" tests="1">
-    <testcase classname="GoalPage should renders the GoalPage with the correct elements" name="GoalPage should renders the GoalPage with the correct elements" time="0.097">
+  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T13:37:20" time="1.879" tests="2">
+    <testcase classname="LoginPage renders the login form with email and password fields" name="LoginPage renders the login form with email and password fields" time="0.087">
+    </testcase>
+    <testcase classname="LoginPage shows validation errors when fields are empty and submit is clicked" name="LoginPage shows validation errors when fields are empty and submit is clicked" time="0.096">
+    </testcase>
+  </testsuite>
+  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T13:37:20" time="1.972" tests="4">
+    <testcase classname="RegisterPage renders the registration form with all fields" name="RegisterPage renders the registration form with all fields" time="0.105">
+    </testcase>
+    <testcase classname="RegisterPage shows validation errors for empty fields on submit" name="RegisterPage shows validation errors for empty fields on submit" time="0.059">
+    </testcase>
+    <testcase classname="RegisterPage shows validation error when email is invalid" name="RegisterPage shows validation error when email is invalid" time="0.086">
+    </testcase>
+    <testcase classname="RegisterPage shows validation error when passwords do not match" name="RegisterPage shows validation error when passwords do not match" time="0.047">
+    </testcase>
+  </testsuite>
+  <testsuite name="GoalPage" errors="0" failures="1" skipped="0" timestamp="2024-08-26T13:37:20" time="2.29" tests="1">
+    <testcase classname="GoalPage should renders the GoalPage with the correct elements" name="GoalPage should renders the GoalPage with the correct elements" time="0.125">
       <failure>TestingLibraryElementError: Unable to find an element with the text: /your goals/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
 
 Ignored nodes: comments, script, style
@@ -98,12 +98,12 @@ Ignored nodes: comments, script, style
     at Object.worker (D:\W\XPODC\traning-batch-1-0804\tms-frontend\node_modules\.pnpm\jest-runner@29.7.0\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
     </testcase>
   </testsuite>
-  <testsuite name="ActivitiesPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T10:01:58" time="2.418" tests="4">
-    <testcase classname="ActivitiesPage renders the ActivitiesPage with the correct elements" name="ActivitiesPage renders the ActivitiesPage with the correct elements" time="0.11">
+  <testsuite name="ActivitiesPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T13:37:20" time="3.069" tests="4">
+    <testcase classname="ActivitiesPage renders the ActivitiesPage with the correct elements" name="ActivitiesPage renders the ActivitiesPage with the correct elements" time="0.126">
     </testcase>
-    <testcase classname="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" name="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" time="0.066">
+    <testcase classname="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" name="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" time="0.092">
     </testcase>
-    <testcase classname="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" name="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" time="0.123">
+    <testcase classname="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" name="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" time="0.124">
     </testcase>
     <testcase classname="ActivitiesPage shows validation errors in the CreateOrEditActivityDrawer when fields are empty" name="ActivitiesPage shows validation errors in the CreateOrEditActivityDrawer when fields are empty" time="0.071">
     </testcase>

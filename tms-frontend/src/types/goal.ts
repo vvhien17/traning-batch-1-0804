@@ -4,12 +4,27 @@ export interface TCreateGoalRequest {
   endedTime: Date;
 }
 
-export interface TItemActivities {
+export interface TItemGoalOnActivities {
+  createdAt: Date;
+  goalId: number;
   id: number;
-  name: string;
-  time: string;
-  category: string;
+  totalSpend: number;
+  updatedAt: Date;
+  activity: TItemActivities;
+}
+
+export interface TItemActivities {
+  categoryId: null;
+  createdAt: Date;
   description: string;
+  endedAt: Date;
+  id: number;
+  isDelete: false;
+  name: string;
+  startedAt: Date;
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
+  updatedAt: Date;
+  userId: number;
 }
 export interface TItemGoal {
   createdAt: Date;
@@ -20,7 +35,7 @@ export interface TItemGoal {
   status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
   updatedAt: Date;
   userId: number;
-  activities?: Array<TItemActivities>;
+  goalOnActivities?: Array<TItemGoalOnActivities>;
 }
 
 export interface TCreateGoalResponse {
