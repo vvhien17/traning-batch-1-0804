@@ -63,6 +63,7 @@ describe('ActivitiesController', () => {
             findOne: jest.fn(),
             create: jest.fn().mockResolvedValue(mockActivities[0]),
             save: jest.fn().mockResolvedValue(mockActivities[0]),
+            performChanges: jest.fn()
           },
         },
         {
@@ -285,18 +286,22 @@ describe('ActivitiesController', () => {
     };
 
     it('Update activity with valid data', async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(mockActivities[0] as Activity);
+      const updatedActivity = { ...mockActivities[0], ...updateActivityDto };
+      jest.spyOn(activityRepository, 'save').mockResolvedValue(updatedActivity as Activity);
       const result: BaseResponse = await service.update(updateActivityDto);
       expect(result.data).toEqual({
-        ...updateActivityDto,
+        ...updatedActivity,
         userId: userId,
-        updatedAt: new Date(),
-        createdAt: currentDate,
+        updatedAt: expect.any(Date),
+        createdAt: mockActivities[0].createdAt,
       } as Activity);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.UPDATE_DATA_SUCCESS);
     });
 
     it('Update started at but start > end', async () => {
+      jest.spyOn(activityRepository, "findOne").mockResolvedValue(mockActivities[0] as Activity);
       const wrongStartedAt = new Date(
         currentDate.setDate(currentDate.getDate() + 10),
       );
@@ -313,6 +318,7 @@ describe('ActivitiesController', () => {
     });
 
     it('Update end but start > end', async () => {
+      jest.spyOn(activityRepository, "findOne").mockResolvedValue(mockActivities[0] as Activity);
       const endedAt = new Date(currentDate.setDate(currentDate.getDate() - 10));
       const result: BaseResponse = await service.update({
         ...updateActivityDto,
