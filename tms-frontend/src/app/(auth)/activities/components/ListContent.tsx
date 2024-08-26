@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import CreateOrEditActivityDrawer from "./CreateOrEditActivity";
 import { activityQuery } from "@components/hooks/activity";
 import { TActivity } from "@components/types/activity";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 interface ListContentProps {}
 
@@ -20,6 +21,14 @@ export const ListContent: React.FC<ListContentProps> = ({}) => {
   };
 
   const handleDelete = () => {};
+
+  if (activities.length < 1)
+    return (
+      <div className="flex items-center gap-2 text-gray-500">
+        <ExclamationCircleIcon className="size-5" />
+        <span>No data activity</span>
+      </div>
+    );
 
   return (
     <div className="flex flex-wrap gap-4">

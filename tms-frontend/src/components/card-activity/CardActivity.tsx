@@ -101,11 +101,13 @@ export const CardActivity: React.FC<CardActivityProps> = ({
         {dayjs(endedAt).format("DD/MM/YYYY HH:mm")}
       </p>
       <div className="flex justify-between items-center mt-4">
-        <div className="flex flex-wrap basis-3/4 gap-1">
-          <span className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs">
-            {categoryName}
-          </span>
-        </div>
+        {!!categoryName && (
+          <div className="flex flex-wrap basis-3/4 gap-1">
+            <span className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs">
+              {categoryName}
+            </span>
+          </div>
+        )}
         <div className="flex basis-1/4 justify-end">
           <button onClick={onEdit} aria-label="Edit activity">
             <PencilSquareIcon className="size-5 text-black-500" />
