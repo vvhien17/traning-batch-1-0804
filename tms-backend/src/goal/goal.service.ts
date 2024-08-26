@@ -7,6 +7,7 @@ import { User } from '../user/entities/user.entity'; // Assuming you need to che
 import { buildError } from '../common/utils/Utility';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { CreateGoalDto } from './dto/create-goal.dto';
+import { GoalStatus } from '../common/constants/goal-status';
 
 @Injectable()
 export class GoalService {
@@ -17,11 +18,14 @@ export class GoalService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createGoalDto: CreateGoalDto): Promise<BaseResponse> {
-    const { name, startedTime, endedTime, status, userId } = createGoalDto;
+  async create(
+    createGoalDto: CreateGoalDto,
+    userId: number,
+  ): Promise<BaseResponse> {
+    const { name, startedTime, endedTime } = createGoalDto;
 
     // Validate input fields
-    if (!name || !startedTime || !endedTime || !status || !userId) {
+    if (!name || !startedTime || !endedTime || !userId) {
       return buildError(ErrorMessage.VALIDATION_FAILED);
     }
 
@@ -38,7 +42,7 @@ export class GoalService {
         name,
         startedTime,
         endedTime,
-        status,
+        status: GoalStatus.PENDING,
         userId,
       });
 
