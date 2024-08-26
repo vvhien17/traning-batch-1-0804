@@ -8,6 +8,9 @@ import { buildError } from '../common/utils/Utility';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { CreateGoalDto } from './dto/create-goal.dto';
 import { GoalStatus } from '../common/constants/goal-status';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
 
 @Injectable()
 export class GoalService {
@@ -23,20 +26,19 @@ export class GoalService {
     userId: number,
   ): Promise<BaseResponse> {
     const { name, startedTime, endedTime } = createGoalDto;
-
-    // Validate input fields
-    if (!name || !startedTime || !endedTime || !userId) {
-      return buildError(ErrorMessage.VALIDATION_FAILED);
+    const categoryDto = plainToInstance(CreateGoalDto, createGoalDto);
+    const errors = await validate(categoryDto);
+    if (errors.length > 0) {
+      return buildError(getCustomErrorMessage(errors[0]));
     }
-
-    // Check if user exists
+    console.log(errors);
     const userExists = await this.userRepository.findOne({
       where: { id: userId },
     });
     if (!userExists) {
       return buildError(ErrorMessage.USER_NOT_FOUND);
     }
-
+    console.log(userExists);
     try {
       const newGoal = this.goalRepository.create({
         name,
