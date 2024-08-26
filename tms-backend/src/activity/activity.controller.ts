@@ -38,8 +38,9 @@ export class ActivityController {
   }
 
   @Put()
-  update(@Body() updateActivityDto: UpdateActivityDto) {
-    return this.activityService.update(updateActivityDto);
+  update(@Request() req, @Body() updateActivityDto: UpdateActivityDto) {
+    const userId = +req.user.id;
+    return this.activityService.update(userId, updateActivityDto);
   }
 
   @Delete(':id')

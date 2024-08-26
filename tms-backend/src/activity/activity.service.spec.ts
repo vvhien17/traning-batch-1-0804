@@ -333,7 +333,9 @@ describe('ActivitiesController', () => {
       jest
         .spyOn(activityRepository, 'save')
         .mockResolvedValue(updateActivityDto as Activity);
-      const result: BaseResponse = await service.update(updateActivityDto);
+      const result: BaseResponse = await service.update(userId, {
+        ...updateActivityDto,
+      });
 
       expect(result.data).toEqual(updateActivityDto as Activity);
       expect(result.isSuccess).toBe(true);
@@ -351,7 +353,10 @@ describe('ActivitiesController', () => {
         .spyOn(activityRepository, 'save')
         .mockResolvedValue(updatedActivity as Activity);
 
-      const result: BaseResponse = await service.update(updateActivityDto);
+      const result: BaseResponse = await service.update(
+        userId,
+        updateActivityDto,
+      );
 
       expect(result.data).toEqual(updatedActivity as Activity);
       expect(result.isSuccess).toBe(true);
@@ -365,7 +370,7 @@ describe('ActivitiesController', () => {
       const wrongStartedAt = new Date(
         currentDate.setDate(currentDate.getDate() + 10),
       );
-      const result: BaseResponse = await service.update({
+      const result: BaseResponse = await service.update(userId, {
         ...updateActivityDto,
         startedAt: wrongStartedAt,
       });
@@ -382,7 +387,7 @@ describe('ActivitiesController', () => {
         .spyOn(activityRepository, 'findOne')
         .mockResolvedValue(mockActivities[0] as Activity);
       const endedAt = new Date(currentDate.setDate(currentDate.getDate() - 10));
-      const result: BaseResponse = await service.update({
+      const result: BaseResponse = await service.update(userId, {
         ...updateActivityDto,
         endedAt: endedAt,
       });
@@ -396,7 +401,10 @@ describe('ActivitiesController', () => {
 
     it('Update activity that not exist', async () => {
       jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
-      const result: BaseResponse = await service.update(updateActivityDto);
+      const result: BaseResponse = await service.update(
+        userId,
+        updateActivityDto,
+      );
       expect(result.data).toEqual(null);
       expect(result.isSuccess).toBe(false);
       expect(result.message).toEqual(ErrorMessage.ACTIVITY_NOT_FOUND);
@@ -406,7 +414,7 @@ describe('ActivitiesController', () => {
       jest
         .spyOn(activityRepository, 'findOne')
         .mockResolvedValue(mockActivities[0] as Activity);
-      const result: BaseResponse = await service.update({
+      const result: BaseResponse = await service.update(userId, {
         ...updateActivityDto,
         categoryId: 100,
       });

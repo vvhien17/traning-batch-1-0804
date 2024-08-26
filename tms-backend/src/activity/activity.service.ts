@@ -86,14 +86,17 @@ export class ActivityService {
     };
   }
 
-  async update(updateActivityDto: UpdateActivityDto): Promise<BaseResponse> {
+  async update(
+    userId: number,
+    updateActivityDto: UpdateActivityDto,
+  ): Promise<BaseResponse> {
     const activityDto = plainToInstance(UpdateActivityDto, updateActivityDto);
     const errors = await validate(activityDto);
     if (errors.length) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
     const checkActivity = await this.activityRepository.findOne({
-      where: { id: updateActivityDto.id },
+      where: { id: updateActivityDto.id, userId: userId },
     });
 
     if (checkActivity) {
