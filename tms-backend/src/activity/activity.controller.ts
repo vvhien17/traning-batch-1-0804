@@ -17,7 +17,7 @@ import { AuthGuard } from '../middleware/auth.guard';
 @Controller('activity')
 @UseGuards(AuthGuard)
 export class ActivityController {
-  constructor(private readonly activityService: ActivityService) { }
+  constructor(private readonly activityService: ActivityService) {}
 
   @Post()
   create(@Request() req, @Body() createActivityDto: CreateActivityDto) {
