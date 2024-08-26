@@ -33,7 +33,7 @@ export const SideMenu: React.FC = () => {
     {
       icon: <BugAntIcon className="size-5 text-black-500" />,
       label: "Goal Setting",
-      link: PATH.activities,
+      link: PATH.goal,
     },
     {
       icon: <ChartBarIcon className="size-5 text-black-500" />,
