@@ -15,14 +15,14 @@ export class CreateGoalDto {
   name: string;
 
   @ApiProperty({})
-  @IsDate({ message: `StartedTime ${ErrorMessage.INVALID_DATE}` })
+  @IsDateString({}, { message: `StartedTime ${ErrorMessage.INVALID_DATE}` })
   @IsNotEmpty({ message: `StartedTime ${ErrorMessage.IS_REQUIRED}` })
-  startedTime: Date;
+  startedTime: string;
 
   @ApiProperty({})
-  @IsDate({ message: `EndTime ${ErrorMessage.INVALID_DATE}` })
+  @IsDateString({}, { message: `EndTime ${ErrorMessage.INVALID_DATE}` })
   @IsNotEmpty({ message: `EndTime ${ErrorMessage.IS_REQUIRED}` })
-  endedTime: Date;
+  endedTime: string;
 
   // @ApiProperty({})
   // @IsNotEmpty()
