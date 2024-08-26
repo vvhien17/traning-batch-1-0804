@@ -433,7 +433,9 @@ describe('ActivitiesController', () => {
 
   describe('User delete activity', () => {
     it('Delete succes', async () => {
-      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(mockActivities[0] as Activity);
+      jest
+        .spyOn(activityRepository, 'findOne')
+        .mockResolvedValue(mockActivities[0] as Activity);
       const deleteId = mockActivities[0].id;
       const activity = await service.delete(1, userId);
       const returnActivity = {
