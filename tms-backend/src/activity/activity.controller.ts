@@ -37,12 +37,9 @@ export class ActivityController {
     return this.activityService.findAll(userId);
   }
 
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateActivityDto: UpdateActivityDto,
-  ) {
-    return this.activityService.update(+id, updateActivityDto);
+  @Put()
+  update(@Body() updateActivityDto: UpdateActivityDto) {
+    return this.activityService.update(updateActivityDto);
   }
 
   @Delete(':id')
