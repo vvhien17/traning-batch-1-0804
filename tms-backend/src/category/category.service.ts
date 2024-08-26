@@ -33,7 +33,10 @@ export class CategoryService {
       return buildError(ErrorMessage.USER_NOT_FOUND);
     }
 
-    const category = await this.categoryRepository.create(createCategoryDto);
+    const category = await this.categoryRepository.create({
+      ...createCategoryDto,
+      userId,
+    });
     await this.categoryRepository.save(category);
 
     return {
