@@ -22,7 +22,7 @@ export class ActivityService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) { }
+  ) {}
 
   async create(
     userId: number,
@@ -39,11 +39,9 @@ export class ActivityService {
     if (createActivityDto.categoryId) {
       const checkCategory = await this.categoryRepository.findOne({
         where: { id: createActivityDto.categoryId, userId: userId },
-      })
+      });
       if (!checkCategory) {
-        return buildError(
-          ErrorMessage.CATEGORY_NOT_FOUND,
-        );
+        return buildError(ErrorMessage.CATEGORY_NOT_FOUND);
       }
     }
 
@@ -76,8 +74,6 @@ export class ActivityService {
       where: { userId: userId },
       relations: ['category'],
       select: {
-        id: true,
-        name: true,
         category: {
           name: true,
         },
@@ -95,8 +91,6 @@ export class ActivityService {
       where: { id: id, userId: userId },
       relations: ['category'],
       select: {
-        id: true,
-        name: true,
         category: {
           name: true,
         },
@@ -124,11 +118,9 @@ export class ActivityService {
     if (updateActivityDto.categoryId) {
       const checkCategory = await this.categoryRepository.findOne({
         where: { id: updateActivityDto.categoryId, userId: userId },
-      })
+      });
       if (!checkCategory) {
-        return buildError(
-          ErrorMessage.CATEGORY_NOT_FOUND,
-        );
+        return buildError(ErrorMessage.CATEGORY_NOT_FOUND);
       }
     }
     const checkActivity = await this.activityRepository.findOne({
