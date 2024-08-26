@@ -22,7 +22,7 @@ export class ActivityService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) { }
+  ) {}
 
   async create(
     userId: number,
@@ -71,7 +71,7 @@ export class ActivityService {
 
   async findAll(userId: number) {
     const result = await this.activityRepository.find({
-      where: { userId: userId },
+      where: { userId: userId, isDelete: false },
       relations: ['category'],
       select: {
         category: {
@@ -88,7 +88,7 @@ export class ActivityService {
 
   async findOne(id: number, userId: number) {
     const result = await this.activityRepository.findOne({
-      where: { id: id, userId: userId },
+      where: { id: id, userId: userId, isDelete: false },
       relations: ['category'],
       select: {
         category: {
@@ -172,12 +172,12 @@ export class ActivityService {
   async delete(id: number, userId: number) {
     const checkActivity = await this.activityRepository.findOne({
       where: { id: id, userId: userId },
-    })
+    });
     if (!checkActivity) {
       return buildError(ErrorMessage.ACTIVITY_NOT_FOUND);
     }
     checkActivity.isDelete = true;
-    const updatedActivity = await this.activityRepository.save(checkActivity);
+    await this.activityRepository.save(checkActivity);
     return {
       data: {
         id: checkActivity.id,
