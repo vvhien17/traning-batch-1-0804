@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="12" failures="0" errors="0" time="3.1">
-  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-23T07:25:02" time="1.348" tests="2">
-    <testcase classname="LoginPage shows error message when email or password is wrong" name="LoginPage shows error message when email or password is wrong" time="0.23">
+<testsuites name="jest tests" tests="14" failures="0" errors="0" time="3.338">
+  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T02:16:15" time="1.238" tests="2">
+    <testcase classname="RegisterPage shows success message when successful register" name="RegisterPage shows success message when successful register" time="0.151">
     </testcase>
-    <testcase classname="LoginPage shows success message and redirects on successful login" name="LoginPage shows success message and redirects on successful login" time="0.104">
-    </testcase>
-  </testsuite>
-  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-23T07:25:02" time="1.527" tests="2">
-    <testcase classname="LoginPage renders the login form with email and password fields" name="LoginPage renders the login form with email and password fields" time="0.091">
-    </testcase>
-    <testcase classname="LoginPage shows validation errors when fields are empty and submit is clicked" name="LoginPage shows validation errors when fields are empty and submit is clicked" time="0.068">
+    <testcase classname="RegisterPage shows success message when email exists" name="RegisterPage shows success message when email exists" time="0.077">
     </testcase>
   </testsuite>
-  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-08-23T07:25:02" time="1.626" tests="4">
-    <testcase classname="RegisterPage renders the registration form with all fields" name="RegisterPage renders the registration form with all fields" time="0.092">
+  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T02:16:15" time="1.351" tests="2">
+    <testcase classname="LoginPage shows error message when email or password is wrong" name="LoginPage shows error message when email or password is wrong" time="0.196">
     </testcase>
-    <testcase classname="RegisterPage shows validation errors for empty fields on submit" name="RegisterPage shows validation errors for empty fields on submit" time="0.056">
+    <testcase classname="LoginPage shows success message and redirects on successful login" name="LoginPage shows success message and redirects on successful login" time="0.094">
     </testcase>
-    <testcase classname="RegisterPage shows validation error when email is invalid" name="RegisterPage shows validation error when email is invalid" time="0.047">
+  </testsuite>
+  <testsuite name="LoginPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T02:16:15" time="1.672" tests="2">
+    <testcase classname="LoginPage renders the login form with email and password fields" name="LoginPage renders the login form with email and password fields" time="0.124">
+    </testcase>
+    <testcase classname="LoginPage shows validation errors when fields are empty and submit is clicked" name="LoginPage shows validation errors when fields are empty and submit is clicked" time="0.082">
+    </testcase>
+  </testsuite>
+  <testsuite name="RegisterPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T02:16:15" time="1.768" tests="4">
+    <testcase classname="RegisterPage renders the registration form with all fields" name="RegisterPage renders the registration form with all fields" time="0.111">
+    </testcase>
+    <testcase classname="RegisterPage shows validation errors for empty fields on submit" name="RegisterPage shows validation errors for empty fields on submit" time="0.046">
+    </testcase>
+    <testcase classname="RegisterPage shows validation error when email is invalid" name="RegisterPage shows validation error when email is invalid" time="0.039">
     </testcase>
     <testcase classname="RegisterPage shows validation error when passwords do not match" name="RegisterPage shows validation error when passwords do not match" time="0.048">
     </testcase>
   </testsuite>
-  <testsuite name="ActivitiesPage" errors="0" failures="0" skipped="0" timestamp="2024-08-23T07:25:02" time="2.24" tests="4">
-    <testcase classname="ActivitiesPage renders the ActivitiesPage with the correct elements" name="ActivitiesPage renders the ActivitiesPage with the correct elements" time="0.149">
+  <testsuite name="ActivitiesPage" errors="0" failures="0" skipped="0" timestamp="2024-08-26T02:16:15" time="2.379" tests="4">
+    <testcase classname="ActivitiesPage renders the ActivitiesPage with the correct elements" name="ActivitiesPage renders the ActivitiesPage with the correct elements" time="0.126">
     </testcase>
-    <testcase classname="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" name="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" time="0.133">
+    <testcase classname="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" name="ActivitiesPage opens the add new activity drawer when &apos;New Activity&apos; button is clicked" time="0.131">
     </testcase>
-    <testcase classname="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" name="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" time="0.104">
+    <testcase classname="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" name="ActivitiesPage opens the edit activity drawer when &apos;Edit&apos; button in activity card is clicked" time="0.077">
     </testcase>
-    <testcase classname="ActivitiesPage shows validation errors in the CreateOrEditActivityDrawer when fields are empty" name="ActivitiesPage shows validation errors in the CreateOrEditActivityDrawer when fields are empty" time="0.123">
+    <testcase classname="ActivitiesPage shows validation errors in the CreateOrEditActivityDrawer when fields are empty" name="ActivitiesPage shows validation errors in the CreateOrEditActivityDrawer when fields are empty" time="0.118">
     </testcase>
   </testsuite>
 </testsuites>
