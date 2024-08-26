@@ -61,6 +61,7 @@ const mockDataUser: User = {
   activities: [],
   goals: [],
 } as User;
+const userId = 1;
 
 describe('ActivitiesController', () => {
   let service: ActivityService;
@@ -162,7 +163,6 @@ describe('ActivitiesController', () => {
   });
 
   describe('Create activity', () => {
-    const userId = 1;
     const mockActivities = {
       id: 1,
       name: 'Activity 1',
@@ -428,6 +428,34 @@ describe('ActivitiesController', () => {
       expect(result.data).toEqual(null);
       expect(result.isSuccess).toBe(false);
       expect(result.message).toEqual(ErrorMessage.CATEGORY_NOT_FOUND);
+    });
+  });
+
+  describe('User delete activity', () => {
+    it('Delete succes', async () => {
+      const deleteId = mockActivities[0].id;
+      const activity = await service.delete(1, userId);
+      const returnActivity = {
+        id: deleteId,
+        isDelete: true,
+      };
+      expect(activity.data).toEqual(returnActivity);
+      expect(activity.isSuccess).toBe(true);
+      expect(activity.message).toEqual(SuccessMessage.DELETE_DATA_SUCCESS);
+    });
+
+    it('should return error if the user does not exist', async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
+      await expect(service.delete(1, 2)).rejects.toThrow(
+        new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND),
+      );
+    });
+
+    it('should return error if the activity does not exist', async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
+      await expect(service.delete(3, 1)).rejects.toThrow(
+        new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND),
+      );
     });
   });
 });

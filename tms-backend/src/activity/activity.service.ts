@@ -169,7 +169,11 @@ export class ActivityService {
       message: SuccessMessage.UPDATE_DATA_SUCCESS,
     };
   }
-  remove(id: number) {
-    return `This action removes a #${id} activity`;
+  delete(id: number, userId: number) {
+    return {
+      data: null,
+      isSuccess: false,
+      message: ErrorMessage.BAD_REQUEST,
+    };
   }
 }
