@@ -46,7 +46,8 @@ export class ActivityController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.activityService.remove(+id);
+  delete(@Request() req, @Param('id') id: string) {
+    const userId = +req.user.id;
+    return this.activityService.delete(+id, +userId);
   }
 }

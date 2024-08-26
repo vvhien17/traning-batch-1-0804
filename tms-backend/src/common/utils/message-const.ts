@@ -23,4 +23,5 @@ export enum SuccessMessage {
   CREATE_DATA_SUCCESS = 'Create data success',
   LOGIN_SUCCESS = 'Login successfully',
   UPDATE_DATA_SUCCESS = 'Update data success',
+  DELETE_DATA_SUCCESS = 'Delete data success',
 }
