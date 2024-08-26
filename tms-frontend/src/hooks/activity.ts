@@ -1,5 +1,17 @@
 import activityApi from "@components/api/activity";
-import { useQuery } from "@tanstack/react-query";
+import {
+  TCreateActivityRequest,
+  TUpdateActivityRequest,
+} from "@components/types/activity";
+import { TBaseResponse } from "@components/types/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+const useGetCategories = () => {
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: () => activityApi.getCategories(),
+  });
+};
 
 const useGetActivities = ({ category }: { category?: string }) => {
   return useQuery({
@@ -11,40 +23,45 @@ const useGetActivities = ({ category }: { category?: string }) => {
 
 const useGetActivityById = (id: string) => {
   return useQuery({
-    queryKey: ["activity", id],
+    queryKey: ["activities", id],
     queryFn: () => activityApi.getActivityById(id),
     refetchOnWindowFocus: false,
   });
 };
 
-const useCreateActivity = (data: any) => {
-  return useQuery({
-    queryKey: ["activity"],
-    queryFn: () => activityApi.createActivity(data),
-    refetchOnWindowFocus: false,
+const useCreateActivity = () => {
+  const queryClient = useQueryClient();
+  return useMutation<TBaseResponse<any>, Error, TCreateActivityRequest>({
+    mutationFn: activityApi.createActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["activities"] });
+    },
   });
 };
 
-const useUpdateActivity = (id: string, data: any) => {
-  return useQuery({
-    queryKey: ["activity", id],
-    queryFn: () => activityApi.updateActivity(id, data),
-    refetchOnWindowFocus: false,
+const useUpdateActivity = () => {
+  const queryClient = useQueryClient();
+  return useMutation<TBaseResponse<any>, Error, TUpdateActivityRequest>({
+    mutationFn: activityApi.updateActivity,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["activities"] });
+    },
   });
 };
 
 const useDeleteActivity = (id: string) => {
-  return useQuery({
-    queryKey: ["activity", id],
-    queryFn: () => activityApi.deleteActivity(id),
-    refetchOnWindowFocus: false,
+  return useMutation<TBaseResponse<any>, Error, TCreateActivityRequest>({
+    mutationFn: () => activityApi.deleteActivity(id),
   });
 };
 
 export const activityQuery = {
   query: {
+    useGetCategories,
     useGetActivities,
     useGetActivityById,
+  },
+  mutation: {
     useCreateActivity,
     useUpdateActivity,
     useDeleteActivity,
