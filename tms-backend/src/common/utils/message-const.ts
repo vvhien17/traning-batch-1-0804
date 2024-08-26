@@ -9,15 +9,17 @@ export enum ErrorMessage {
   USERNAME_PASSWORD_INCORRECT = 'username or password incorrect',
   CATEGORY_NOT_FOUND = 'Category not found',
   ACTIVITY_NOT_FOUND = 'Activity not found',
-  ACTIVITY_IS_EXISTS = 'Activity already exists',
   BAD_REQUEST = 'Bad request',
   GOAL_NOT_FOUND = 'Goals not found',
   VALIDATION_FAILED = 'Validation failed',
   IS_REQUIRED = 'is required',
+  DATA_NOT_FOUND = 'Data not found',
+  MUST_GREATER_THAN = 'must greater than',
 }
 
 export enum SuccessMessage {
   GET_DATA_SUCCESS = 'Get data success',
   CREATE_DATA_SUCCESS = 'Create data success',
   LOGIN_SUCCESS = 'Login successfully',
+  UPDATE_DATA_SUCCESS = 'Update data success',
 }

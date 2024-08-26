@@ -4,7 +4,7 @@ import { ACCESS_TOKEN } from "./constants/common";
 
 const axiosClient = axios.create({
   // TODO: base url goes here
-  baseURL: process.env.API_URL || "http://localhost:3000",
+  baseURL: process.env.API_URL || "http://3.81.121.212:3000/api",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json;charset=utf-8",
@@ -18,7 +18,7 @@ axiosClient.interceptors.request.use(
     const accessToken = cookie.get(ACCESS_TOKEN);
 
     if (accessToken) {
-      config.headers["Authorization"] = accessToken;
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
 
     return config;
