@@ -9,6 +9,9 @@ import Textarea from "@components/components/TextArea";
 import DateTimePickerCustom from "@components/components/DateTimePickerCustom";
 import Select from "@components/components/Select";
 import Button from "@components/components/button";
+import { activityQuery } from "@components/hooks/activity";
+import { toast } from "react-toastify";
+import { TypeErrorResponse } from "@components/types/types";
 
 const AddOrEditActivitySchema = z.object({
   name: z.string().min(1, "Name must be at least 1 character"),
@@ -21,7 +24,7 @@ type AddOrEditActivityForm = z.infer<typeof AddOrEditActivitySchema>;
 type CreateOrEditActivityDrawerProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  editItem?: AddOrEditActivityForm;
+  editItem?: AddOrEditActivityForm & { id: number };
 };
 
 export default function CreateOrEditActivityDrawer({
@@ -31,6 +34,10 @@ export default function CreateOrEditActivityDrawer({
 }: CreateOrEditActivityDrawerProps) {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
+
+  const { data: categories } = activityQuery.query.useGetCategories();
+  const { mutate: createActivity } = activityQuery.mutation.useCreateActivity();
+  const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
 
   const { handleSubmit, register, formState, setValue } =
     useForm<AddOrEditActivityForm>({
@@ -43,7 +50,51 @@ export default function CreateOrEditActivityDrawer({
     });
 
   const onSubmit = (data: AddOrEditActivityForm) => {
-    console.log({ ...data, startDate, endDate });
+    if (editItem) {
+      updateActivity(
+        {
+          ...data,
+          id: editItem.id,
+          startedAt: startDate.toISOString(),
+          endedAt: endDate.toISOString(),
+        },
+        {
+          onSuccess: (data) => {
+            toast(data.message, {
+              type: "success",
+            });
+            setOpen(false);
+          },
+          onError: (error: any) => {
+            const _error: TypeErrorResponse = error;
+            toast(_error.response.data.message, {
+              type: "error",
+            });
+          },
+        }
+      );
+    } else
+      createActivity(
+        {
+          ...data,
+          startedAt: startDate.toISOString(),
+          endedAt: endDate.toISOString(),
+        },
+        {
+          onSuccess: (data) => {
+            toast(data.message, {
+              type: "success",
+            });
+            setOpen(false);
+          },
+          onError: (error: any) => {
+            const _error: TypeErrorResponse = error;
+            toast(_error.response.data.message, {
+              type: "error",
+            });
+          },
+        }
+      );
   };
 
   useEffect(() => {
@@ -54,7 +105,7 @@ export default function CreateOrEditActivityDrawer({
       //   setValue("endDate", editItem.endDate);
       setValue("category", editItem.category);
     }
-  }, [editItem]);
+  }, [editItem, setValue]);
 
   return (
     <Drawer open={open} onClose={() => setOpen(false)}>

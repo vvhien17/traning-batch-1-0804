@@ -6,14 +6,16 @@ import {
 } from "@heroicons/react/24/solid";
 import classcat from "classcat";
 import React, { useEffect, useRef, useState } from "react";
+import dayjs from "dayjs";
 
 export type TStatus = "completed" | "on-progress" | "in-completed";
 
 interface CardActivityProps {
   title: string;
   description: string;
-  dateTime: string;
-  categories: string[];
+  startedAt: string;
+  endedAt: string;
+  categoryName: string;
   status: TStatus;
   onEdit: () => void;
   onDelete: () => void;
@@ -22,8 +24,9 @@ interface CardActivityProps {
 export const CardActivity: React.FC<CardActivityProps> = ({
   title,
   description,
-  dateTime,
-  categories,
+  startedAt,
+  endedAt,
+  categoryName,
   status,
   onEdit,
   onDelete,
@@ -93,18 +96,15 @@ export const CardActivity: React.FC<CardActivityProps> = ({
         )}
       </div>
       <p className="text-xs text-gray-500 mt-2 flex items-end gap-1">
-        <CalendarDateRangeIcon className="size-5" /> {dateTime}
+        <CalendarDateRangeIcon className="size-5" />{" "}
+        {dayjs(startedAt).format("DD/MM/YYYY HH:mm")} -{" "}
+        {dayjs(endedAt).format("DD/MM/YYYY HH:mm")}
       </p>
       <div className="flex justify-between items-center mt-4">
         <div className="flex flex-wrap basis-3/4 gap-1">
-          {categories.map((category, index) => (
-            <span
-              key={index}
-              className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs"
-            >
-              {category}
-            </span>
-          ))}
+          <span className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs">
+            {categoryName}
+          </span>
         </div>
         <div className="flex basis-1/4 justify-end">
           <button onClick={onEdit} aria-label="Edit activity">

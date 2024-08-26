@@ -9,6 +9,7 @@ import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
 import { User } from '../user/entities/user.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
+import { UpdateActivityDto } from './dto/update-activity.dto';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -62,6 +63,7 @@ describe('ActivitiesController', () => {
             findOne: jest.fn(),
             create: jest.fn().mockResolvedValue(mockActivities[0]),
             save: jest.fn().mockResolvedValue(mockActivities[0]),
+            performChanges: jest.fn(),
           },
         },
         {
@@ -133,7 +135,7 @@ describe('ActivitiesController', () => {
     });
   });
 
-  describe('create activity', () => {
+  describe('Create activity', () => {
     const userId = 1;
     const mockActivities = {
       id: 1,
@@ -154,13 +156,13 @@ describe('ActivitiesController', () => {
       description: 'test desc',
     };
     it('create a new activity enough require without description', async () => {
+      jest
+        .spyOn(activityRepository, 'create')
+        .mockReturnValue({ description: null, ...mockActivities } as Activity);
       jest.spyOn(activityRepository, 'save').mockResolvedValue({
         description: null,
         ...mockActivities,
       } as Activity);
-      jest
-        .spyOn(activityRepository, 'create')
-        .mockReturnValue({ description: null, ...mockActivities } as Activity);
       const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         description: null,
@@ -265,6 +267,85 @@ describe('ActivitiesController', () => {
       );
       const result: BaseResponse = await service.create(userId, activityDto);
       expect(result).toEqual(expectedResponse);
+    });
+  });
+
+  describe('Update activity', () => {
+    const userId = 1;
+    const newStartedAt = new Date(
+      new Date().setDate(currentDate.getDate() + 1),
+    );
+    const newEndedAt = new Date(new Date().setDate(currentDate.getDate() + 2));
+    const updateActivityDto: UpdateActivityDto = {
+      id: 1,
+      name: 'Activity change',
+      startedAt: newStartedAt,
+      endedAt: newEndedAt,
+      categoryId: 2,
+      description: 'Description change',
+    };
+
+    it.only('Update activity with valid data', async () => {
+      jest
+        .spyOn(activityRepository, 'findOne')
+        .mockResolvedValue(mockActivities[0] as Activity);
+      const updatedActivity = { ...mockActivities[0], ...updateActivityDto };
+      jest
+        .spyOn(activityRepository, 'save')
+        .mockResolvedValue(updatedActivity as Activity);
+      const result: BaseResponse = await service.update(updateActivityDto);
+      expect(result.data).toEqual({
+        ...updatedActivity,
+        userId: userId,
+        updatedAt: expect.any(Date),
+        createdAt: mockActivities[0].createdAt,
+      } as Activity);
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toEqual(SuccessMessage.UPDATE_DATA_SUCCESS);
+    });
+
+    it('Update started at but start > end', async () => {
+      jest
+        .spyOn(activityRepository, 'findOne')
+        .mockResolvedValue(mockActivities[0] as Activity);
+      const wrongStartedAt = new Date(
+        currentDate.setDate(currentDate.getDate() + 10),
+      );
+      const result: BaseResponse = await service.update({
+        ...updateActivityDto,
+        startedAt: wrongStartedAt,
+      });
+
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(
+        `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
+      );
+    });
+
+    it('Update end but start > end', async () => {
+      jest
+        .spyOn(activityRepository, 'findOne')
+        .mockResolvedValue(mockActivities[0] as Activity);
+      const endedAt = new Date(currentDate.setDate(currentDate.getDate() - 10));
+      const result: BaseResponse = await service.update({
+        ...updateActivityDto,
+        endedAt: endedAt,
+      });
+
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(
+        `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
+      );
+    });
+
+    it('Update activity that not exist', async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
+      const result: BaseResponse = await service.update(updateActivityDto);
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(ErrorMessage.ACTIVITY_NOT_FOUND);
     });
   });
 });
