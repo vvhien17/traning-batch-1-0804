@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { AuthGuard } from '../middleware/auth.guard';
 
 @Controller('categories')
+@UseGuards(AuthGuard)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -11,8 +21,9 @@ export class CategoryController {
     return this.categoryService.create(createCategoryDto);
   }
 
-  @Get(':userId')
-  findCategoryByUserId(@Param('userId') id: string) {
-    return this.categoryService.findCategoryByUserId(+id);
+  @Get()
+  findCategoryByUserId(@Request() req) {
+    const userId = req.user.id;
+    return this.categoryService.findCategoryByUserId(userId);
   }
 }
