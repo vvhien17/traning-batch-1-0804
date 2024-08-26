@@ -73,6 +73,14 @@ describe("RegisterPage", () => {
     const mockUseRegister = jest.fn().mockImplementation(() => ({
       mutate: jest.fn().mockImplementation((data, { onSuccess }) => {
         onSuccess({
+          data: {
+            email: "email@gmail.com",
+            username: "test",
+            password: "test",
+            id: 13,
+            createdAt: "2024-08-26T02:14:18.271Z",
+            updatedAt: "2024-08-26T02:14:18.271Z",
+          },
           message: "Create data success",
           isSuccess: true,
         });
