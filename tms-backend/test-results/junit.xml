@@ -1,32 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="57" failures="0" errors="0" time="3.972">
-  <testsuite name="AppController" errors="0" failures="0" skipped="0" timestamp="2024-08-26T08:06:09" time="2.923" tests="1">
-    <testcase classname="AppController root should return &quot;Hello World!&quot;" name="AppController root should return &quot;Hello World!&quot;" time="0.018">
+<testsuites name="jest tests" tests="57" failures="0" errors="0" time="4.214">
+  <testsuite name="AppController" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.18" tests="1">
+    <testcase classname="AppController root should return &quot;Hello World!&quot;" name="AppController root should return &quot;Hello World!&quot;" time="0.011">
     </testcase>
   </testsuite>
-  <testsuite name="GoalOnActivityService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T08:06:12" time="0.106" tests="1">
+  <testsuite name="GoalOnActivityService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:28" time="0.117" tests="1">
     <testcase classname="GoalOnActivityService should be defined" name="GoalOnActivityService should be defined" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="AuthService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T08:06:09" time="3.499" tests="3">
-    <testcase classname="AuthService should be defined" name="AuthService should be defined" time="0.011">
+  <testsuite name="CategoryService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.663" tests="10">
+    <testcase classname="CategoryService should be defined" name="CategoryService should be defined" time="0.009">
     </testcase>
-    <testcase classname="AuthService login should return a JWT token if credentials are valid" name="AuthService login should return a JWT token if credentials are valid" time="0.008">
+    <testcase classname="CategoryService findCategoriesByUserId should return a list of categories by userId" name="CategoryService findCategoriesByUserId should return a list of categories by userId" time="0.002">
     </testcase>
-    <testcase classname="AuthService login should throw UnauthorizedException if password is incorrect" name="AuthService login should throw UnauthorizedException if password is incorrect" time="0.009">
+    <testcase classname="CategoryService findCategoriesByUserId should return an error response if no categories are found" name="CategoryService findCategoriesByUserId should return an error response if no categories are found" time="0.001">
+    </testcase>
+    <testcase classname="CategoryService create should create and return a new category" name="CategoryService create should create and return a new category" time="0.003">
+    </testcase>
+    <testcase classname="CategoryService create should return error if user is not found" name="CategoryService create should return error if user is not found" time="0.001">
+    </testcase>
+    <testcase classname="CategoryService update should return error if user is not found when update category" name="CategoryService update should return error if user is not found when update category" time="0.004">
+    </testcase>
+    <testcase classname="CategoryService update should return error if category is not found when update category" name="CategoryService update should return error if category is not found when update category" time="0.001">
+    </testcase>
+    <testcase classname="CategoryService update should return error if userId and categoryId not found when update category" name="CategoryService update should return error if userId and categoryId not found when update category" time="0.001">
+    </testcase>
+    <testcase classname="CategoryService update show return error if category name is empty" name="CategoryService update show return error if category name is empty" time="0.002">
+    </testcase>
+    <testcase classname="CategoryService update should return success if category is updated successfully" name="CategoryService update should return success if category is updated successfully" time="0.012">
     </testcase>
   </testsuite>
-  <testsuite name="AuthController" errors="0" failures="0" skipped="0" timestamp="2024-08-26T08:06:09" time="3.596" tests="4">
-    <testcase classname="AuthController should be defined" name="AuthController should be defined" time="0.021">
+  <testsuite name="AuthService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.681" tests="3">
+    <testcase classname="AuthService should be defined" name="AuthService should be defined" time="0.013">
     </testcase>
-    <testcase classname="AuthController signIn should return a JWT token when credentials are valid" name="AuthController signIn should return a JWT token when credentials are valid" time="0.005">
+    <testcase classname="AuthService login should return a JWT token if credentials are valid" name="AuthService login should return a JWT token if credentials are valid" time="0.004">
     </testcase>
-    <testcase classname="AuthController signIn should handle login failures" name="AuthController signIn should handle login failures" time="0.015">
-    </testcase>
-    <testcase classname="AuthController getProfile should return user profile if authenticated" name="AuthController getProfile should return user profile if authenticated" time="0.001">
+    <testcase classname="AuthService login should throw UnauthorizedException if password is incorrect" name="AuthService login should throw UnauthorizedException if password is incorrect" time="0.007">
     </testcase>
   </testsuite>
-  <testsuite name="ActivitiesController" errors="0" failures="0" skipped="19" timestamp="2024-08-26T08:06:09" time="3.604" tests="20">
+  <testsuite name="ActivitiesController" errors="0" failures="0" skipped="19" timestamp="2024-08-26T09:51:25" time="3.795" tests="20">
     <testcase classname="ActivitiesController Activity service should be defined" name="ActivitiesController Activity service should be defined" time="0">
       <skipped/>
     </testcase>
@@ -75,7 +87,7 @@
     <testcase classname="ActivitiesController Create activity Create a new activity missing only userId " name="ActivitiesController Create activity Create a new activity missing only userId " time="0">
       <skipped/>
     </testcase>
-    <testcase classname="ActivitiesController Update activity Update activity with valid data" name="ActivitiesController Update activity Update activity with valid data" time="0.018">
+    <testcase classname="ActivitiesController Update activity Update activity with valid data" name="ActivitiesController Update activity Update activity with valid data" time="0.011">
     </testcase>
     <testcase classname="ActivitiesController Update activity Update started at but start &gt; end" name="ActivitiesController Update activity Update started at but start &gt; end" time="0">
       <skipped/>
@@ -87,49 +99,37 @@
       <skipped/>
     </testcase>
   </testsuite>
-  <testsuite name="UserService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T08:06:09" time="3.581" tests="9">
+  <testsuite name="UserService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.886" tests="9">
     <testcase classname="UserService should be defined" name="UserService should be defined" time="0.009">
     </testcase>
-    <testcase classname="UserService create should create and return a new user" name="UserService create should create and return a new user" time="0.009">
+    <testcase classname="UserService create should create and return a new user" name="UserService create should create and return a new user" time="0.004">
     </testcase>
-    <testcase classname="UserService create should throw an error if invalid email" name="UserService create should throw an error if invalid email" time="0.004">
+    <testcase classname="UserService create should throw an error if invalid email" name="UserService create should throw an error if invalid email" time="0.003">
     </testcase>
-    <testcase classname="UserService create should return error if email is empty" name="UserService create should return error if email is empty" time="0.004">
+    <testcase classname="UserService create should return error if email is empty" name="UserService create should return error if email is empty" time="0.001">
     </testcase>
-    <testcase classname="UserService create should return error if username is empty" name="UserService create should return error if username is empty" time="0.004">
+    <testcase classname="UserService create should return error if username is empty" name="UserService create should return error if username is empty" time="0.001">
     </testcase>
-    <testcase classname="UserService create should return error if password is empty" name="UserService create should return error if password is empty" time="0.001">
+    <testcase classname="UserService create should return error if password is empty" name="UserService create should return error if password is empty" time="0">
     </testcase>
     <testcase classname="UserService create should return error if user with the same email already exists" name="UserService create should return error if user with the same email already exists" time="0.001">
     </testcase>
     <testcase classname="UserService getUser should return user by id" name="UserService getUser should return user by id" time="0.001">
     </testcase>
-    <testcase classname="UserService getUser should return error if user not found" name="UserService getUser should return error if user not found" time="0.002">
+    <testcase classname="UserService getUser should return error if user not found" name="UserService getUser should return error if user not found" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="CategoryService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T08:06:09" time="3.667" tests="10">
-    <testcase classname="CategoryService should be defined" name="CategoryService should be defined" time="0.009">
+  <testsuite name="AuthController" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.913" tests="4">
+    <testcase classname="AuthController should be defined" name="AuthController should be defined" time="0.008">
     </testcase>
-    <testcase classname="CategoryService findCategoriesByUserId should return a list of categories by userId" name="CategoryService findCategoriesByUserId should return a list of categories by userId" time="0.002">
+    <testcase classname="AuthController signIn should return a JWT token when credentials are valid" name="AuthController signIn should return a JWT token when credentials are valid" time="0.003">
     </testcase>
-    <testcase classname="CategoryService findCategoriesByUserId should return an error response if no categories are found" name="CategoryService findCategoriesByUserId should return an error response if no categories are found" time="0.002">
+    <testcase classname="AuthController signIn should handle login failures" name="AuthController signIn should handle login failures" time="0.007">
     </testcase>
-    <testcase classname="CategoryService create should create and return a new category" name="CategoryService create should create and return a new category" time="0.002">
-    </testcase>
-    <testcase classname="CategoryService create should return error if user is not found" name="CategoryService create should return error if user is not found" time="0.001">
-    </testcase>
-    <testcase classname="CategoryService update should return error if user is not found when update category" name="CategoryService update should return error if user is not found when update category" time="0.003">
-    </testcase>
-    <testcase classname="CategoryService update should return error if category is not found when update category" name="CategoryService update should return error if category is not found when update category" time="0.001">
-    </testcase>
-    <testcase classname="CategoryService update should return error if userId and categoryId not found when update category" name="CategoryService update should return error if userId and categoryId not found when update category" time="0.001">
-    </testcase>
-    <testcase classname="CategoryService update show return error if category name is empty" name="CategoryService update show return error if category name is empty" time="0.001">
-    </testcase>
-    <testcase classname="CategoryService update should return success if category is updated successfully" name="CategoryService update should return success if category is updated successfully" time="0.007">
+    <testcase classname="AuthController getProfile should return user profile if authenticated" name="AuthController getProfile should return user profile if authenticated" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="GoalService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T08:06:09" time="3.727" tests="9">
+  <testsuite name="GoalService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.985" tests="9">
     <testcase classname="GoalService should create a goal with valid input and return BaseResponse" name="GoalService should create a goal with valid input and return BaseResponse" time="0.019">
     </testcase>
     <testcase classname="GoalService should return an error if name is empty" name="GoalService should return an error if name is empty" time="0.002">
@@ -138,9 +138,9 @@
     </testcase>
     <testcase classname="GoalService should return an error if endedTime is invalid" name="GoalService should return an error if endedTime is invalid" time="0.001">
     </testcase>
-    <testcase classname="GoalService should return an error if userId is invalid" name="GoalService should return an error if userId is invalid" time="0.002">
+    <testcase classname="GoalService should return an error if userId is invalid" name="GoalService should return an error if userId is invalid" time="0.001">
     </testcase>
-    <testcase classname="GoalService should return an error if user is not found" name="GoalService should return an error if user is not found" time="0">
+    <testcase classname="GoalService should return an error if user is not found" name="GoalService should return an error if user is not found" time="0.001">
     </testcase>
     <testcase classname="GoalService should get all goals by user successfully" name="GoalService should get all goals by user successfully" time="0.001">
     </testcase>

@@ -72,9 +72,10 @@ describe('GoalService', () => {
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); // Mock user exists
     const dto: CreateGoalDto = {
       name: 'Valid Goal',
-      startedTime: new Date('2024-08-01'),
-      endedTime: new Date('2024-08-31'),
+      startedTime: new Date('2024-08-26T09:36:16.427Z').toISOString(),
+      endedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
     };
+    console.log(dto);
     const result: BaseResponse = await service.create(dto, 1);
     console.log(result);
     expect(result).toBeDefined();
@@ -100,8 +101,8 @@ describe('GoalService', () => {
     const result: BaseResponse = await service.create(
       {
         name: '', // Empty name
-        startedTime: new Date(), // Valid date
-        endedTime: new Date(), // Valid date
+        startedTime: new Date().toISOString(), // Valid date
+        endedTime: new Date().toISOString(), // Valid date
       },
       1,
     );
@@ -132,7 +133,7 @@ describe('GoalService', () => {
       {
         name: 'Test Event', // Valid name
         startedTime: null, // Invalid startedTime
-        endedTime: new Date(), // Valid endedTime
+        endedTime: new Date().toISOString(), // Valid endedTime
       },
       userId,
     );
@@ -162,7 +163,7 @@ describe('GoalService', () => {
     const result: BaseResponse = await service.create(
       {
         name: 'Test Event', // Valid name
-        startedTime: new Date(), // Valid startedTime
+        startedTime: new Date().toISOString(), // Valid startedTime
         endedTime: null, // Invalid endedTime
       },
       userId,
@@ -180,8 +181,8 @@ describe('GoalService', () => {
     const result: BaseResponse = await service.create(
       {
         name: 'Test Event', // Valid name
-        startedTime: new Date(), // Valid startedTime
-        endedTime: new Date(), // Valid endedTime
+        startedTime: new Date().toISOString(), // Valid startedTime
+        endedTime: new Date().toISOString(), // Valid endedTime
       },
       null,
     );
@@ -199,8 +200,8 @@ describe('GoalService', () => {
     const result: BaseResponse = await service.create(
       {
         name: 'Goal with Nonexistent User',
-        startedTime: new Date(),
-        endedTime: new Date(),
+        startedTime: new Date().toISOString(),
+        endedTime: new Date().toISOString(),
       },
       9999,
     );
