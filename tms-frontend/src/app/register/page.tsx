@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
-type RegisterForm = z.infer<typeof RegisterSchema>;
+export type RegisterForm = z.infer<typeof RegisterSchema>;
 
 const RegisterSchema = z
   .object({
