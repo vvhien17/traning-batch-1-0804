@@ -13,9 +13,11 @@ import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { AuthGuard } from '../middleware/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('activity')
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 

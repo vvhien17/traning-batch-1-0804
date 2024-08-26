@@ -13,6 +13,16 @@ const useGetCategories = () => {
   });
 };
 
+const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation<TBaseResponse<any>, Error, { name: string }>({
+    mutationFn: activityApi.createCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+};
+
 const useGetActivities = ({ category }: { category?: string }) => {
   return useQuery({
     queryKey: ["activities"],
@@ -65,5 +75,6 @@ export const activityQuery = {
     useCreateActivity,
     useUpdateActivity,
     useDeleteActivity,
+    useCreateCategory,
   },
 };
