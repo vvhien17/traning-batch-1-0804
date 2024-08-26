@@ -114,9 +114,13 @@ describe('ActivitiesController', () => {
   describe('User find all activity', () => {
     it('should return an array of activities for a specific user', async () => {
       const returnActivity = [
-        { ...mockActivities[0], categoryName: mockCategory.name },
-        { ...mockActivities[1], categoryName: null },
+        { ...mockActivities[0], category: { name: mockCategory.name } },
+        { ...mockActivities[1], category: null },
       ];
+      jest
+        .spyOn(activityRepository, 'find')
+        .mockResolvedValue(returnActivity as Activity[]);
+
       const activities = await service.findAll(1);
       expect(activities.data).toEqual(returnActivity);
     });
@@ -132,8 +136,12 @@ describe('ActivitiesController', () => {
     it('should return an activity for a specific user', async () => {
       const returnActivity = {
         ...mockActivities[0],
-        categoryName: mockCategory.name,
+        category: { name: mockCategory.name },
       };
+      jest
+        .spyOn(activityRepository, 'findOne')
+        .mockResolvedValue(returnActivity as Activity);
+
       const activity = await service.findOne(1, 1);
       expect(activity.data).toEqual(returnActivity);
     });
@@ -191,9 +199,7 @@ describe('ActivitiesController', () => {
     });
 
     it('create a new activity enough require but not exist category', async () => {
-      jest
-        .spyOn(categoryRepository, 'findOne')
-        .mockResolvedValue(null);
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
       const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         description: null,
@@ -414,9 +420,7 @@ describe('ActivitiesController', () => {
     });
 
     it('Update activity to new category that not exist', async () => {
-      jest
-        .spyOn(categoryRepository, 'findOne')
-        .mockResolvedValue(null);
+      jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
       const result: BaseResponse = await service.update(userId, {
         ...updateActivityDto,
         categoryId: 100,
