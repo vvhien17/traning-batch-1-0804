@@ -8,6 +8,7 @@ import { User } from '../user/entities/user.entity';
 import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { GoalStatus } from '../common/constants/goal-status';
+import { CreateGoalDto } from './dto/create-goal.dto';
 
 describe('GoalService', () => {
   let service: GoalService;
@@ -42,6 +43,17 @@ describe('GoalService', () => {
   });
 
   it('should create a goal with valid input and return BaseResponse', async () => {
+    const mockUser: User = {
+      id: 1,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
     const mockGoal: Goal = {
       id: 1,
       name: 'Valid Goal',
@@ -51,26 +63,23 @@ describe('GoalService', () => {
       userId: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
-      user: new User(), // Mock or create as needed
+      user: mockUser, // Mock or create as needed
       goalOnActivities: [new GoalOnActivity()], // Mock or create as needed
     };
 
     jest.spyOn(goalRepository, 'save').mockResolvedValue(mockGoal);
     jest.spyOn(goalRepository, 'create').mockReturnValue(mockGoal);
-    jest.spyOn(userRepository, 'findOne').mockResolvedValue(new User()); // Mock user exists
-
-    const result: BaseResponse = await service.create(
-      {
-        name: 'Valid Goal',
-        startedTime: new Date('2024-08-01T00:00:00Z'),
-        endedTime: new Date('2024-08-31T23:59:59Z'),
-      },
-      1,
-    );
-
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); // Mock user exists
+    const dto: CreateGoalDto = {
+      name: 'Valid Goal',
+      startedTime: new Date('2024-08-01'),
+      endedTime: new Date('2024-08-31'),
+    };
+    const result: BaseResponse = await service.create(dto, 1);
+    console.log(result);
     expect(result).toBeDefined();
-    expect(result.isSuccess).toBe(true);
-    expect(result.message).toBe(SuccessMessage.CREATE_DATA_SUCCESS);
+    expect(result.isSuccess).toEqual(true);
+    expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
     expect(result.data).toEqual(mockGoal);
   });
 
@@ -101,7 +110,7 @@ describe('GoalService', () => {
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toContain(`Name ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid StartedTime
@@ -132,7 +141,7 @@ describe('GoalService', () => {
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toContain(`StartedTime ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid EndedTime
@@ -163,7 +172,7 @@ describe('GoalService', () => {
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toContain(`EndTime ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid UserId
@@ -181,7 +190,7 @@ describe('GoalService', () => {
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
 
-    expect(result.message).toContain(ErrorMessage.VALIDATION_FAILED);
+    expect(result.message).toEqual(`${ErrorMessage.USER_NOT_FOUND}`);
   });
 
   it('should return an error if user is not found', async () => {
