@@ -6,10 +6,12 @@ import {
   Param,
   Request,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { AuthGuard } from '../middleware/auth.guard';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Controller('categories')
 @UseGuards(AuthGuard)
@@ -17,13 +19,19 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  create(@Body() createCategoryDto: CreateCategoryDto, @Request() req) {
+    const userId = req.user.id;
+    return this.categoryService.create(createCategoryDto, userId);
   }
 
   @Get()
   findCategoryByUserId(@Request() req) {
     const userId = req.user.id;
     return this.categoryService.findCategoryByUserId(userId);
+  }
+  @Put()
+  update(@Body() updateCategoryDto: UpdateCategoryDto, @Request() req) {
+    const userId = req.user.id;
+    return this.categoryService.updateCategory(updateCategoryDto, userId);
   }
 }
