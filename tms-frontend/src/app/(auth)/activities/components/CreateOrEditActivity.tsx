@@ -62,8 +62,9 @@ export default function CreateOrEditActivityDrawer({
     if (editItem) {
       updateActivity(
         {
-          ...data,
           id: editItem.id,
+          name: data.name,
+          description: data.description,
           categoryId: +(data.category || 0),
           startedAt: startDate.toISOString(),
           endedAt: endDate.toISOString(),

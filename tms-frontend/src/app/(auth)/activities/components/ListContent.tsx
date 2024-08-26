@@ -19,8 +19,6 @@ export const ListContent: React.FC<ListContentProps> = ({}) => {
     setOpen(true);
   };
 
-  const handleDelete = () => {};
-
   if (activities.length < 1)
     return (
       <div className="flex items-center gap-2 text-gray-500">
@@ -40,7 +38,7 @@ export const ListContent: React.FC<ListContentProps> = ({}) => {
           startedAt={item.startedAt}
           endedAt={item.endedAt}
           categoryName={item.category?.name}
-          status="completed"
+          status={item.status}
           onEdit={handleEdit(item)}
         />
       ))}

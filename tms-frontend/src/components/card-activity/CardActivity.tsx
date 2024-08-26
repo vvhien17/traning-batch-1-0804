@@ -12,7 +12,7 @@ import { activityQuery } from "@components/hooks/activity";
 import { toast } from "react-toastify";
 import { TypeErrorResponse } from "@components/types/types";
 
-export type TStatus = "completed" | "on-progress" | "in-completed";
+export type TStatus = "PENDING" | "COMPLETED" | "IN_PROGRESS" | "CANCELED";
 
 interface CardActivityProps {
   id: number;
@@ -75,15 +75,17 @@ export const CardActivity: React.FC<CardActivityProps> = ({
     return () => window.removeEventListener("resize", checkEllipsis);
   }, [description]);
 
+  console.log({ status });
+
   return (
     <div
       className={classcat([
         "border border-t-4 max-w-[400px] bg-white rounded-lg p-4 shadow-lg relative",
-        status === Status.Completed
+        status === Status.PENDING
           ? "border-t-green-500"
-          : status === Status.InCompleted
+          : status === Status.CANCELED
           ? "border-t-red-500"
-          : status === Status.Onprogress
+          : status === Status.IN_PROGRESS
           ? "border-t-yellow-500"
           : "border-t-colors-main",
       ])}
@@ -93,11 +95,11 @@ export const CardActivity: React.FC<CardActivityProps> = ({
         <span
           className={classcat([
             "rounded-lg px-2 text-white",
-            status === Status.Completed
+            status === Status.PENDING
               ? "bg-green-500"
-              : status === Status.InCompleted
+              : status === Status.CANCELED
               ? "bg-red-500"
-              : status === Status.Onprogress
+              : status === Status.IN_PROGRESS
               ? "bg-yellow-500"
               : "bg-colors-main",
           ])}
