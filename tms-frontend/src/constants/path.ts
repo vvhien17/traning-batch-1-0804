@@ -4,6 +4,7 @@ const PATH = {
   home: "/",
   activities: "/activities",
   visualize: "/visualize",
+  goal: "/goal",
 };
 
 export default PATH;
