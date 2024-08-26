@@ -13,6 +13,7 @@ export enum ErrorMessage {
   GOAL_NOT_FOUND = 'Goals not found',
   VALIDATION_FAILED = 'Validation failed',
   IS_REQUIRED = 'is required',
+  DATA_NOT_FOUND = 'Data not found',
   MUST_GREATER_THAN = 'must greater than',
 }
 

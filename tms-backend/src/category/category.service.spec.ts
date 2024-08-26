@@ -5,9 +5,10 @@ import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
-import { ErrorMessage } from '../common/utils/message-const';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { User } from '../user/entities/user.entity';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -20,6 +21,7 @@ describe('CategoryService', () => {
     create: jest.fn(),
     save: jest.fn(),
     findOne: jest.fn(),
+    update: jest.fn(),
   };
   const mockUserRepository = () => ({
     findOne: jest.fn(),
@@ -57,7 +59,7 @@ describe('CategoryService', () => {
           { id: 2, name: 'Category2', userId: 1 },
         ],
         isSuccess: true,
-        message: 'Category found successfully',
+        message: SuccessMessage.GET_DATA_SUCCESS,
       } as BaseResponse;
 
       mockCategoryRepository.find.mockResolvedValue(mockCategories.data);
@@ -84,47 +86,134 @@ describe('CategoryService', () => {
     it('should create and return a new category', async () => {
       const createCategoryDto: CreateCategoryDto = {
         name: 'New Category',
-        userId: 1,
       };
-
+      const userId = 1;
       const user = new User();
-      user.id = createCategoryDto.userId;
+      user.id = 1;
 
       const category = new Category();
       category.id = 1;
       category.name = createCategoryDto.name;
-      category.userId = createCategoryDto.userId;
+      category.userId = userId;
 
       const expectedResponse: BaseResponse = {
         data: category,
         isSuccess: true,
-        message: 'Category created successfully',
+        message: SuccessMessage.CREATE_DATA_SUCCESS,
       };
 
       userRepository.findOne = jest.fn().mockResolvedValue(user);
       repository.create = jest.fn().mockReturnValue(category);
       repository.save = jest.fn().mockResolvedValue(category);
 
-      expect(await service.create(createCategoryDto)).toEqual(expectedResponse);
+      expect(await service.create(createCategoryDto, userId)).toEqual(
+        expectedResponse,
+      );
     });
 
     it('should return error if user is not found', async () => {
       const createCategoryDto: CreateCategoryDto = {
         name: 'New Category',
-        userId: 999, // Assuming this ID does not exist
       };
 
       const expectedResponse: BaseResponse = {
         data: null,
         isSuccess: false,
-        message: 'User not found',
+        message: ErrorMessage.USER_NOT_FOUND,
       };
 
       userRepository.findOne = jest.fn().mockResolvedValue(null);
 
-      expect(await service.create(createCategoryDto)).toEqual(expectedResponse);
+      expect(await service.create(createCategoryDto, 9999)).toEqual(
+        expectedResponse,
+      );
     });
 
     // Add additional tests as needed
+  });
+  describe('update', () => {
+    it('should return error if user is not found when update category', async () => {
+      const userId = 999;
+      const updateDto: UpdateCategoryDto = {
+        id: 1,
+        name: 'New Category 2',
+      };
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.DATA_NOT_FOUND,
+      );
+      userRepository.findOne = jest.fn().mockResolvedValue(null);
+      const result = await service.updateCategory(updateDto, userId);
+      expect(result).toBeDefined();
+      expect(result).toEqual(expectedResponse);
+    });
+    it('should return error if category is not found when update category', async () => {
+      const userId = 999;
+      const updateDto: UpdateCategoryDto = {
+        id: 1,
+        name: 'New Category 2',
+      };
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.DATA_NOT_FOUND,
+      );
+      repository.findOne = jest.fn().mockResolvedValue(null);
+      const result = await service.updateCategory(updateDto, userId);
+      expect(result).toBeDefined();
+      expect(result).toEqual(expectedResponse);
+    });
+    it('should return error if userId and categoryId not found when update category', async () => {
+      const userId = 999;
+      const updateDto: UpdateCategoryDto = {
+        id: 1,
+        name: 'New Category 2',
+      };
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.DATA_NOT_FOUND,
+      );
+
+      userRepository.findOne = jest.fn().mockResolvedValue(null);
+      repository.findOne = jest.fn().mockResolvedValue(null);
+      const result = await service.updateCategory(updateDto, userId);
+      expect(result).toBeDefined();
+      expect(result).toEqual(expectedResponse);
+    });
+    it('show return error if category name is empty', async () => {
+      const userId = 1;
+      const updateDto: UpdateCategoryDto = {
+        id: 1,
+        name: '',
+      };
+      const expectedResponse: BaseResponse = buildError(
+        `Name ${ErrorMessage.IS_REQUIRED}`,
+      );
+
+      const result = await service.updateCategory(updateDto, userId);
+      expect(result).toBeDefined();
+      expect(result).toEqual(expectedResponse);
+    });
+    it('should return success if category is updated successfully', async () => {
+      const categoryId = 1;
+      const userId = 1;
+      const updateDto: UpdateCategoryDto = {
+        id: categoryId,
+        name: 'Updated Category',
+      };
+      const expectedResponse: BaseResponse = {
+        data: {
+          ...updateDto,
+          userId,
+        },
+        isSuccess: true,
+        message: SuccessMessage.CREATE_DATA_SUCCESS,
+      };
+      const category = new Category();
+      category.id = categoryId;
+      category.name = updateDto.name;
+      category.userId = userId;
+      repository.findOne = jest.fn().mockResolvedValue(category);
+      repository.save = jest.fn().mockResolvedValue(category);
+      const result = await service.updateCategory(updateDto, userId);
+      expect(result).toBeDefined();
+      expect(result).toEqual(expectedResponse);
+    });
   });
 });
