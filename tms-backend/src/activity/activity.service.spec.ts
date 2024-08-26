@@ -11,6 +11,7 @@ import { User } from '../user/entities/user.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Category } from '../category/entities/category.entity';
+import { ActivityStatus } from '../common/constant/activity-status';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -20,6 +21,7 @@ const mockActivities = [
     name: 'Activity 1',
     userId: 1,
     categoryId: 1,
+    status: ActivityStatus.PENDING,
     createdAt: currentDate,
     updatedAt: currentDate,
     startedAt: currentDate,
@@ -35,6 +37,7 @@ const mockActivities = [
     updatedAt: currentDate,
     startedAt: currentDate,
     endedAt: currentDate,
+    status: ActivityStatus.PENDING,
     isDelete: false,
   },
 ] as Activity[];
@@ -306,6 +309,7 @@ describe('ActivitiesController', () => {
       id: 1,
       name: 'Activity change',
       startedAt: newStartedAt,
+      status: ActivityStatus.COMPLETED,
       endedAt: newEndedAt,
       categoryId: 2,
       description: 'Description change',
@@ -322,22 +326,34 @@ describe('ActivitiesController', () => {
       jest
         .spyOn(categoryRepository, 'save')
         .mockResolvedValue(categoryMockUpdate);
-
       jest
         .spyOn(activityRepository, 'findOne')
         .mockResolvedValue(mockActivities[0] as Activity);
-      const updatedActivity = { ...mockActivities[0], ...updateActivityDto };
+
+      jest
+        .spyOn(activityRepository, 'save')
+        .mockResolvedValue(updateActivityDto as Activity);
+      const result: BaseResponse = await service.update(updateActivityDto);
+
+      expect(result.data).toEqual(updateActivityDto as Activity);
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toEqual(SuccessMessage.UPDATE_DATA_SUCCESS);
+    });
+
+    it('Update only activity status', async () => {
+      // change activity to canceled
+      const updatedActivity = { id: 1, status: ActivityStatus.CANCELED };
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue({
+        status: ActivityStatus.CANCELED,
+        ...mockActivities[0],
+      } as Activity);
       jest
         .spyOn(activityRepository, 'save')
         .mockResolvedValue(updatedActivity as Activity);
+
       const result: BaseResponse = await service.update(updateActivityDto);
 
-      expect(result.data).toEqual({
-        ...updatedActivity,
-        userId: userId,
-        updatedAt: expect.any(Date),
-        createdAt: mockActivities[0].createdAt,
-      } as Activity);
+      expect(result.data).toEqual(updatedActivity as Activity);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.UPDATE_DATA_SUCCESS);
     });
@@ -387,6 +403,9 @@ describe('ActivitiesController', () => {
     });
 
     it('Update activity to new category that not exist', async () => {
+      jest
+        .spyOn(activityRepository, 'findOne')
+        .mockResolvedValue(mockActivities[0] as Activity);
       const result: BaseResponse = await service.update({
         ...updateActivityDto,
         categoryId: 100,
