@@ -2,88 +2,60 @@
 import Button from "@components/components/button";
 import Container from "@components/components/container";
 import GoalCard from "./components/GoalCard";
+import { useGetGoal } from "@components/query/goal/queryHooks";
+import Popup from "@components/components/popup/Popup";
+import React, { useState } from "react";
+import FormAddGoal from "./components/FormAddGoal";
+import Loader from "@components/components/loader";
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 
 export default function GoalPage() {
+  const { data, isLoading } = useGetGoal();
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleCreateNewGoal = () => {
-    console.log("create new goal");
+    setIsOpen(true);
   };
 
   return (
-    <div>
-      <Container className="pt-10 pb-14">
-        <div className="flex justify-between items-center pb-4 mb-6">
-          <div className="text-3xl font-bold">Your goal</div>
-          <Button
-            className="w-max"
-            name="Create new goal"
-            onClick={handleCreateNewGoal}
-          />
+    <Container className="pt-10 pb-14">
+      <div className="flex justify-between items-center pb-4 mb-6">
+        <div className="text-3xl font-bold">Your goal</div>
+        <Button
+          className="w-max"
+          name="Create new goal"
+          onClick={handleCreateNewGoal}
+        />
+      </div>
+      {data && data.length >= 1 ? (
+        <React.Fragment>
+          {isLoading ? (
+            <div className="flex h-[20vh] justify-center items-center">
+              <Loader />
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-4">
+              {data?.map((item) => (
+                <GoalCard key={item.id} {...item} />
+              ))}
+            </div>
+          )}
+        </React.Fragment>
+      ) : (
+        <div className="flex items-center gap-2 text-gray-500">
+          <ExclamationCircleIcon className="size-5" />
+          <span>No data activity</span>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          {GOALS.map((item) => (
-            <GoalCard key={item.id} {...item} />
-          ))}
-        </div>
-      </Container>
-    </div>
+      )}
+
+      <Popup
+        title="Create New Activities"
+        open={isOpen}
+        setOpen={() => setIsOpen(true)}
+      >
+        <FormAddGoal setIsOpen={() => setIsOpen(false)} />
+      </Popup>
+    </Container>
   );
 }
-
-const GOALS = [
-  {
-    id: 1,
-    name: "Goal 1",
-    time: "25/08/2024 - 27/08/2024",
-    activities: [
-      {
-        id: 1,
-        name: "Activity 1",
-        time: "25/08/2024 - 27/08/2024",
-        category: "category 1",
-        description: "description 1",
-      },
-      {
-        id: 2,
-        name: "Activity 2",
-        time: "25/08/2024 - 27/08/2024",
-        category: "category 2",
-        description: "description 2",
-      },
-      {
-        id: 3,
-        name: "Activity 3",
-        time: "25/08/2024 - 27/08/2024",
-        category: "category 3",
-        description: "description 3",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Goal 2",
-    time: "25/08/2024 - 27/08/2024",
-    activities: [
-      {
-        id: 1,
-        name: "Activity 1",
-        time: "25/08/2024 - 27/08/2024",
-        category: "category 1",
-        description: "description 1",
-      },
-      {
-        id: 2,
-        name: "Activity 2",
-        time: "25/08/2024 - 27/08/2024",
-        category: "category 2",
-        description: "description 2",
-      },
-      {
-        id: 3,
-        name: "Activity 3",
-        time: "25/08/2024 - 27/08/2024",
-        category: "category 3",
-        description: "description 3",
-      },
-    ],
-  },
-];
