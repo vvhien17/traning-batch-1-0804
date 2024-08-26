@@ -10,6 +10,7 @@ import { buildError } from '../common/utils/Utility';
 import { User } from '../user/entities/user.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { Category } from '../category/entities/category.entity';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -18,6 +19,7 @@ const mockActivities = [
     id: 1,
     name: 'Activity 1',
     userId: 1,
+    categoryId: 1,
     createdAt: currentDate,
     updatedAt: currentDate,
     startedAt: currentDate,
@@ -35,7 +37,16 @@ const mockActivities = [
     endedAt: currentDate,
     isDelete: false,
   },
-];
+] as Activity[];
+
+const mockCategory = {
+  id: 1,
+  name: 'Category mock',
+  userId: 1,
+  createdAt: currentDate,
+  updatedAt: currentDate,
+} as Category;
+
 const mockDataUser: User = {
   id: 1,
   email: 'test@example.com',
@@ -46,12 +57,13 @@ const mockDataUser: User = {
   categories: [],
   activities: [],
   goals: [],
-};
+} as User;
 
 describe('ActivitiesController', () => {
   let service: ActivityService;
   let activityRepository: Repository<Activity>;
   let userRepository: Repository<User>;
+  let categoryRepository: Repository<Category>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -72,6 +84,14 @@ describe('ActivitiesController', () => {
             findOne: jest.fn().mockResolvedValue(mockDataUser as User),
           },
         },
+        {
+          provide: getRepositoryToken(Category),
+          useValue: {
+            create: jest.fn().mockReturnValue(mockCategory as Category),
+            save: jest.fn().mockResolvedValue(mockCategory as Category),
+            findOne: jest.fn().mockResolvedValue(mockCategory as Category),
+          },
+        },
       ],
     }).compile();
     service = module.get<ActivityService>(ActivityService);
@@ -79,19 +99,23 @@ describe('ActivitiesController', () => {
       getRepositoryToken(Activity),
     );
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    categoryRepository = module.get<Repository<Category>>(
+      getRepositoryToken(Category),
+    );
   });
 
   it('Activity service should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('user find all activity', () => {
+  describe('User find all activity', () => {
     it('should return an array of activities for a specific user', async () => {
-      jest
-        .spyOn(activityRepository, 'find')
-        .mockResolvedValue(mockActivities as Activity[]);
+      const returnActivity = [
+        { ...mockActivities[0], categoryName: mockCategory.name },
+        { ...mockActivities[1], categoryName: null },
+      ];
       const activities = await service.findAll(1);
-      expect(activities.data).toEqual(mockActivities);
+      expect(activities.data).toEqual(returnActivity);
     });
 
     it('should return an empty array if the user has no activities', async () => {
@@ -101,13 +125,14 @@ describe('ActivitiesController', () => {
     });
   });
 
-  describe('user find activity by activityId', () => {
+  describe('User find activity by activityId', () => {
     it('should return an activity for a specific user', async () => {
-      jest
-        .spyOn(activityRepository, 'findOne')
-        .mockResolvedValue(mockActivities[0] as Activity);
+      const returnActivity = {
+        ...mockActivities[0],
+        categoryName: mockCategory.name,
+      };
       const activity = await service.findOne(1, 1);
-      expect(activity.data).toEqual(mockActivities[0]);
+      expect(activity.data).toEqual(returnActivity);
     });
 
     it('should return message not found if the user does not exist', async () => {
@@ -122,16 +147,6 @@ describe('ActivitiesController', () => {
       await expect(service.findOne(3, 1)).rejects.toThrow(
         new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND),
       );
-    });
-  });
-
-  describe('user find activity by activityId', () => {
-    it('should return an activity for a specific user', async () => {
-      jest
-        .spyOn(activityRepository, 'findOne')
-        .mockResolvedValue(mockActivities[0] as Activity);
-      const activity = await service.findOne(1, 1);
-      expect(activity.data).toEqual(mockActivities[0]);
     });
   });
 
@@ -170,6 +185,17 @@ describe('ActivitiesController', () => {
       expect(result.data).toEqual(mockActivities as Activity);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
+    });
+
+    it('create a new activity enough require but not exist category', async () => {
+      const result: BaseResponse = await service.create(userId, {
+        ...activityDto,
+        description: null,
+        categoryId: 2,
+      });
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(ErrorMessage.CATEGORY_NOT_FOUND);
     });
 
     it('create a new activity enough require with description', async () => {
@@ -284,8 +310,19 @@ describe('ActivitiesController', () => {
       categoryId: 2,
       description: 'Description change',
     };
+    const categoryMockUpdate = {
+      id: 2,
+      name: 'Category mock to update',
+      userId: 1,
+      createdAt: currentDate,
+      updatedAt: currentDate,
+    } as Category;
 
-    it.only('Update activity with valid data', async () => {
+    it('Update activity with valid data', async () => {
+      jest
+        .spyOn(categoryRepository, 'save')
+        .mockResolvedValue(categoryMockUpdate);
+
       jest
         .spyOn(activityRepository, 'findOne')
         .mockResolvedValue(mockActivities[0] as Activity);
@@ -294,6 +331,7 @@ describe('ActivitiesController', () => {
         .spyOn(activityRepository, 'save')
         .mockResolvedValue(updatedActivity as Activity);
       const result: BaseResponse = await service.update(updateActivityDto);
+
       expect(result.data).toEqual({
         ...updatedActivity,
         userId: userId,
@@ -346,6 +384,16 @@ describe('ActivitiesController', () => {
       expect(result.data).toEqual(null);
       expect(result.isSuccess).toBe(false);
       expect(result.message).toEqual(ErrorMessage.ACTIVITY_NOT_FOUND);
+    });
+
+    it('Update activity to new category that not exist', async () => {
+      const result: BaseResponse = await service.update({
+        ...updateActivityDto,
+        categoryId: 100,
+      });
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(ErrorMessage.CATEGORY_NOT_FOUND);
     });
   });
 });
