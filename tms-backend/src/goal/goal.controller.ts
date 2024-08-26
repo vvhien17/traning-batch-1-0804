@@ -13,15 +13,18 @@ import { GoalService } from './goal.service';
 import { CreateGoalDto } from './dto/create-goal.dto';
 import { UpdateGoalDto } from './dto/update-goal.dto';
 import { AuthGuard } from '../middleware/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('goal')
 @UseGuards(AuthGuard)
+@ApiBearerAuth()
 export class GoalController {
   constructor(private readonly goalService: GoalService) {}
 
   @Post()
-  create(@Body() createGoalDto: CreateGoalDto) {
-    return this.goalService.create(createGoalDto);
+  create(@Request() req, @Body() createGoalDto: CreateGoalDto) {
+    const userId = req.user.id;
+    return this.goalService.create(createGoalDto, userId);
   }
 
   @Get(':id')

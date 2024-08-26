@@ -17,13 +17,8 @@ export class CreateGoalDto {
   @IsDateString()
   endedTime: Date;
 
-  @ApiProperty({})
-  @IsNotEmpty()
-  @IsString()
-  status: string;
-
-  @ApiProperty({})
-  @IsNotEmpty()
-  @IsInt()
-  userId: number;
+  // @ApiProperty({})
+  // @IsNotEmpty()
+  // @IsString()
+  // status: string;
 }
