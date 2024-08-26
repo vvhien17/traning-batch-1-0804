@@ -191,6 +191,9 @@ describe('ActivitiesController', () => {
     });
 
     it('create a new activity enough require but not exist category', async () => {
+      jest
+        .spyOn(categoryRepository, 'findOne')
+        .mockResolvedValue(null);
       const result: BaseResponse = await service.create(userId, {
         ...activityDto,
         description: null,
@@ -412,8 +415,8 @@ describe('ActivitiesController', () => {
 
     it('Update activity to new category that not exist', async () => {
       jest
-        .spyOn(activityRepository, 'findOne')
-        .mockResolvedValue(mockActivities[0] as Activity);
+        .spyOn(categoryRepository, 'findOne')
+        .mockResolvedValue(null);
       const result: BaseResponse = await service.update(userId, {
         ...updateActivityDto,
         categoryId: 100,
