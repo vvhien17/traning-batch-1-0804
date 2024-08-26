@@ -433,6 +433,7 @@ describe('ActivitiesController', () => {
 
   describe('User delete activity', () => {
     it('Delete succes', async () => {
+      jest.spyOn(activityRepository, 'findOne').mockResolvedValue(mockActivities[0] as Activity);
       const deleteId = mockActivities[0].id;
       const activity = await service.delete(1, userId);
       const returnActivity = {
@@ -446,16 +447,18 @@ describe('ActivitiesController', () => {
 
     it('should return error if the user does not exist', async () => {
       jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
-      await expect(service.delete(1, 2)).rejects.toThrow(
-        new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND),
-      );
+      const result: BaseResponse = await service.delete(1, 2);
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(ErrorMessage.ACTIVITY_NOT_FOUND);
     });
 
     it('should return error if the activity does not exist', async () => {
       jest.spyOn(activityRepository, 'findOne').mockResolvedValue(null);
-      await expect(service.delete(3, 1)).rejects.toThrow(
-        new BadRequestException(ErrorMessage.ACTIVITY_NOT_FOUND),
-      );
+      const result: BaseResponse = await service.delete(3, 1);
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(ErrorMessage.ACTIVITY_NOT_FOUND);
     });
   });
 });

@@ -22,7 +22,7 @@ export class ActivityService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) {}
+  ) { }
 
   async create(
     userId: number,
@@ -169,11 +169,22 @@ export class ActivityService {
       message: SuccessMessage.UPDATE_DATA_SUCCESS,
     };
   }
-  delete(id: number, userId: number) {
+  async delete(id: number, userId: number) {
+    const checkActivity = await this.activityRepository.findOne({
+      where: { id: id, userId: userId },
+    })
+    if (!checkActivity) {
+      return buildError(ErrorMessage.ACTIVITY_NOT_FOUND);
+    }
+    checkActivity.isDelete = true;
+    const updatedActivity = await this.activityRepository.save(checkActivity);
     return {
-      data: null,
-      isSuccess: false,
-      message: ErrorMessage.BAD_REQUEST,
+      data: {
+        id: checkActivity.id,
+        isDelete: true,
+      },
+      isSuccess: true,
+      message: SuccessMessage.DELETE_DATA_SUCCESS,
     };
   }
 }
