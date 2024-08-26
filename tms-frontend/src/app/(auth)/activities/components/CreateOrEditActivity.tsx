@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { TypeErrorResponse } from "@components/types/types";
 import Popup from "@components/components/popup/Popup";
 import CreateCategory from "./CreateCategory";
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 const AddOrEditActivitySchema = z.object({
   name: z.string().min(1, "Name must be at least 1 character"),
@@ -42,6 +43,11 @@ export default function CreateOrEditActivityDrawer({
   const { mutate: createActivity } = activityQuery.mutation.useCreateActivity();
   const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
 
+  const categoryOptions = categories?.data?.map((category) => ({
+    value: category.id.toString(),
+    label: category.name,
+  }));
+
   const { handleSubmit, register, formState, setValue, reset } =
     useForm<AddOrEditActivityForm>({
       defaultValues: {
@@ -58,13 +64,14 @@ export default function CreateOrEditActivityDrawer({
         {
           ...data,
           id: editItem.id,
+          categoryId: +(data.category || 0),
           startedAt: startDate.toISOString(),
           endedAt: endDate.toISOString(),
         },
         {
           onSuccess: (data) => {
             toast(data.message, {
-              type: "success",
+              type: data.isSuccess ? "success" : "error",
             });
             setOpen(false);
           },
@@ -80,6 +87,7 @@ export default function CreateOrEditActivityDrawer({
       createActivity(
         {
           ...data,
+          categoryId: +(data.category || 0),
           startedAt: startDate.toISOString(),
           endedAt: endDate.toISOString(),
         },
@@ -87,7 +95,7 @@ export default function CreateOrEditActivityDrawer({
           onSuccess: (data) => {
             reset();
             toast(data.message, {
-              type: "success",
+              type: data.isSuccess ? "success" : "error",
             });
             setOpen(false);
           },
@@ -105,8 +113,6 @@ export default function CreateOrEditActivityDrawer({
     if (editItem) {
       setValue("name", editItem.name);
       setValue("description", editItem.description);
-      //   setValue("startDate", editItem.startDate);
-      //   setValue("endDate", editItem.endDate);
       setValue("category", editItem.category);
     }
   }, [editItem, setValue]);
@@ -163,25 +169,16 @@ export default function CreateOrEditActivityDrawer({
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-700 mb-1">Category</p>
-            <div>
+            <div className="flex items-center gap-2">
               <Select
                 name="category"
                 register={register}
                 placeholder="Select category"
-                options={[
-                  {
-                    value: "1",
-                    label: "Category 1",
-                  },
-                  {
-                    value: "2",
-                    label: "Category 2",
-                  },
-                ]}
+                options={categoryOptions || []}
                 error={formState.errors.category?.message}
               />
               <button type="button" onClick={() => setOpenPopup(true)}>
-                Add
+                <PlusIcon className="text-black w-4 h-4" />
               </button>
             </div>
           </div>

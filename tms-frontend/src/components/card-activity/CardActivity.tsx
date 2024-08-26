@@ -7,21 +7,26 @@ import {
 import classcat from "classcat";
 import React, { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
+import Popup from "../popup/Popup";
+import { activityQuery } from "@components/hooks/activity";
+import { toast } from "react-toastify";
+import { TypeErrorResponse } from "@components/types/types";
 
 export type TStatus = "completed" | "on-progress" | "in-completed";
 
 interface CardActivityProps {
+  id: number;
   title: string;
   description: string;
   startedAt: string;
   endedAt: string;
-  categoryName: string;
+  categoryName?: string;
   status: TStatus;
   onEdit: () => void;
-  onDelete: () => void;
 }
 
 export const CardActivity: React.FC<CardActivityProps> = ({
+  id,
   title,
   description,
   startedAt,
@@ -29,11 +34,30 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   categoryName,
   status,
   onEdit,
-  onDelete,
 }) => {
   const [isEllipsisActive, setIsEllipsisActive] = useState<boolean>(false);
   const [showTooltip, setShowTooltip] = useState<boolean>(false);
+  const [openPopup, setOpenPopup] = useState<boolean>(false);
   const descriptionRef = useRef<HTMLParagraphElement | null>(null);
+
+  const { mutate: deleteActivity } = activityQuery.mutation.useDeleteActivity();
+
+  const handleDelete = () => {
+    deleteActivity(id.toString(), {
+      onSuccess: (data) => {
+        toast(data.message, {
+          type: "success",
+        });
+      },
+      onError: (error: any) => {
+        const _error: TypeErrorResponse = error;
+        toast(_error.response.data.message, {
+          type: "error",
+        });
+      },
+    });
+    setOpenPopup(false);
+  };
 
   useEffect(() => {
     const checkEllipsis = () => {
@@ -112,11 +136,32 @@ export const CardActivity: React.FC<CardActivityProps> = ({
           <button onClick={onEdit} aria-label="Edit activity">
             <PencilSquareIcon className="size-5 text-black-500" />
           </button>
-          <button onClick={onDelete} className="px-3 py-1">
+          <button onClick={() => setOpenPopup(true)} className="px-3 py-1">
             <TrashIcon className="size-5 text-red-500" />
           </button>
         </div>
       </div>
+      <Popup open={openPopup} title="Delete activity" setOpen={setOpenPopup}>
+        <div className="flex flex-col gap-4">
+          <p className="text-sm font-semibold text-gray-700">
+            Are you sure you want to delete this activity?
+          </p>
+          <div className="flex gap-4">
+            <button
+              className="px-3 py-1 bg-red-500 text-white rounded-md"
+              onClick={handleDelete}
+            >
+              Yes
+            </button>
+            <button
+              className="px-3 py-1 bg-gray-200 text-black rounded-md"
+              onClick={() => setOpenPopup(false)}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 };
