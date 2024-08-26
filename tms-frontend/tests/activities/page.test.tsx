@@ -5,14 +5,16 @@ import ActivitiesPage from "@components/app/(auth)/activities/page";
 import userEvent from "@testing-library/user-event";
 import { TStatus } from "@components/components/card-activity/CardActivity";
 import { CardActivity } from "@components/components/card-activity"
+import CreateOrEditActivityDrawer from "@components/app/(auth)/activities/components/CreateOrEditActivity";
 
 describe("ActivitiesPage", () => {
   const queryClient = new QueryClient();
 
   const mockOnEdit = jest.fn();
   const mockOnDelete = jest.fn();
+  const mockOnOpen = jest.fn();
 
-  const defaultProps = {
+  const mockCardActivityProps = {
     title: "Sample Activity",
     description: "This is a sample activity description.",
     startedAt: "2024-08-26T08:30:00Z",
@@ -23,15 +25,34 @@ describe("ActivitiesPage", () => {
     onDelete: mockOnDelete,
   };
 
+  const mockEditActivityDrawerProps = {
+    open: true,
+    setOpen: mockOnOpen,
+    editItem: {
+      id: 1,
+      name: 'Doing homework',
+      description: 'Description....',
+      category: 'Daily'
+    }
+  }
+
   beforeEach(() => {
     mockOnEdit.mockClear();
     mockOnDelete.mockClear();
+    mockOnOpen.mockClear();
   });
 
   const renderComponent = () =>
     render(
       <QueryClientProvider client={queryClient}>
         <ActivitiesPage />
+      </QueryClientProvider>
+    );
+  const renderDetailComponent = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <CardActivity {...mockCardActivityProps} />
+        <CreateOrEditActivityDrawer {...mockEditActivityDrawerProps} />
       </QueryClientProvider>
     );
 
@@ -58,23 +79,20 @@ describe("ActivitiesPage", () => {
     expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
   });
 
-  // it("opens the edit activity drawer when 'Edit' button in activity card is clicked", async () => {
-  //   renderComponent()
-  //   render(<CardActivity {...defaultProps} />);
+  it("opens the edit activity drawer when 'Edit' button in activity card is clicked", async () => {
+    renderDetailComponent()
 
-  //   const editButton = screen.getByRole('button', { name: /edit activity/i });
-  //   const text = screen.getByText(/name/i)
-  //   console.log(text, 'text')
-  //   await userEvent.click(editButton);
+    const editButton = screen.getByRole('button', { name: /edit activity/i });
+    await userEvent.click(editButton);
 
-  //   expect(screen.getByText(/edit activity/i)).toBeInTheDocument();
-  //   expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
-  //   expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
-  //   expect(screen.getByText(/start date/i)).toBeInTheDocument();
-  //   expect(screen.getByText(/end date/i)).toBeInTheDocument();
-  //   expect(screen.getByText("Category")).toBeInTheDocument();
-  //   expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
-  // });
+    expect(screen.getByText(/edit activity/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
+    expect(screen.getByText(/start date/i)).toBeInTheDocument();
+    expect(screen.getByText(/end date/i)).toBeInTheDocument();
+    expect(screen.getByText("Category")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
+  });
 
   it("shows validation errors in the CreateOrEditActivityDrawer when fields are empty", async () => {
     renderComponent();
