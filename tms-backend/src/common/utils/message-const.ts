@@ -15,6 +15,7 @@ export enum ErrorMessage {
   IS_REQUIRED = 'is required',
   DATA_NOT_FOUND = 'Data not found',
   MUST_GREATER_THAN = 'must greater than',
+  INVALID_DATE = 'Invalid date',
 }
 
 export enum SuccessMessage {
