@@ -13,7 +13,6 @@ export const ListContent: React.FC<ListContentProps> = ({}) => {
   const [open, setOpen] = useState(false);
   const { data: activitiesData } = activityQuery.query.useGetActivities({});
   const activities = activitiesData?.data || [];
-  console.log({ activities });
 
   const handleEdit = (item: TActivity) => () => {
     setEditItem(item);

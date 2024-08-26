@@ -12,7 +12,7 @@ export default function GoalPage() {
     <div>
       <Container className="pt-10 pb-14">
         <div className="flex justify-between items-center pb-4 mb-6">
-          <div className="text-3xl font-bold">Your goal</div>
+          <div className="text-3xl font-bold">Your Goals</div>
           <Button
             className="w-max"
             name="Create new goal"
