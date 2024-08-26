@@ -69,7 +69,10 @@ export class GoalService {
       if (!user) {
         return buildError(ErrorMessage.USER_NOT_FOUND);
       }
-      const goals = await this.goalRepository.find({ where: { userId } });
+      const goals = await this.goalRepository.find({
+        where: { userId },
+        relations: ['goalOnActivities', 'goalOnActivities.activity'],
+      });
       if (!goals) {
         return buildError(ErrorMessage.GOAL_NOT_FOUND);
       }
