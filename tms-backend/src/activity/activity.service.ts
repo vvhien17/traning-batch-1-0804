@@ -11,6 +11,7 @@ import { User } from '../user/entities/user.entity';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
+import { Category } from '../category/entities/category.entity';
 
 @Injectable()
 export class ActivityService {
@@ -19,7 +20,9 @@ export class ActivityService {
     private readonly activityRepository: Repository<Activity>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+  ) { }
 
   async create(
     userId: number,
@@ -31,6 +34,17 @@ export class ActivityService {
     const errors = await validate(activityDto);
     if (errors.length) {
       return buildError(getCustomErrorMessage(errors[0]));
+    }
+
+    if (createActivityDto.categoryId) {
+      const checkCategory = await this.categoryRepository.findOne({
+        where: { id: createActivityDto.categoryId, userId: userId },
+      })
+      if (!checkCategory) {
+        return buildError(
+          ErrorMessage.CATEGORY_NOT_FOUND,
+        );
+      }
     }
 
     if (startedAt >= endedAt) {
@@ -60,6 +74,14 @@ export class ActivityService {
   async findAll(userId: number) {
     const result = await this.activityRepository.find({
       where: { userId: userId },
+      relations: ['category'],
+      select: {
+        id: true,
+        name: true,
+        category: {
+          name: true,
+        },
+      },
     });
     return {
       data: result,
@@ -71,9 +93,13 @@ export class ActivityService {
   async findOne(id: number, userId: number) {
     const result = await this.activityRepository.findOne({
       where: { id: id, userId: userId },
-      relations: {
-        category: false,
-        user: false,
+      relations: ['category'],
+      select: {
+        id: true,
+        name: true,
+        category: {
+          name: true,
+        },
       },
     });
     if (!result) {
@@ -86,14 +112,27 @@ export class ActivityService {
     };
   }
 
-  async update(updateActivityDto: UpdateActivityDto): Promise<BaseResponse> {
+  async update(
+    userId: number,
+    updateActivityDto: UpdateActivityDto,
+  ): Promise<BaseResponse> {
     const activityDto = plainToInstance(UpdateActivityDto, updateActivityDto);
     const errors = await validate(activityDto);
     if (errors.length) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
+    if (updateActivityDto.categoryId) {
+      const checkCategory = await this.categoryRepository.findOne({
+        where: { id: updateActivityDto.categoryId, userId: userId },
+      })
+      if (!checkCategory) {
+        return buildError(
+          ErrorMessage.CATEGORY_NOT_FOUND,
+        );
+      }
+    }
     const checkActivity = await this.activityRepository.findOne({
-      where: { id: updateActivityDto.id },
+      where: { id: updateActivityDto.id, userId: userId },
     });
 
     if (checkActivity) {

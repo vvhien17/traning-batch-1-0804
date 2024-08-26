@@ -10,6 +10,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import { ActivityStatus } from '../../common/constant/activity-status';
 
 @Entity()
 export class Activity {
@@ -27,6 +28,8 @@ export class Activity {
   endedAt: Date;
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
+  @Column({ default: ActivityStatus.PENDING })
+  status: string;
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
   @UpdateDateColumn({ type: 'timestamp' })
