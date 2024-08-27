@@ -23,18 +23,23 @@ export class DashboardService {
       relations: ['category'],
     });
 
-    if (activities.length === 0) {
+    const filteredActivities = activities.filter(
+      (activity) => activity.category !== null,
+    );
+
+    if (filteredActivities.length === 0) {
       return buildError(ErrorMessage.ACTIVITY_NOT_FOUND);
     }
 
-    const totalTime = activities.reduce((total, activity) => {
+    const totalTime = filteredActivities.reduce((total, activity) => {
       const timeSpent =
         new Date(activity.endedAt).getTime() -
         new Date(activity.startedAt).getTime();
       return total + timeSpent;
     }, 0);
 
-    const categoryTimes = activities.reduce(
+    // Aggregate time spent per category
+    const categoryTimes = filteredActivities.reduce(
       (acc, activity) => {
         const timeSpent =
           new Date(activity.endedAt).getTime() -
@@ -55,6 +60,8 @@ export class DashboardService {
         { categoryId: number; totalTime: number; name: string }
       >,
     );
+
+    console.log('categoryTimes', categoryTimes);
 
     const result: ResponseDashboard[] = Object.values(categoryTimes).map(
       (categoryTime) => ({
