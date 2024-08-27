@@ -4,7 +4,7 @@ import { ACCESS_TOKEN } from "./constants/common";
 
 const axiosClient = axios.create({
   // TODO: base url goes here
-  baseURL: process.env.API_URL || "http://3.81.121.212:3000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json;charset=utf-8",

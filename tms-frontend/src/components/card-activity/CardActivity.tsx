@@ -80,7 +80,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   return (
     <div
       className={classcat([
-        "border border-t-4 max-w-[400px] bg-white rounded-lg p-4 shadow-lg relative",
+        "border border-t-4 max-w-[400px] min-w-[400px] bg-white rounded-lg p-4 shadow-lg relative",
         status === Status.PENDING
           ? "border-t-green-500"
           : status === Status.CANCELED
