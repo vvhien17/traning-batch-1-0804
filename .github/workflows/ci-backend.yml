@@ -111,6 +111,14 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
+
+      # Upload the test report as an artifact
+      - name: Upload Test Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report # Name of the artifact
+          path: tms-backend/test-report.html # Path to the generated report
+
   deploy-report:
     name: Deploy Test Report to GitHub Pages
     runs-on: ubuntu-latest
