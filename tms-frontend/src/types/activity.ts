@@ -18,7 +18,7 @@ export type TGetActivityRequest = {
 export type TCreateActivityRequest = {
   name: string;
   description: string;
-  categoryId: number;
+  categoryId?: number;
   startedAt: string;
   endedAt: string;
 };
