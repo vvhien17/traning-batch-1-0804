@@ -74,7 +74,6 @@ export class CategoryService {
     }
     Object.assign(categoryDb, category);
     const data = await this.categoryRepository.save(categoryDb);
-    console.log(data);
     return {
       data: data,
       isSuccess: true,

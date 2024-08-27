@@ -42,7 +42,6 @@ export class GoalService {
     if (!userExists) {
       return buildError(ErrorMessage.USER_NOT_FOUND);
     }
-    console.log(userExists);
     try {
       const newGoal = this.goalRepository.create({
         name,
