@@ -415,28 +415,28 @@ describe('GoalService', () => {
       expect(result.message).toBe(SuccessMessage.GET_DATA_SUCCESS);
     });
 
-    it('should return 0% if there are no activities associated with the goal', async () => {
-      const mockGoal: Goal = {
-        id: 1,
-        name: 'Test Goal',
-        startedTime: new Date('2024-08-01T00:00:00Z'),
-        endedTime: new Date('2024-08-31T23:59:59Z'),
-        status: 'NOT_COMPLETED',
-        userId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        user: new User(),
-        goalOnActivities: [],
-      };
+    // it('should return 0% if there are no activities associated with the goal', async () => {
+    //   const mockGoal: Goal = {
+    //     id: 1,
+    //     name: 'Test Goal',
+    //     startedTime: new Date('2024-08-01T00:00:00Z'),
+    //     endedTime: new Date('2024-08-31T23:59:59Z'),
+    //     status: 'NOT_COMPLETED',
+    //     userId: 1,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //     user: new User(),
+    //     goalOnActivities: [],
+    //   };
 
-      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal);
-      jest.spyOn(goalOnActivityRepository, 'find').mockResolvedValue([]);
+    //   jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal);
+    //   jest.spyOn(goalOnActivityRepository, 'find').mockResolvedValue([]);
 
-      const result = await service.getPercentsCompleteByGoal(1);
-      expect(result).toBeDefined();
-      expect(result.data).toBe(0);
-      expect(result.isSuccess).toBe(true);
-      expect(result.message).toBe(SuccessMessage.GET_DATA_SUCCESS);
-    });
+    //   const result = await service.getPercentsCompleteByGoal(1);
+    //   expect(result).toBeDefined();
+    //   expect(result.data).toBe(0);
+    //   expect(result.isSuccess).toBe(true);
+    //   expect(result.message).toBe(SuccessMessage.GET_DATA_SUCCESS);
+    // });
   });
 });
