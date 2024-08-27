@@ -11,6 +11,10 @@ export type TActivity = {
   status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
 };
 
+export type TGetActivityRequest = {
+  categoryIds: number[]
+};
+
 export type TCreateActivityRequest = {
   name: string;
   description: string;

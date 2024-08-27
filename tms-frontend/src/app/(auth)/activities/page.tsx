@@ -1,60 +1,51 @@
 "use client";
 
-import React, { useContext, useState } from "react";
-import { Header } from "@components/components/header";
-import { Tabs } from "@components/components/tabs";
+import React, { useEffect, useState } from "react";
 import Button from "@components/components/button";
 import { ListContent } from "./components";
 import Container from "@components/components/container";
-import { SideMenu } from "@components/components/side-menu";
 import { MultipleSelect } from "@components/components/multiple-select";
 import CreateOrEditActivityDrawer from "./components/CreateOrEditActivity";
-import cookie from "@components/utils/cookie";
-import { ACCESS_TOKEN } from "@components/constants/common";
-import { GlobalContext } from "@components/context";
+import { activityQuery } from "@components/hooks/activity";
+import { useRouter, useSearchParams } from "next/navigation";
+import queryString from 'query-string'
 
 interface DetailsOption {
   value: string;
   label: string;
 }
 
-interface DetailsTab {
-  id: number;
-  label: string;
-  content: React.ReactNode;
-}
-
 export default function ActivitiesPage() {
-  const { setIsAuthenticated } = useContext(GlobalContext);
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [open, setOpen] = useState(false);
 
+  const { data: categories } = activityQuery.query.useGetCategories();
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const query = queryString.parse(searchParams.toString())
+
   const handleSelectChange = (selected: string[]) => {
     setSelectedOptions(selected);
-  };
-
-  const handleLogout = () => {
-    cookie.delete(ACCESS_TOKEN);
-    setIsAuthenticated(false);
+    const newQuery = { ...query, categories: selected }
+    router.push(`?${queryString.stringify(newQuery)}`)
   };
 
   const handleCreateNewActivity = () => {
     setOpen(true);
   };
 
-  const categoryOptions: DetailsOption[] = [
-    { value: "daily", label: "Daily" },
-    { value: "leisure", label: "Leisure" },
-    { value: "weekend", label: "Weekend" },
-  ];
-  const tabOptions: DetailsTab[] = [
-    {
-      id: 1,
-      label: "List",
-      content: <ListContent />,
-    },
-    { id: 2, label: "Visualization", content: <div>Visualization</div> },
-  ];
+  const categoryOptions: DetailsOption[] | undefined = categories?.data?.map((category) => ({
+    value: category.id.toString(),
+    label: category.name
+  }));
+
+  useEffect(() => {
+    const query = queryString.parse(searchParams.toString());
+
+    if (query.categories) {
+      setSelectedOptions(Array.isArray(query.categories) ? query.categories as string[] : [query.categories]);
+    }
+  }, [searchParams]);
 
   return (
     <div>
@@ -77,7 +68,6 @@ export default function ActivitiesPage() {
             />
           </div>
         </div>
-        {/* <Tabs tabs={tabOptions} /> */}
         <ListContent />
       </Container>
       <CreateOrEditActivityDrawer open={open} setOpen={setOpen} />
