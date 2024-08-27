@@ -12,6 +12,9 @@ import { CreateGoalDto } from './dto/create-goal.dto';
 import { buildError } from '../common/utils/Utility';
 import { Activity } from '../activity/entities/activity.entity';
 
+const now = new Date();
+const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000); // Adds 1 hour
+
 describe('GoalService', () => {
   let service: GoalService;
   let goalRepository: Repository<Goal>;
@@ -83,12 +86,15 @@ describe('GoalService', () => {
     jest.spyOn(goalRepository, 'save').mockResolvedValue(mockGoal);
     jest.spyOn(goalRepository, 'create').mockReturnValue(mockGoal);
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); // Mock user exists
+
     const dto: CreateGoalDto = {
       name: 'Valid Goal',
-      startedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
-      endedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
+      startedTime: now.toISOString(),
+      endedTime: oneHourLater.toISOString(),
     };
+
     const result: BaseResponse = await service.create(dto, 1);
+    console.log(result);
     expect(result).toBeDefined();
     expect(result.isSuccess).toEqual(true);
     expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
@@ -211,8 +217,8 @@ describe('GoalService', () => {
     const result: BaseResponse = await service.create(
       {
         name: 'Goal with Nonexistent User',
-        startedTime: '2200-07-31T23:59:59Z', // Past date
-        endedTime: '2200-08-31T23:59:59Z',
+        startedTime: now.toISOString(), // Past date
+        endedTime: oneHourLater.toISOString(),
       },
       9999,
     );
