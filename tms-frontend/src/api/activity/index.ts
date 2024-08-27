@@ -15,7 +15,7 @@ const activityApi = {
   getActivities: (params: {
     category?: string;
   }): Promise<TBaseResponse<TActivity[]>> =>
-    axiosClient.get("/activity", {
+    axiosClient.post("/activity/all", {
       params,
     }),
   getActivityById: (id: string): Promise<TBaseResponse<any>> =>

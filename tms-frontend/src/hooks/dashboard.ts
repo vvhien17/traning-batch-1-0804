@@ -8,8 +8,16 @@ const useGetDashboard = () => {
   });
 };
 
+const useGetSummaryTime = (option: "day" | "week") => {
+  return useQuery({
+    queryKey: ["summary-time", option],
+    queryFn: () => dashboardApi.getSummaryTime(option),
+  });
+};
+
 export const dashboardQuery = {
   query: {
     useGetDashboard,
+    useGetSummaryTime,
   },
 };
