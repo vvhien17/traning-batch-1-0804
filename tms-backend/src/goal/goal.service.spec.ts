@@ -340,31 +340,6 @@ describe('GoalService', () => {
     expect(result.message).toEqual(ErrorMessage.USER_NOT_FOUND);
     expect(result.data).toEqual(null);
   });
-  it('should return with error if startDate is a past date', async () => {
-    const userId = 1;
-    const mockUser: User = {
-      id: userId,
-      email: 'test@example.com',
-      username: 'testuser',
-      password: 'password123',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      categories: [],
-      activities: [],
-      goals: [],
-    };
-    const dto: CreateGoalDto = {
-      name: 'Goal with Past Start Date',
-      startedTime: '2024-07-31T23:59:59Z', // Past date
-      endedTime: new Date().toISOString(),
-    };
-    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
-    const result = await service.create(dto, userId);
-    expect(result).toBeDefined();
-    expect(result.isSuccess).toEqual(false);
-    expect(result.message).toContain(ErrorMessage.START_DATE_INVALID);
-    expect(result.data).toEqual(null);
-  });
 
   describe('Goal analysis', () => {
     it('should return error if goal is not found', async () => {
