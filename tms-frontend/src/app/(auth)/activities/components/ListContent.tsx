@@ -15,9 +15,8 @@ export const ListContent: React.FC<ListContentProps> = ({ }) => {
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams()
   const query = queryString.parse(searchParams.toString())
-  const { categories } = query
 
-  const categoryIds = categories ? Array.isArray(categories) ? categories.map(Number) : [+categories] : []
+  const categoryIds = query.categories ? Array.isArray(query.categories) ? query.categories.map(Number) : [+query.categories] : []
 
   const { data: activitiesData, refetch } = activityQuery.query.useGetActivities({ categoryIds });
   const activities = activitiesData?.data || [];
