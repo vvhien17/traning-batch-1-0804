@@ -213,5 +213,20 @@ describe('GoalOnActivityService', () => {
       });
       expect(result).toEqual(expectedResponse);
     });
+
+    it('Should return error if activity date range out of goal date range', async () => {
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.BAD_REQUEST,
+      );
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal[0] as Goal);
+      const activityDate = mockGoal[0].endedTime;
+      activityDate.setDate(endedAt.getDate() + 1);
+      const result: BaseResponse = await service.create(userId, {
+        ...createGoalOnActivityDto,
+        startedAt: activityDate,
+      });
+
+      expect(result).toEqual(expectedResponse);
+    })
   });
 });
