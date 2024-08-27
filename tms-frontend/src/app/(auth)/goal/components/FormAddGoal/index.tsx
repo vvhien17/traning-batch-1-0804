@@ -71,6 +71,7 @@ const FormAddGoal = ({ setIsOpen }: Props) => {
           <p className="text-sm font-semibold text-gray-700 mb-1">Start date</p>
           <DateTimePickerCustom
             id="startDate"
+            placeholder="Start Date"
             dateTime={state.startDate}
             setDateTime={(val) =>
               setState((prev) => ({
@@ -83,6 +84,7 @@ const FormAddGoal = ({ setIsOpen }: Props) => {
         <div className="[&>div]:w-full">
           <p className="text-sm font-semibold text-gray-700 mb-1">End date</p>
           <DateTimePickerCustom
+            placeholder="End Date"
             id="endDate"
             dateTime={state.endDate}
             setDateTime={(val) =>
@@ -103,7 +105,7 @@ const FormAddGoal = ({ setIsOpen }: Props) => {
           Cancel
         </button>
         <button
-          type="button"
+          type="submit"
           onClick={handleSubmit(onSubmit)}
           className="inline-flex w-full justify-center rounded-md bg-colors-main px-3 py-2 text-sm font-semibold text-white shadow-sm sm:w-auto"
         >

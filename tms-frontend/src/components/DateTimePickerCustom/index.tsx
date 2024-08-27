@@ -7,11 +7,18 @@ interface Props {
   id?: string;
   dateTime: Date;
   setDateTime: (val: Date) => void;
+  placeholder?: string;
 }
 
-const DateTimePickerCustom = ({ id, dateTime, setDateTime }: Props) => {
+const DateTimePickerCustom = ({
+  id,
+  dateTime,
+  setDateTime,
+  placeholder,
+}: Props) => {
   return (
     <DatePicker
+      placeholderText={placeholder}
       id={id}
       className="border rounded-md pl-5 pt-1 pb-1 flex items-center justify-center w-full"
       selected={dateTime}
