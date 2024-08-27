@@ -20,6 +20,17 @@ jest.mock("next/navigation", () => ({
   useSearchParams: () => [new URLSearchParams("revalidate=1&categories=leisure")],
 }));
 
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+  useSearchParams: jest.fn().mockReturnValue({
+    toString: () => "categories=1",
+  }),
+}));
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("ActivitiesPage", () => {
   const queryClient = new QueryClient();
 
