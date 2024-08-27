@@ -11,10 +11,14 @@ export type TActivity = {
   status: "NOT_COMPLETED" | "COMPLETED" | "CANCELED";
 };
 
+export type TGetActivityRequest = {
+  categoryIds: number[]
+};
+
 export type TCreateActivityRequest = {
   name: string;
   description: string;
-  categoryId: number;
+  categoryId?: number;
   startedAt: string;
   endedAt: string;
 };

@@ -4,8 +4,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ActivitiesPage from "@components/app/(auth)/activities/page";
 import userEvent from "@testing-library/user-event";
 import { TStatus } from "@components/components/card-activity/CardActivity";
-import { CardActivity } from "@components/components/card-activity"
+import { CardActivity } from "@components/components/card-activity";
 import CreateOrEditActivityDrawer from "@components/app/(auth)/activities/components/CreateOrEditActivity";
+import queryString from 'query-string';
+
+jest.mock('query-string', () => ({
+  parse: jest.fn().mockReturnValue({ categories: "leisure" }),
+  stringify: jest.fn(),
+}));
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+  useSearchParams: () => [new URLSearchParams("revalidate=1&categories=leisure")],
+}));
 
 describe("ActivitiesPage", () => {
   const queryClient = new QueryClient();
@@ -15,6 +28,7 @@ describe("ActivitiesPage", () => {
   const mockOnOpen = jest.fn();
 
   const mockCardActivityProps = {
+    id: 1,
     title: "Sample Activity",
     description: "This is a sample activity description.",
     startedAt: "2024-08-26T08:30:00Z",
@@ -32,9 +46,11 @@ describe("ActivitiesPage", () => {
       id: 1,
       name: 'Doing homework',
       description: 'Description....',
-      category: 'Daily'
+      category: 'Daily',
+      startDate: '2024-08-21T08:00:00.000Z',
+      endDate: '2024-08-28T15:00:00.000Z'
     }
-  }
+  };
 
   beforeEach(() => {
     mockOnEdit.mockClear();

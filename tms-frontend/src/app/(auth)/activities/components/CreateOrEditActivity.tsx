@@ -74,7 +74,7 @@ export default function CreateOrEditActivityDrawer({
           id: editItem.id,
           name: data.name,
           description: data.description,
-          categoryId: +(data.category || 0),
+          categoryId: data.category ? +data.category : undefined,
           startedAt: startDate.toISOString(),
           endedAt: endDate.toISOString(),
         },
@@ -96,8 +96,9 @@ export default function CreateOrEditActivityDrawer({
     } else
       createActivity(
         {
-          ...data,
-          categoryId: +(data.category || 0),
+          name: data.name,
+          description: data.description,
+          categoryId: data.category ? +data.category : undefined,
           startedAt: startDate.toISOString(),
           endedAt: endDate.toISOString(),
         },
@@ -123,7 +124,7 @@ export default function CreateOrEditActivityDrawer({
     if (editItem) {
       setValue("name", editItem.name);
       setValue("description", editItem.description);
-      setValue("category", editItem.category);
+      setValue("category", editItem.category.toString());
       setStartDate(parseDate(editItem.startDate));
       setEndDate(parseDate(editItem.endDate));
     }
@@ -168,7 +169,9 @@ export default function CreateOrEditActivityDrawer({
             <DateTimePickerCustom
               id="startDate"
               dateTime={startDate}
-              setDateTime={(val) => setStartDate(val)}
+              setDateTime={(val) => {
+                setStartDate(val)
+              }}
             />
           </div>
           <div className="[&>div]:w-full">
@@ -176,7 +179,9 @@ export default function CreateOrEditActivityDrawer({
             <DateTimePickerCustom
               id="endDate"
               dateTime={endDate}
-              setDateTime={(val) => setEndDate(val)}
+              setDateTime={(val) => {
+                setEndDate(val)
+              }}
             />
           </div>
           <div>
