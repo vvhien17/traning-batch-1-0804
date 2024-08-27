@@ -73,7 +73,7 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
           }}
         >
           <div>{hoveredSlice.label}</div>
-          <div>Value: {hoveredSlice.value}</div>
+          <div>Value: {hoveredSlice.value.toFixed(2)}</div>
         </div>
       )}
     </div>

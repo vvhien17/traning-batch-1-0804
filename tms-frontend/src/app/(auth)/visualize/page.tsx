@@ -1,8 +1,21 @@
+"use client";
 import PieChart from "@components/components/chart/PieChart";
 import Container from "@components/components/container";
 import Select from "@components/components/Select";
+import { dashboardQuery } from "@components/hooks/dashboard";
 
 export default function VisualizePage() {
+  const { data: dashboardData } = dashboardQuery.query.useGetDashboard();
+  const data = dashboardData?.data.map((item) => ({
+    value: item.percentage,
+    color:
+      "#" +
+      Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0"),
+    label: item.name,
+  }));
+
   return (
     <div>
       <Container className="pt-10 pb-14">
@@ -39,9 +52,9 @@ export default function VisualizePage() {
           <div className="border border-neutral-400 rounded-xl p-4 bg-white">
             <p className="text-lg font-semibold mb-6">Time distribution</p>
             <div className="flex items-center gap-6">
-              <PieChart data={data} />
+              <PieChart data={data || []} />
               <div className="grid gap-3">
-                {data.map((item, index) => (
+                {data?.map((item, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <div
                       className="w-8 h-4"
