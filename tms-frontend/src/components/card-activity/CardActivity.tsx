@@ -75,8 +75,6 @@ export const CardActivity: React.FC<CardActivityProps> = ({
     return () => window.removeEventListener("resize", checkEllipsis);
   }, [description]);
 
-  console.log({ status });
-
   return (
     <div
       className={classcat([
