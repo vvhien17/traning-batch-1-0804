@@ -76,9 +76,7 @@ describe('GoalService', () => {
       startedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
       endedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
     };
-    console.log(dto);
     const result: BaseResponse = await service.create(dto, 1);
-    console.log(result);
     expect(result).toBeDefined();
     expect(result.isSuccess).toEqual(true);
     expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
@@ -182,8 +180,8 @@ describe('GoalService', () => {
     const result: BaseResponse = await service.create(
       {
         name: 'Test Event', // Valid name
-        startedTime: new Date().toISOString(), // Valid startedTime
-        endedTime: new Date().toISOString(), // Valid endedTime
+        startedTime: '2200-08-27T04:13:17.250Z', // Valid startedTime
+        endedTime: '2200-08-31T04:13:17.250Z', // Valid endedTime
       },
       null,
     );
