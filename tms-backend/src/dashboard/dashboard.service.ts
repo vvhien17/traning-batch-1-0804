@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../category/entities/category.entity';
 import { Activity } from '..//activity/entities/activity.entity';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { ResponseDashboard } from './dto/response-dashboard.dto';
 import { BaseResponse } from '@/common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
+import { ActivityStatus } from '../common/constants/activity-status';
 
 @Injectable()
 export class DashboardService {
@@ -73,6 +74,90 @@ export class DashboardService {
 
     return {
       data: result,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    };
+  }
+  async getSummaryTime(userId: number, option: string): Promise<BaseResponse> {
+    const now = new Date();
+
+    let startOfPeriod: Date;
+    let endOfPeriod: Date;
+
+    switch (option) {
+      case 'day':
+        // For daily summary
+        startOfPeriod = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+        endOfPeriod = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + 1,
+          0,
+          0,
+          0,
+          -1,
+        );
+        break;
+
+      case 'week':
+        const startOfWeek = now.getDate() - now.getDay();
+        startOfPeriod = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          startOfWeek,
+        );
+        endOfPeriod = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          startOfWeek + 7,
+          0,
+          0,
+          0,
+          -1,
+        );
+        break;
+
+      default:
+        return buildError('Invalid option');
+    }
+
+    const activities = await this.activityRepository.find({
+      where: {
+        userId,
+        status: ActivityStatus.COMPLETED,
+        startedAt: Between(startOfPeriod, endOfPeriod),
+        endedAt: Between(startOfPeriod, endOfPeriod),
+      },
+    });
+
+    if (activities.length === 0) {
+      return buildError(ErrorMessage.ACTIVITY_NOT_FOUND);
+    }
+
+    const totalTime = activities.reduce((total, activity) => {
+      const startedAt = new Date(activity.startedAt).getTime();
+      const endedAt = new Date(activity.endedAt).getTime();
+      if (typeof startedAt === 'number' && typeof endedAt === 'number') {
+        const timeSpent = endedAt - startedAt;
+        return total + timeSpent;
+      }
+      return total;
+    }, 0);
+
+    const totalTimeInHours = Math.floor(totalTime / (1000 * 60 * 60));
+    const totalTimeInMinutes = Math.floor(
+      (totalTime % (1000 * 60 * 60)) / (1000 * 60),
+    );
+
+    return {
+      data: {
+        totalHours: totalTimeInHours,
+        totalMinutes: totalTimeInMinutes,
+      },
       isSuccess: true,
       message: SuccessMessage.GET_DATA_SUCCESS,
     };
