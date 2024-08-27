@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 import { Activity } from '../activity/entities/activity.entity';
 import { Category } from '../category/entities/category.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { SuccessMessage } from '../common/utils/message-const';
+import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
+import { buildError } from '../common/utils/Utility';
+import { ActivityStatus } from '../common/constants/activity-status';
 
 describe('DashboardService', () => {
   let service: DashboardService;
@@ -77,6 +79,106 @@ describe('DashboardService', () => {
         { categoryId: 1, name: 'Work', percentage: 75 },
         { categoryId: 2, name: 'Exercise', percentage: 25 },
       ]);
+    });
+  });
+  describe('should return summary time', () => {
+    it('should return the total time spent on completed activities for today', async () => {
+      const userId = 1;
+      const now = new Date();
+      const startOfDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+      );
+      const endOfDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0,
+        0,
+        0,
+        -1,
+      );
+
+      const activities = [
+        {
+          userId,
+          status: 'complete',
+          startedAt: new Date(startOfDay).toISOString(),
+          endedAt: new Date(
+            startOfDay.getTime() + 60 * 60 * 1000,
+          ).toISOString(), // 1 hour
+        },
+      ];
+
+      jest
+        .spyOn(activityRepository, 'find')
+        .mockResolvedValue(activities as any);
+
+      const result = await service.getSummaryTime(userId, 'day');
+
+      expect(result).toEqual({
+        data: {
+          totalHours: 1,
+          totalMinutes: 0,
+        },
+        isSuccess: true,
+        message: SuccessMessage.GET_DATA_SUCCESS,
+      });
+    });
+
+    it('should return the total time spent on completed activities for this week', async () => {
+      const userId = 1;
+      const now = new Date();
+      const startOfWeek = now.getDate() - now.getDay(); // Assuming Sunday as the start of the week
+      const startOfPeriod = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        startOfWeek,
+      );
+      const endOfPeriod = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        startOfWeek + 7,
+        0,
+        0,
+        0,
+        -1,
+      );
+
+      const activities = [
+        {
+          userId,
+          status: ActivityStatus.COMPLETED,
+          startedAt: new Date(startOfPeriod).toISOString(),
+          endedAt: new Date(
+            startOfPeriod.getTime() + 60 * 60 * 1000,
+          ).toISOString(),
+        },
+      ];
+
+      jest
+        .spyOn(activityRepository, 'find')
+        .mockResolvedValue(activities as any);
+
+      const result = await service.getSummaryTime(userId, 'week');
+
+      expect(result).toEqual({
+        data: {
+          totalHours: 1,
+          totalMinutes: 0,
+        },
+        isSuccess: true,
+        message: SuccessMessage.GET_DATA_SUCCESS,
+      });
+    });
+
+    it('should return an error for an invalid option', async () => {
+      const userId = 1;
+
+      const result = await service.getSummaryTime(userId, 'INVALID_OPTION');
+
+      expect(result).toEqual(buildError('Invalid option'));
     });
   });
 });
