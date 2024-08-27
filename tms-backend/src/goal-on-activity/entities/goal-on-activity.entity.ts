@@ -16,6 +16,8 @@ export class GoalOnActivity {
   @Column()
   goalId: number;
   @Column()
+  activityId: number;
+  @Column()
   totalSpend: number; // Save in minutes
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
