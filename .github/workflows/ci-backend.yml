@@ -151,7 +151,8 @@ jobs:
           github_token: ${{ secrets.CI_TOKEN }} # GitHub token to authenticate
           publish_dir: ./tms-backend # Directory containing your Jest HTML report
           publish_branch: gh-pages # The branch where the report will be published
-          clean: true
+          force_orphan: true # Force-push to ensure the branch is updated
+          clean: true # Clean previous files to ensure no old data remains
   release:
     name: Create Release
     runs-on: ubuntu-24.04
