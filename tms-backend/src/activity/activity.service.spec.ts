@@ -131,6 +131,19 @@ describe('ActivitiesController', () => {
       const activities = await service.findAll(2);
       expect(activities.data).toEqual([]);
     });
+
+    it('should return an empty array has been filter', async () => {
+      jest
+        .spyOn(activityRepository, 'find')
+        .mockResolvedValue([mockActivities[0]]);
+      const activities = await service.findAll(1, [1]);
+      expect(activities.data).toEqual([mockActivities[0]]);
+    });
+    it('should ignore empty filter', async () => {
+      jest.spyOn(activityRepository, 'find').mockResolvedValue(mockActivities);
+      const activities = await service.findAll(1, []);
+      expect(activities.data).toEqual(mockActivities);
+    });
   });
 
   describe('User find activity by activityId', () => {
