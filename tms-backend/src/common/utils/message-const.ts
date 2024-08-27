@@ -16,6 +16,7 @@ export enum ErrorMessage {
   DATA_NOT_FOUND = 'Data not found',
   MUST_GREATER_THAN = 'must greater than',
   INVALID_DATE = 'Invalid date',
+  START_DATE_INVALID = 'Start date must be greater than or equal to present date',
 }
 
 export enum SuccessMessage {

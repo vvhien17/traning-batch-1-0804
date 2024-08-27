@@ -9,6 +9,7 @@ import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.en
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { GoalStatus } from '../common/constants/goal-status';
 import { CreateGoalDto } from './dto/create-goal.dto';
+import { buildError } from '../common/utils/Utility';
 
 describe('GoalService', () => {
   let service: GoalService;
@@ -57,9 +58,9 @@ describe('GoalService', () => {
     const mockGoal: Goal = {
       id: 1,
       name: 'Valid Goal',
-      startedTime: new Date('2024-08-01T00:00:00Z'),
+      startedTime: new Date(),
       endedTime: new Date('2024-08-31T23:59:59Z'),
-      status: GoalStatus.PENDING,
+      status: GoalStatus.NOT_COMPLETED,
       userId: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -72,7 +73,7 @@ describe('GoalService', () => {
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser); // Mock user exists
     const dto: CreateGoalDto = {
       name: 'Valid Goal',
-      startedTime: new Date('2024-08-26T09:36:16.427Z').toISOString(),
+      startedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
       endedTime: new Date('2024-08-27T09:36:16.427Z').toISOString(),
     };
     console.log(dto);
@@ -232,7 +233,7 @@ describe('GoalService', () => {
         name: 'Goal 1',
         startedTime: new Date('2024-08-01T00:00:00Z'),
         endedTime: new Date('2024-08-31T23:59:59Z'),
-        status: GoalStatus.PENDING,
+        status: GoalStatus.NOT_COMPLETED,
         userId,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -279,6 +280,31 @@ describe('GoalService', () => {
     expect(result).toBeDefined();
     expect(result.isSuccess).toEqual(false);
     expect(result.message).toEqual(ErrorMessage.USER_NOT_FOUND);
+    expect(result.data).toEqual(null);
+  });
+  it('should return with error if startDate is a past date', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+    const dto: CreateGoalDto = {
+      name: 'Goal with Past Start Date',
+      startedTime: '2024-07-31T23:59:59Z', // Past date
+      endedTime: new Date().toISOString(),
+    };
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+    const result = await service.create(dto, userId);
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toEqual(false);
+    expect(result.message).toContain(ErrorMessage.START_DATE_INVALID);
     expect(result.data).toEqual(null);
   });
 });
