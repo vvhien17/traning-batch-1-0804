@@ -26,7 +26,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/assets/styles/index.js"
+    "src/assets/styles/index.js",
+    "src/setupTests.ts"
   ],
   "exclude": ["node_modules"]
 }

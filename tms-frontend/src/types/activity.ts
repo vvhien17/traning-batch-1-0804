@@ -8,6 +8,7 @@ export type TActivity = {
   };
   startedAt: string;
   endedAt: string;
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
 };
 
 export type TCreateActivityRequest = {

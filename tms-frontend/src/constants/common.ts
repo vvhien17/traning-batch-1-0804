@@ -1,7 +1,8 @@
 export enum Status {
-  Completed = "completed",
-  Onprogress = "on-progress",
-  InCompleted = "in-completed",
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  IN_PROGRESS = "IN_PROGRESS",
+  CANCELED = "CANCELED",
 }
 
 export const ACCESS_TOKEN = "accessToken";

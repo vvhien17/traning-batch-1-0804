@@ -32,11 +32,12 @@ export class ActivityController {
     const userId = +req.user.id;
     return this.activityService.findOne(+id, +userId);
   }
-
+  // &catergoryId=1
   @Get()
-  findAll(@Request() req) {
+  findAll(@Request() req, @Body() body?: { categoryIds: number[] }) {
     const userId = +req.user.id;
-    return this.activityService.findAll(userId);
+    const categoryFilter = body ? body.categoryIds : [];
+    return this.activityService.findAll(userId, categoryFilter);
   }
 
   @Put()

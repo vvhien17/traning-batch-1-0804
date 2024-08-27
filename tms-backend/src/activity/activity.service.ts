@@ -3,7 +3,7 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Activity } from './entities/activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { buildError } from '../common/utils/Utility';
 import { BaseResponse } from '../common/base-response/base-response.dto';
@@ -69,9 +69,15 @@ export class ActivityService {
     };
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: number, categoryIds?: number[]) {
+    const defaultFilter: any = { userId: userId, isDelete: false };
+    if (categoryIds && categoryIds.length > 0) {
+      defaultFilter.categoryId = In(categoryIds);
+    }
     const result = await this.activityRepository.find({
-      where: { userId: userId, isDelete: false },
+      where: {
+        ...defaultFilter,
+      },
       relations: ['category'],
       select: {
         category: {
@@ -79,6 +85,7 @@ export class ActivityService {
         },
       },
     });
+
     return {
       data: result,
       isSuccess: true,
