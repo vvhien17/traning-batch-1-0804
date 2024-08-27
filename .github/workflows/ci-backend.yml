@@ -96,26 +96,6 @@ jobs:
           name: coverage-report
           path: tms-backend/coverage
 
-      - name: Upload test suite results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: tms-backend/test-results
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure() # run this step even if previous step failed
-        with:
-          name: JEST Tests # Name of the check run which will be created
-          path: tms-backend/test-results/junit.xml # Path to test results
-          reporter: jest-junit # Format of test results
-
-      - name: Upload test suite results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: tms-backend/results
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -131,7 +111,38 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
+  deploy-report:
+    name: Deploy Test Report to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: test # Ensure this job runs after the test job
+    if: needs.test.result == 'success' # Only run this if tests pass
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Delete package-lock.json
+        working-directory: tms-backend
+        run: rm -f package-lock.json
+
+      - name: Install dependencies
+        working-directory: tms-backend
+        run: pnpm install
+
+      # Deploy Jest HTML Report to GitHub Pages
+      - name: Deploy Jest HTML Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # Action to publish to GitHub Pages
+        with:
+          github_token: ${{ secrets.CI_TOKEN }} # GitHub token to authenticate
+          publish_dir: ./tms-backend # Directory containing your Jest HTML report
+          publish_branch: gh-pages # The branch where the report will be published
   release:
     name: Create Release
     runs-on: ubuntu-24.04

@@ -23,7 +23,6 @@ export class CategoryController {
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto, @Request() req) {
     const userId = req.user.id;
-    console.log('🚀 ~ CategoryController ~ create ~ userId:', userId);
     return this.categoryService.create(createCategoryDto, userId);
   }
 

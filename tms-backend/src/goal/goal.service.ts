@@ -11,6 +11,7 @@ import { GoalStatus } from '../common/constants/goal-status';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
+import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
 
 @Injectable()
 export class GoalService {
@@ -19,6 +20,8 @@ export class GoalService {
     private readonly goalRepository: Repository<Goal>,
     @InjectRepository(User) // Inject User repository if you need to check user existence
     private readonly userRepository: Repository<User>,
+    @InjectRepository(GoalOnActivity)
+    private readonly goalOnActivityRepository: Repository<GoalOnActivity>,
   ) {}
 
   async create(
@@ -31,20 +34,23 @@ export class GoalService {
     if (errors.length > 0) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
-    console.log(errors);
+    const startDate = new Date(startedTime);
+    const currentDate = new Date();
+    if (startDate < currentDate) {
+      return buildError(ErrorMessage.START_DATE_INVALID);
+    }
     const userExists = await this.userRepository.findOne({
       where: { id: userId },
     });
     if (!userExists) {
       return buildError(ErrorMessage.USER_NOT_FOUND);
     }
-    console.log(userExists);
     try {
       const newGoal = this.goalRepository.create({
         name,
         startedTime,
         endedTime,
-        status: GoalStatus.PENDING,
+        status: GoalStatus.NOT_COMPLETED,
         userId,
       });
 
@@ -78,8 +84,19 @@ export class GoalService {
       if (!goals) {
         return buildError(ErrorMessage.GOAL_NOT_FOUND);
       }
+      const goalsWithPercent = await Promise.all(
+        goals.map(async (goal) => {
+          const percentCompleteResponse = await this.getPercentsCompleteByGoal(
+            goal.id,
+          );
+          return {
+            ...goal,
+            percentComplete: percentCompleteResponse.data,
+          };
+        }),
+      );
       return {
-        data: goals,
+        data: goalsWithPercent,
         isSuccess: true,
         message: SuccessMessage.GET_DATA_SUCCESS,
       };
@@ -105,5 +122,36 @@ export class GoalService {
   async remove(id: number) {
     // Implementation to remove a specific goal
     return `This action removes a #${id} goal`;
+  }
+
+  async getPercentsCompleteByGoal(goalId: number): Promise<BaseResponse> {
+    // Find the goal by ID
+    const goal = await this.goalRepository.findOne({
+      where: { id: goalId },
+      relations: ['goalOnActivities'],
+    });
+
+    if (!goal) {
+      return buildError(ErrorMessage.GOAL_NOT_FOUND);
+    }
+
+    const goalOnActivities =
+      (await this.goalOnActivityRepository.find({
+        where: { goalId: goal.id },
+        relations: ['activity'],
+      })) || [];
+
+    let total = goalOnActivities.length;
+    let completed = goalOnActivities.filter(
+      (goalOnActivity) =>
+        goalOnActivity.activity.status === GoalStatus.COMPLETED,
+    ).length;
+    let percentComplete = (completed / total) * 100 || 0;
+
+    return {
+      data: percentComplete,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    };
   }
 }
