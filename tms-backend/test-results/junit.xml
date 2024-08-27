@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="57" failures="0" errors="0" time="4.214">
-  <testsuite name="AppController" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.18" tests="1">
-    <testcase classname="AppController root should return &quot;Hello World!&quot;" name="AppController root should return &quot;Hello World!&quot;" time="0.011">
+<testsuites name="jest tests" tests="65" failures="0" errors="0" time="4.084">
+  <testsuite name="GoalOnActivityService" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:46" time="2.626" tests="1">
+    <testcase classname="GoalOnActivityService should be defined" name="GoalOnActivityService should be defined" time="0.007">
     </testcase>
   </testsuite>
-  <testsuite name="GoalOnActivityService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:28" time="0.117" tests="1">
-    <testcase classname="GoalOnActivityService should be defined" name="GoalOnActivityService should be defined" time="0.003">
+  <testsuite name="AppController" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:46" time="2.866" tests="1">
+    <testcase classname="AppController root should return &quot;Hello World!&quot;" name="AppController root should return &quot;Hello World!&quot;" time="0.012">
     </testcase>
   </testsuite>
-  <testsuite name="CategoryService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.663" tests="10">
-    <testcase classname="CategoryService should be defined" name="CategoryService should be defined" time="0.009">
+  <testsuite name="AuthService" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:46" time="3.529" tests="3">
+    <testcase classname="AuthService should be defined" name="AuthService should be defined" time="0.012">
     </testcase>
-    <testcase classname="CategoryService findCategoriesByUserId should return a list of categories by userId" name="CategoryService findCategoriesByUserId should return a list of categories by userId" time="0.002">
+    <testcase classname="AuthService login should return a JWT token if credentials are valid" name="AuthService login should return a JWT token if credentials are valid" time="0.002">
     </testcase>
-    <testcase classname="CategoryService findCategoriesByUserId should return an error response if no categories are found" name="CategoryService findCategoriesByUserId should return an error response if no categories are found" time="0.001">
+    <testcase classname="AuthService login should throw UnauthorizedException if password is incorrect" name="AuthService login should throw UnauthorizedException if password is incorrect" time="0.01">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthController" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:46" time="3.686" tests="4">
+    <testcase classname="AuthController should be defined" name="AuthController should be defined" time="0.011">
+    </testcase>
+    <testcase classname="AuthController signIn should return a JWT token when credentials are valid" name="AuthController signIn should return a JWT token when credentials are valid" time="0.002">
+    </testcase>
+    <testcase classname="AuthController signIn should handle login failures" name="AuthController signIn should handle login failures" time="0.006">
+    </testcase>
+    <testcase classname="AuthController getProfile should return user profile if authenticated" name="AuthController getProfile should return user profile if authenticated" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="CategoryService" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:46" time="3.756" tests="10">
+    <testcase classname="CategoryService should be defined" name="CategoryService should be defined" time="0.008">
+    </testcase>
+    <testcase classname="CategoryService findCategoriesByUserId should return a list of categories by userId" name="CategoryService findCategoriesByUserId should return a list of categories by userId" time="0.004">
+    </testcase>
+    <testcase classname="CategoryService findCategoriesByUserId should return an error response if no categories are found" name="CategoryService findCategoriesByUserId should return an error response if no categories are found" time="0.003">
     </testcase>
     <testcase classname="CategoryService create should create and return a new category" name="CategoryService create should create and return a new category" time="0.003">
     </testcase>
-    <testcase classname="CategoryService create should return error if user is not found" name="CategoryService create should return error if user is not found" time="0.001">
+    <testcase classname="CategoryService create should return error if user is not found" name="CategoryService create should return error if user is not found" time="0.002">
     </testcase>
-    <testcase classname="CategoryService update should return error if user is not found when update category" name="CategoryService update should return error if user is not found when update category" time="0.004">
+    <testcase classname="CategoryService update should return error if user is not found when update category" name="CategoryService update should return error if user is not found when update category" time="0.002">
     </testcase>
     <testcase classname="CategoryService update should return error if category is not found when update category" name="CategoryService update should return error if category is not found when update category" time="0.001">
     </testcase>
@@ -27,90 +45,21 @@
     </testcase>
     <testcase classname="CategoryService update show return error if category name is empty" name="CategoryService update show return error if category name is empty" time="0.002">
     </testcase>
-    <testcase classname="CategoryService update should return success if category is updated successfully" name="CategoryService update should return success if category is updated successfully" time="0.012">
+    <testcase classname="CategoryService update should return success if category is updated successfully" name="CategoryService update should return success if category is updated successfully" time="0.007">
     </testcase>
   </testsuite>
-  <testsuite name="AuthService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.681" tests="3">
-    <testcase classname="AuthService should be defined" name="AuthService should be defined" time="0.013">
+  <testsuite name="UserService" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:46" time="3.794" tests="9">
+    <testcase classname="UserService should be defined" name="UserService should be defined" time="0.012">
     </testcase>
-    <testcase classname="AuthService login should return a JWT token if credentials are valid" name="AuthService login should return a JWT token if credentials are valid" time="0.004">
+    <testcase classname="UserService create should create and return a new user" name="UserService create should create and return a new user" time="0.005">
     </testcase>
-    <testcase classname="AuthService login should throw UnauthorizedException if password is incorrect" name="AuthService login should throw UnauthorizedException if password is incorrect" time="0.007">
-    </testcase>
-  </testsuite>
-  <testsuite name="ActivitiesController" errors="0" failures="0" skipped="19" timestamp="2024-08-26T09:51:25" time="3.795" tests="20">
-    <testcase classname="ActivitiesController Activity service should be defined" name="ActivitiesController Activity service should be defined" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController user find all activity should return an array of activities for a specific user" name="ActivitiesController user find all activity should return an array of activities for a specific user" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController user find all activity should return an empty array if the user has no activities" name="ActivitiesController user find all activity should return an empty array if the user has no activities" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController user find activity by activityId should return an activity for a specific user" name="ActivitiesController user find activity by activityId should return an activity for a specific user" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController user find activity by activityId should return message not found if the user does not exist" name="ActivitiesController user find activity by activityId should return message not found if the user does not exist" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController user find activity by activityId should return message not found if the activity does not exist" name="ActivitiesController user find activity by activityId should return message not found if the activity does not exist" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController user find activity by activityId should return an activity for a specific user" name="ActivitiesController user find activity by activityId should return an activity for a specific user" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity create a new activity enough require without description" name="ActivitiesController Create activity create a new activity enough require without description" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity create a new activity enough require with description" name="ActivitiesController Create activity create a new activity enough require with description" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity Create a new activity missing only startedDate" name="ActivitiesController Create activity Create a new activity missing only startedDate" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity Create a new activity missing only endedDate" name="ActivitiesController Create activity Create a new activity missing only endedDate" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity Create a new activity missing only name activity" name="ActivitiesController Create activity Create a new activity missing only name activity" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity Create a new activity with require data and not choosing category" name="ActivitiesController Create activity Create a new activity with require data and not choosing category" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity Create a new activity with require data and choosing category" name="ActivitiesController Create activity Create a new activity with require data and choosing category" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity Create new activity enough data but endedDate before startedDate" name="ActivitiesController Create activity Create new activity enough data but endedDate before startedDate" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Create activity Create a new activity missing only userId " name="ActivitiesController Create activity Create a new activity missing only userId " time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Update activity Update activity with valid data" name="ActivitiesController Update activity Update activity with valid data" time="0.011">
-    </testcase>
-    <testcase classname="ActivitiesController Update activity Update started at but start &gt; end" name="ActivitiesController Update activity Update started at but start &gt; end" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Update activity Update end but start &gt; end" name="ActivitiesController Update activity Update end but start &gt; end" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="ActivitiesController Update activity Update activity that not exist" name="ActivitiesController Update activity Update activity that not exist" time="0">
-      <skipped/>
-    </testcase>
-  </testsuite>
-  <testsuite name="UserService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.886" tests="9">
-    <testcase classname="UserService should be defined" name="UserService should be defined" time="0.009">
-    </testcase>
-    <testcase classname="UserService create should create and return a new user" name="UserService create should create and return a new user" time="0.004">
-    </testcase>
-    <testcase classname="UserService create should throw an error if invalid email" name="UserService create should throw an error if invalid email" time="0.003">
+    <testcase classname="UserService create should throw an error if invalid email" name="UserService create should throw an error if invalid email" time="0.002">
     </testcase>
     <testcase classname="UserService create should return error if email is empty" name="UserService create should return error if email is empty" time="0.001">
     </testcase>
-    <testcase classname="UserService create should return error if username is empty" name="UserService create should return error if username is empty" time="0.001">
+    <testcase classname="UserService create should return error if username is empty" name="UserService create should return error if username is empty" time="0.002">
     </testcase>
-    <testcase classname="UserService create should return error if password is empty" name="UserService create should return error if password is empty" time="0">
+    <testcase classname="UserService create should return error if password is empty" name="UserService create should return error if password is empty" time="0.001">
     </testcase>
     <testcase classname="UserService create should return error if user with the same email already exists" name="UserService create should return error if user with the same email already exists" time="0.001">
     </testcase>
@@ -119,26 +68,16 @@
     <testcase classname="UserService getUser should return error if user not found" name="UserService getUser should return error if user not found" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="AuthController" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.913" tests="4">
-    <testcase classname="AuthController should be defined" name="AuthController should be defined" time="0.008">
+  <testsuite name="GoalService" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:46" time="3.791" tests="10">
+    <testcase classname="GoalService should create a goal with valid input and return BaseResponse" name="GoalService should create a goal with valid input and return BaseResponse" time="0.026">
     </testcase>
-    <testcase classname="AuthController signIn should return a JWT token when credentials are valid" name="AuthController signIn should return a JWT token when credentials are valid" time="0.003">
-    </testcase>
-    <testcase classname="AuthController signIn should handle login failures" name="AuthController signIn should handle login failures" time="0.007">
-    </testcase>
-    <testcase classname="AuthController getProfile should return user profile if authenticated" name="AuthController getProfile should return user profile if authenticated" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="GoalService" errors="0" failures="0" skipped="0" timestamp="2024-08-26T09:51:25" time="3.985" tests="9">
-    <testcase classname="GoalService should create a goal with valid input and return BaseResponse" name="GoalService should create a goal with valid input and return BaseResponse" time="0.019">
-    </testcase>
-    <testcase classname="GoalService should return an error if name is empty" name="GoalService should return an error if name is empty" time="0.002">
+    <testcase classname="GoalService should return an error if name is empty" name="GoalService should return an error if name is empty" time="0.003">
     </testcase>
     <testcase classname="GoalService should return an error if startedTime is invalid" name="GoalService should return an error if startedTime is invalid" time="0.002">
     </testcase>
-    <testcase classname="GoalService should return an error if endedTime is invalid" name="GoalService should return an error if endedTime is invalid" time="0.001">
+    <testcase classname="GoalService should return an error if endedTime is invalid" name="GoalService should return an error if endedTime is invalid" time="0.002">
     </testcase>
-    <testcase classname="GoalService should return an error if userId is invalid" name="GoalService should return an error if userId is invalid" time="0.001">
+    <testcase classname="GoalService should return an error if userId is invalid" name="GoalService should return an error if userId is invalid" time="0.002">
     </testcase>
     <testcase classname="GoalService should return an error if user is not found" name="GoalService should return an error if user is not found" time="0.001">
     </testcase>
@@ -147,6 +86,64 @@
     <testcase classname="GoalService should return with data is null if no goals are found" name="GoalService should return with data is null if no goals are found" time="0.001">
     </testcase>
     <testcase classname="GoalService should return with data is null if user not found" name="GoalService should return with data is null if user not found" time="0.001">
+    </testcase>
+    <testcase classname="GoalService should return with error if startDate is a past date" name="GoalService should return with error if startDate is a past date" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ActivitiesController" errors="0" failures="0" skipped="0" timestamp="2024-08-27T03:59:49" time="1.209" tests="27">
+    <testcase classname="ActivitiesController Activity service should be defined" name="ActivitiesController Activity service should be defined" time="0.005">
+    </testcase>
+    <testcase classname="ActivitiesController User find all activity should return an array of activities for a specific user" name="ActivitiesController User find all activity should return an array of activities for a specific user" time="0.002">
+    </testcase>
+    <testcase classname="ActivitiesController User find all activity should return an empty array if the user has no activities" name="ActivitiesController User find all activity should return an empty array if the user has no activities" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController User find all activity should return an empty array has been filter" name="ActivitiesController User find all activity should return an empty array has been filter" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController User find all activity should ignore empty filter" name="ActivitiesController User find all activity should ignore empty filter" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController User find activity by activityId should return an activity for a specific user" name="ActivitiesController User find activity by activityId should return an activity for a specific user" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController User find activity by activityId should return message not found if the user does not exist" name="ActivitiesController User find activity by activityId should return message not found if the user does not exist" time="0.007">
+    </testcase>
+    <testcase classname="ActivitiesController User find activity by activityId should return message not found if the activity does not exist" name="ActivitiesController User find activity by activityId should return message not found if the activity does not exist" time="0">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity create a new activity enough require without description" name="ActivitiesController Create activity create a new activity enough require without description" time="0.003">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity create a new activity enough require but not exist category" name="ActivitiesController Create activity create a new activity enough require but not exist category" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity create a new activity enough require with description" name="ActivitiesController Create activity create a new activity enough require with description" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity Create a new activity missing only startedDate" name="ActivitiesController Create activity Create a new activity missing only startedDate" time="0">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity Create a new activity missing only endedDate" name="ActivitiesController Create activity Create a new activity missing only endedDate" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity Create a new activity missing only name activity" name="ActivitiesController Create activity Create a new activity missing only name activity" time="0">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity Create a new activity with require data and not choosing category" name="ActivitiesController Create activity Create a new activity with require data and not choosing category" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity Create a new activity with require data and choosing category" name="ActivitiesController Create activity Create a new activity with require data and choosing category" time="0">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity Create new activity enough data but endedDate before startedDate" name="ActivitiesController Create activity Create new activity enough data but endedDate before startedDate" time="0">
+    </testcase>
+    <testcase classname="ActivitiesController Create activity Create a new activity missing only userId " name="ActivitiesController Create activity Create a new activity missing only userId " time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Update activity Update activity with valid data" name="ActivitiesController Update activity Update activity with valid data" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Update activity Update only activity status" name="ActivitiesController Update activity Update only activity status" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Update activity Update started at but start &gt; end" name="ActivitiesController Update activity Update started at but start &gt; end" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Update activity Update end but start &gt; end" name="ActivitiesController Update activity Update end but start &gt; end" time="0">
+    </testcase>
+    <testcase classname="ActivitiesController Update activity Update activity that not exist" name="ActivitiesController Update activity Update activity that not exist" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController Update activity Update activity to new category that not exist" name="ActivitiesController Update activity Update activity to new category that not exist" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController User delete activity Delete succes" name="ActivitiesController User delete activity Delete succes" time="0">
+    </testcase>
+    <testcase classname="ActivitiesController User delete activity should return error if the user does not exist" name="ActivitiesController User delete activity should return error if the user does not exist" time="0.001">
+    </testcase>
+    <testcase classname="ActivitiesController User delete activity should return error if the activity does not exist" name="ActivitiesController User delete activity should return error if the activity does not exist" time="0.002">
     </testcase>
   </testsuite>
 </testsuites>

@@ -31,7 +31,11 @@ export class GoalService {
     if (errors.length > 0) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
-    console.log(errors);
+    const startDate = new Date(startedTime);
+    const currentDate = new Date();
+    if (startDate < currentDate) {
+      return buildError(ErrorMessage.START_DATE_INVALID);
+    }
     const userExists = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -44,7 +48,7 @@ export class GoalService {
         name,
         startedTime,
         endedTime,
-        status: GoalStatus.PENDING,
+        status: GoalStatus.NOT_COMPLETED,
         userId,
       });
 
