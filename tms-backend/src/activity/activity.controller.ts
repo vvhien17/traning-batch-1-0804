@@ -33,7 +33,7 @@ export class ActivityController {
     return this.activityService.findOne(+id, +userId);
   }
   // &catergoryId=1
-  @Get()
+  @Post('all')
   findAll(@Request() req, @Body() body?: { categoryIds: number[] }) {
     const userId = +req.user.id;
     const categoryFilter = body ? body.categoryIds : [];

@@ -11,7 +11,7 @@ import { User } from '../user/entities/user.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Category } from '../category/entities/category.entity';
-import { ActivityStatus } from '../common/constant/activity-status';
+import { ActivityStatus } from '../common/constants/activity-status';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -21,7 +21,7 @@ const mockActivities = [
     name: 'Activity 1',
     userId: 1,
     categoryId: 1,
-    status: ActivityStatus.PENDING,
+    status: ActivityStatus.NOT_COMPLETED,
     createdAt: currentDate,
     updatedAt: currentDate,
     startedAt: currentDate,
@@ -37,7 +37,7 @@ const mockActivities = [
     updatedAt: currentDate,
     startedAt: currentDate,
     endedAt: currentDate,
-    status: ActivityStatus.PENDING,
+    status: ActivityStatus.NOT_COMPLETED,
     isDelete: false,
   },
 ] as Activity[];

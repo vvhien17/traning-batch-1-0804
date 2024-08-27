@@ -4,6 +4,7 @@
 [![CI Front End](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-frontend.yml/badge.svg)](https://github.com/vvhien17/traning-batch-1-0804/actions/workflows/ci-frontend.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/vvhien17/traning-batch-1-0804/main)](https://app.codecov.io/github/vvhien17/traning-batch-1-0804?search=&displayType=list)
 
+<a href="https://vvhien17.github.io/traning-batch-1-0804/test-report.html">Test Report</a>
 
 ## Requirement
 

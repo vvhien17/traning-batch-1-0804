@@ -4,8 +4,6 @@ import { config as envConfig } from 'dotenv';
 
 envConfig();
 
-console.log(process.env.DATABASE_HOST);
-
 export const config = {
   type: 'postgres',
   host: process.env.DATABASE_HOST || 'localhost',
