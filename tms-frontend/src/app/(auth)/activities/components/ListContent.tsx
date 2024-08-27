@@ -6,9 +6,9 @@ import { activityQuery } from "@components/hooks/activity";
 import { TActivity } from "@components/types/activity";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
-interface ListContentProps {}
+interface ListContentProps { }
 
-export const ListContent: React.FC<ListContentProps> = ({}) => {
+export const ListContent: React.FC<ListContentProps> = ({ }) => {
   const [editItem, setEditItem] = useState<TActivity | undefined>();
   const [open, setOpen] = useState(false);
   const { data: activitiesData } = activityQuery.query.useGetActivities({});
@@ -51,6 +51,8 @@ export const ListContent: React.FC<ListContentProps> = ({}) => {
           name: editItem?.name || "",
           description: editItem?.description || "",
           category: editItem?.categoryId || "",
+          startDate: editItem?.startedAt || "",
+          endDate: editItem?.endedAt || ""
         }}
       />
     </div>

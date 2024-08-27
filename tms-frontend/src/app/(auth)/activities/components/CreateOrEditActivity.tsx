@@ -22,7 +22,12 @@ const AddOrEditActivitySchema = z.object({
   category: z.string(),
 });
 
-type AddOrEditActivityForm = z.infer<typeof AddOrEditActivitySchema>;
+const parseDate = (dateString: string): Date => {
+  const parsed = new Date(dateString);
+  return isNaN(parsed.getTime()) ? new Date() : parsed;
+};
+
+type AddOrEditActivityForm = z.infer<typeof AddOrEditActivitySchema> & { startDate: string, endDate: string };
 
 type CreateOrEditActivityDrawerProps = {
   open: boolean;
@@ -36,8 +41,12 @@ export default function CreateOrEditActivityDrawer({
   editItem,
 }: CreateOrEditActivityDrawerProps) {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(
+    editItem ? parseDate(editItem.startDate) : new Date()
+  );
+  const [endDate, setEndDate] = useState<Date>(
+    editItem ? parseDate(editItem.endDate) : new Date()
+  );
 
   const { data: categories } = activityQuery.query.useGetCategories();
   const { mutate: createActivity } = activityQuery.mutation.useCreateActivity();
@@ -115,6 +124,8 @@ export default function CreateOrEditActivityDrawer({
       setValue("name", editItem.name);
       setValue("description", editItem.description);
       setValue("category", editItem.category);
+      setStartDate(parseDate(editItem.startDate));
+      setEndDate(parseDate(editItem.endDate));
     }
   }, [editItem, setValue]);
 

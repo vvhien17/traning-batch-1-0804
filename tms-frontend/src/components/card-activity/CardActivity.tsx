@@ -148,7 +148,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
           <p className="text-sm font-semibold text-gray-700">
             Are you sure you want to delete this activity?
           </p>
-          <div className="flex gap-4">
+          <div className="flex justify-end gap-4">
             <button
               className="px-3 py-1 bg-red-500 text-white rounded-md"
               onClick={handleDelete}
