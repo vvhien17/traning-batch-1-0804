@@ -36,8 +36,11 @@ export class GoalService {
     }
     const startDate = new Date(startedTime);
     const currentDate = new Date();
-    if (startDate <= currentDate) {
+    if (startDate.getDate() < currentDate.getDate()) {
       return buildError(ErrorMessage.START_DATE_INVALID);
+    }
+    if (startDate.getDate() > new Date(endedTime).getDate()) {
+      return buildError(ErrorMessage.INVALID_DATE);
     }
     const userExists = await this.userRepository.findOne({
       where: { id: userId },
