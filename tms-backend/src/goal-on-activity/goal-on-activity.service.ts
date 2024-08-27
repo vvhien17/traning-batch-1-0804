@@ -4,8 +4,12 @@ import { UpdateGoalOnActivityDto } from './dto/update-goal-on-activity.dto';
 
 @Injectable()
 export class GoalOnActivityService {
-  create(createGoalOnActivityDto: CreateGoalOnActivityDto) {
-    return 'This action adds a new goalOnActivity';
+  async create(createGoalOnActivityDto: CreateGoalOnActivityDto) {
+    return {
+      data: null,
+      isSuccess: true,
+      message: "This action returns the created goalOnActivity",
+    }
   }
 
   findAll() {
