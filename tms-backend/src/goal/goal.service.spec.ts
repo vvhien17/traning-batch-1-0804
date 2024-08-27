@@ -10,12 +10,13 @@ import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { GoalStatus } from '../common/constants/goal-status';
 import { CreateGoalDto } from './dto/create-goal.dto';
 import { buildError } from '../common/utils/Utility';
+import { Activity } from '../activity/entities/activity.entity';
 
 describe('GoalService', () => {
   let service: GoalService;
   let goalRepository: Repository<Goal>;
   let userRepository: Repository<User>;
-
+  let goalOnActivityRepository: Repository<GoalOnActivity>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,10 +27,18 @@ describe('GoalService', () => {
             create: jest.fn(),
             save: jest.fn(),
             find: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
           provide: getRepositoryToken(User),
+          useValue: {
+            findOne: jest.fn(),
+            find: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(GoalOnActivity),
           useValue: {
             findOne: jest.fn(),
             find: jest.fn(),
@@ -41,6 +50,9 @@ describe('GoalService', () => {
     service = module.get<GoalService>(GoalService);
     goalRepository = module.get<Repository<Goal>>(getRepositoryToken(Goal));
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    goalOnActivityRepository = module.get<Repository<GoalOnActivity>>(
+      getRepositoryToken(GoalOnActivity),
+    );
   });
 
   it('should create a goal with valid input and return BaseResponse', async () => {
@@ -199,8 +211,8 @@ describe('GoalService', () => {
     const result: BaseResponse = await service.create(
       {
         name: 'Goal with Nonexistent User',
-        startedTime: new Date().toISOString(),
-        endedTime: new Date().toISOString(),
+        startedTime: '2200-07-31T23:59:59Z', // Past date
+        endedTime: '2200-08-31T23:59:59Z',
       },
       9999,
     );
@@ -236,19 +248,61 @@ describe('GoalService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         user: new User(), // Mock or create as needed
-        goalOnActivities: [new GoalOnActivity()], // Mock or create as needed
+        goalOnActivities: [
+          {
+            id: 1,
+            goalId: 1,
+            activityId: 1,
+            totalSpend: 100,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            activity: {
+              id: 1,
+              name: 'Activity 1',
+              userId: 1,
+              startedAt: new Date(),
+              endedAt: new Date(),
+              status: 'COMPLETED', // Status of the activity
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            } as Activity,
+            goal: null,
+          } as GoalOnActivity,
+        ],
       },
     ];
 
+    // Mock the getPercentsCompleteByGoal method
+    jest
+      .spyOn(service, 'getPercentsCompleteByGoal')
+      .mockImplementation(async (goalId: number) => ({
+        data: 100, // Mocked percentage completion
+        isSuccess: true,
+        message: SuccessMessage.GET_DATA_SUCCESS,
+      }));
+
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
     jest.spyOn(goalRepository, 'find').mockResolvedValue(mockGoals);
+
     const result = await service.findAllByUserId(userId);
+
+    // Expected result with percentComplete added to mockGoals
+    const expectedResult = {
+      data: [
+        {
+          ...mockGoals[0],
+          percentComplete: 100, // The mocked result from getPercentsCompleteByGoal
+        },
+      ],
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    };
+
     expect(result).toBeDefined();
     expect(result.isSuccess).toEqual(true);
     expect(result.message).toEqual(SuccessMessage.GET_DATA_SUCCESS);
-    expect(result.data).toEqual(mockGoals);
+    expect(result.data).toEqual(expectedResult.data);
   });
-
   it('should return with data is null if no goals are found', async () => {
     const userId = 1;
     const mockUser: User = {
@@ -304,5 +358,104 @@ describe('GoalService', () => {
     expect(result.isSuccess).toEqual(false);
     expect(result.message).toContain(ErrorMessage.START_DATE_INVALID);
     expect(result.data).toEqual(null);
+  });
+
+  describe('Goal analysis', () => {
+    it('should return error if goal is not found', async () => {
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(null);
+
+      const result = await service.getPercentsCompleteByGoal(1);
+      expect(result).toBeDefined();
+      expect(result.message).toEqual(ErrorMessage.GOAL_NOT_FOUND);
+    });
+
+    it('should return percent completed when activities are present', async () => {
+      const mockGoal: Goal = {
+        id: 1,
+        name: 'Test Goal',
+        startedTime: new Date('2024-08-01T00:00:00Z'),
+        endedTime: new Date('2024-08-31T23:59:59Z'),
+        status: 'NOT_COMPLETED',
+        userId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        user: new User(),
+        goalOnActivities: [],
+      };
+
+      const mockGoalOnActivities: GoalOnActivity[] = [
+        {
+          id: 1,
+          goalId: 1,
+          activityId: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          activity: {
+            id: 1,
+            name: 'Activity 1',
+            userId: 1,
+            startedAt: new Date(),
+            endedAt: new Date(),
+            status: 'COMPLETED',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          } as Activity,
+          goal: mockGoal,
+        },
+        {
+          id: 2,
+          goalId: 1,
+          activityId: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          activity: {
+            id: 2,
+            name: 'Activity 2',
+            userId: 1,
+            startedAt: new Date(),
+            endedAt: new Date(),
+            status: 'NOT_COMPLETED',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          } as Activity,
+          goal: mockGoal,
+        },
+      ];
+
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal);
+      jest
+        .spyOn(goalOnActivityRepository, 'find')
+        .mockResolvedValue(mockGoalOnActivities);
+
+      const result = await service.getPercentsCompleteByGoal(1);
+      expect(result).toBeDefined();
+      expect(result.data).toBe(50);
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toBe(SuccessMessage.GET_DATA_SUCCESS);
+    });
+
+    it('should return 0% if there are no activities associated with the goal', async () => {
+      const mockGoal: Goal = {
+        id: 1,
+        name: 'Test Goal',
+        startedTime: new Date('2024-08-01T00:00:00Z'),
+        endedTime: new Date('2024-08-31T23:59:59Z'),
+        status: 'NOT_COMPLETED',
+        userId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        user: new User(),
+        goalOnActivities: [],
+      };
+
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal);
+      jest.spyOn(goalOnActivityRepository, 'find').mockResolvedValue([]);
+
+      const result = await service.getPercentsCompleteByGoal(1);
+      expect(result).toBeDefined();
+      expect(result.data).toBe(0);
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toBe(SuccessMessage.GET_DATA_SUCCESS);
+    });
   });
 });
