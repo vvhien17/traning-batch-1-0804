@@ -5,12 +5,12 @@ import { Activity } from '../activity/entities/activity.entity';
 import { Goal } from '../goal/entities/goal.entity';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { create } from 'domain';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { GoalOnActivity } from './entities/goal-on-activity.entity';
 import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
 import { CreateGoalOnActivityDto } from './dto/create-goal-on-activity.dto';
+import { ActivityService } from '../activity/activity.service';
 
 const currentDate = new Date();
 const endedAt = new Date();
@@ -58,7 +58,7 @@ const mockGoal = [
     status: ActivityStatus.NOT_COMPLETED,
     startedTime: currentDate,
     endedTime: currentDate,
-  }
+  },
 ] as Goal[];
 
 const mockGoalOnActivity = [
@@ -71,7 +71,7 @@ const mockGoalOnActivity = [
     id: 2,
     goalId: 2,
     activityId: 2,
-  }
+  },
 ] as GoalOnActivity[];
 const createGoalOnActivityDto: CreateGoalOnActivityDto = {
   goalId: 1,
@@ -85,6 +85,7 @@ const createGoalOnActivityDto: CreateGoalOnActivityDto = {
 describe('GoalOnActivityService', () => {
   let service: GoalOnActivityService;
   let activityRepository: Repository<Activity>;
+  let activityService: ActivityService;
   let goalRepository: Repository<Goal>;
   let goalOnActivityRepository: Repository<GoalOnActivity>;
 
@@ -108,7 +109,7 @@ describe('GoalOnActivityService', () => {
             findOne: jest.fn(),
             create: jest.fn().mockResolvedValue(mockGoal[0]),
             save: jest.fn().mockResolvedValue(mockGoal[0]),
-          }
+          },
         },
         {
           provide: getRepositoryToken(GoalOnActivity),
@@ -117,81 +118,100 @@ describe('GoalOnActivityService', () => {
             findOne: jest.fn(),
             create: jest.fn().mockResolvedValue(mockGoal[0]),
             save: jest.fn().mockResolvedValue(mockGoal[0]),
-          }
-        }
+          },
+        },
+        {
+          provide: ActivityService,
+          useValue: {
+            create: jest.fn().mockResolvedValue(mockActivities[0]),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<GoalOnActivityService>(GoalOnActivityService);
+    activityRepository = module.get<Repository<Activity>>(
+      getRepositoryToken(Activity),
+    );
+    goalRepository = module.get<Repository<Goal>>(getRepositoryToken(Goal));
+    goalOnActivityRepository = module.get<Repository<GoalOnActivity>>(
+      getRepositoryToken(GoalOnActivity),
+    );
+    activityService = module.get<ActivityService>(ActivityService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe("create activity for goal", () => {
-    it("Should return success with valid data ( data activity valid & goal exist)", async () => {
-      jest.spyOn(goalRepository, "findOne").mockResolvedValue(mockGoal[0] as Goal);
-      jest.spyOn(activityRepository, "create").mockReturnValue(mockActivities[0] as Activity);
-      jest.spyOn(activityRepository, "save").mockResolvedValue(mockActivities[0] as Activity);
-      jest.spyOn(goalOnActivityRepository, "create").mockReturnValue(mockGoalOnActivity[0] as GoalOnActivity);
-      jest.spyOn(goalOnActivityRepository, "save").mockResolvedValue(mockGoalOnActivity[0] as GoalOnActivity);
-      const result = await service.create(createGoalOnActivityDto);
+  describe('create activity for goal', () => {
+    const userId = 1;
+    it('Should return success with valid data ( data activity valid & goal exist)', async () => {
+      jest
+        .spyOn(goalRepository, 'findOne')
+        .mockResolvedValue(mockGoal[0] as Goal);
+      jest
+        .spyOn(goalOnActivityRepository, 'create')
+        .mockReturnValue(mockGoalOnActivity[0] as GoalOnActivity);
+      jest
+        .spyOn(goalOnActivityRepository, 'save')
+        .mockResolvedValue(mockGoalOnActivity[0] as GoalOnActivity);
+      const result = await service.create(userId, createGoalOnActivityDto);
       expect(result.data).toEqual(mockGoalOnActivity[0] as GoalOnActivity);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
-    })
+    });
 
     it("Should return error when user's goal is not exist", async () => {
-      jest.spyOn(goalRepository, "findOne").mockResolvedValue(null);
-      const result = await service.create(createGoalOnActivityDto);
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(undefined);
+      const result = await service.create(userId, createGoalOnActivityDto);
       expect(result.data).toEqual(null);
       expect(result.isSuccess).toBe(false);
       expect(result.message).toEqual(ErrorMessage.GOAL_NOT_FOUND);
-    })
+    });
 
-    it("Should return error when activity input invalid - missing name", async () => {
+    it('Should return error when activity input invalid - missing name', async () => {
       const expectedResponse: BaseResponse = buildError(
         `Name ${ErrorMessage.IS_REQUIRED}`,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
         name: null,
       });
       expect(result).toEqual(expectedResponse);
-    })
+    });
 
-    it("Should return error when activity input invalid - missing startedAt", async () => {
+    it('Should return error when activity input invalid - missing startedAt', async () => {
       const expectedResponse: BaseResponse = buildError(
-        `startedAt ${ErrorMessage.IS_REQUIRED}`,
+        `StartedAt ${ErrorMessage.IS_REQUIRED}`,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
         startedAt: null,
       });
       expect(result).toEqual(expectedResponse);
-    })
+    });
 
-    it("Should return error when activity input invalid - missing endedAt", async () => {
+    it('Should return error when activity input invalid - missing endedAt', async () => {
       const expectedResponse: BaseResponse = buildError(
-        `endedAt ${ErrorMessage.IS_REQUIRED}`,
+        `EndedAt ${ErrorMessage.IS_REQUIRED}`,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
         endedAt: null,
       });
       expect(result).toEqual(expectedResponse);
-    })
+    });
 
-    it("Should return error when missing goal input ", async () => {
+    it('Should return error when missing goal input ', async () => {
       const expectedResponse: BaseResponse = buildError(
         `GoalId ${ErrorMessage.IS_REQUIRED}`,
       );
-      const result: BaseResponse = await service.create({
+      const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
         goalId: null,
       });
       expect(result).toEqual(expectedResponse);
-    })
-  })
+    });
+  });
 });
