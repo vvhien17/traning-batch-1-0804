@@ -36,31 +36,18 @@ const AddOrEditActivitySchema = z.object({
     message: "Start Date and End Date must be on the same day",
     path: ["endDate"],
   }
-).refine(
-  (data) => {
-    const start = new Date(data.startDate);
-    const end = new Date(data.endDate);
-    const startDateOnly = start.toISOString().split("T")[0];
-    const endDateOnly = end.toISOString().split("T")[0];
-
-    return startDateOnly === endDateOnly;
-  },
-  {
-    message: "Start Date and End Date must be on the same day",
-    path: ["endDate"],
-  }
 )
-.refine(
-  (data) => {
-    const start = new Date(data.startDate);
-    const end = new Date(data.endDate);
-    return start < end;
-  },
-  {
-    message: "Start Date must be before End Date",
-    path: ["endDate"],
-  }
-);
+  .refine(
+    (data) => {
+      const start = new Date(data.startDate);
+      const end = new Date(data.endDate);
+      return start < end;
+    },
+    {
+      message: "Start Date must be before End Date",
+      path: ["endDate"],
+    }
+  );
 
 const parseDate = (dateString: string): Date => {
   const parsed = new Date(dateString);
