@@ -32,6 +32,12 @@ export class ActivityController {
     const userId = +req.user.id;
     return this.activityService.findOne(+id, +userId);
   }
+
+  @Get('can-add-to-goal/:goalId')
+  findCanAddToGoal(@Request() req, @Param('goalId') id: string) {
+    const userId = +req.user.id;
+    return this.activityService.findCanAddToGoal(+id, +userId);
+  }
   // &catergoryId=1
   @Post('all')
   findAll(@Request() req, @Body() body?: { categoryIds: number[] }) {

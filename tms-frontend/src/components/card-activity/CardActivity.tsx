@@ -11,6 +11,17 @@ import Popup from "../popup/Popup";
 import { activityQuery } from "@components/hooks/activity";
 import { toast } from "react-toastify";
 import { TypeErrorResponse } from "@components/types/types";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Input from "../Input";
+
+const CompleteActivitySchema = z.object({
+  hour: z.string(),
+  minute: z.string(),
+});
+
+type CompleteActivityForm = z.infer<typeof CompleteActivitySchema>;
 
 export type TStatus = "NOT_COMPLETED" | "COMPLETED" | "CANCELED";
 
@@ -38,7 +49,16 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   const [isEllipsisActive, setIsEllipsisActive] = useState<boolean>(false);
   const [showTooltip, setShowTooltip] = useState<boolean>(false);
   const [openPopup, setOpenPopup] = useState<boolean>(false);
+  const [openCompletePopup, setOpenCompletePopup] = useState<boolean>(false);
   const descriptionRef = useRef<HTMLParagraphElement | null>(null);
+  const timeSpent = dayjs(endedAt).diff(dayjs(startedAt), "minute");
+  const { register, handleSubmit, formState } = useForm<CompleteActivityForm>({
+    defaultValues: {
+      hour: Math.floor(timeSpent / 60).toString(),
+      minute: (timeSpent % 60).toString(),
+    },
+    resolver: zodResolver(CompleteActivitySchema),
+  });
 
   const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
   const { mutate: deleteActivity } = activityQuery.mutation.useDeleteActivity();
@@ -60,10 +80,11 @@ export const CardActivity: React.FC<CardActivityProps> = ({
     setOpenPopup(false);
   };
 
-  const handleComplete = () => {
+  const handleComplete = (data: CompleteActivityForm) => {
     updateActivity({
       id,
       status: "COMPLETED",
+      realSpendTime: +data.hour * 60 + +data.minute,
     });
   };
 
@@ -150,13 +171,57 @@ export const CardActivity: React.FC<CardActivityProps> = ({
           {status !== "COMPLETED" && (
             <button
               className="px-3 py-1 bg-blue-400 text-white rounded-md w-[110px]"
-              onClick={handleComplete}
+              onClick={() => setOpenCompletePopup(true)}
             >
               Mark done
             </button>
           )}
         </div>
       </div>
+      <Popup
+        open={openCompletePopup}
+        title="Complete activity"
+        setOpen={setOpenCompletePopup}
+      >
+        <div>
+          <p className="text-sm font-semibold text-gray-700 mb-4">
+            How much time did you spend on this activity?
+          </p>
+          <form className="flex gap-4 mb-4">
+            <Input
+              label="Hours"
+              name="hour"
+              placeholder="Hours"
+              register={register}
+              error={formState.errors.hour?.message}
+              className="col-span-2"
+            />
+            <Input
+              label="Minutes"
+              name="minute"
+              placeholder="Minutes"
+              register={register}
+              error={formState.errors.minute?.message}
+              className="col-span-2"
+            />
+          </form>
+          <div className="flex justify-end gap-4">
+            <button
+              className="px-3 py-1 bg-blue-400 text-white rounded-md w-[110px]"
+              onClick={() => setOpenCompletePopup(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit(handleComplete)}
+              className="px-3 py-1 bg-colors-main text-white rounded-md w-[110px]"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </Popup>
       <Popup open={openPopup} title="Delete activity" setOpen={setOpenPopup}>
         <div className="flex flex-col gap-4">
           <p className="text-sm font-semibold text-gray-700">

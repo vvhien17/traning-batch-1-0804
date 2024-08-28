@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../category/entities/category.entity';
 import { Activity } from '..//activity/entities/activity.entity';
-import { Between, Repository } from 'typeorm';
+import { Between, IsNull, Not, Repository } from 'typeorm';
 import { ResponseDashboard } from './dto/response-dashboard.dto';
 import { BaseResponse } from '@/common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
@@ -20,26 +20,22 @@ export class DashboardService {
 
   async getCategoryTimePercentages(userId: number): Promise<BaseResponse> {
     const activities = await this.activityRepository.find({
-      where: { userId },
+      where: { userId, categoryId: Not(IsNull()) },
       relations: ['category'],
     });
 
-    const filteredActivities = activities.filter(
-      (activity) => activity.category !== null,
-    );
-
-    if (filteredActivities.length === 0) {
+    if (activities.length === 0) {
       return buildError(ErrorMessage.ACTIVITY_NOT_FOUND);
     }
 
-    const totalTime = filteredActivities.reduce((total, activity) => {
+    const totalTime = activities.reduce((total, activity) => {
       const timeSpent = activity.realSpendTime;
 
       return total + timeSpent;
     }, 0);
 
     // Aggregate time spent per category
-    const categoryTimes = filteredActivities.reduce(
+    const categoryTimes = activities.reduce(
       (acc, activity) => {
         const timeSpent = activity.realSpendTime;
         const categoryId = activity.category.id;
