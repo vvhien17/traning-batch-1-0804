@@ -121,7 +121,7 @@ jobs:
         run: |
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
-          git checkout -b test-reports  # Or use a different branch as needed
+          git checkout -b test-reports || git checkout test-reports
           git add tms-backend/test-report.html  # Adjust the path to the report
           git commit -m "Update test-report [ci skip]"
           # Use Personal Access Token for authentication
