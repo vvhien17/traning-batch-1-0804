@@ -3,7 +3,7 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Activity } from './entities/activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { buildError } from '../common/utils/Utility';
 import { BaseResponse } from '../common/base-response/base-response.dto';
@@ -12,6 +12,7 @@ import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
 import { Category } from '../category/entities/category.entity';
+import { Goal } from '../goal/entities/goal.entity';
 
 @Injectable()
 export class ActivityService {
@@ -22,6 +23,8 @@ export class ActivityService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Goal)
+    private readonly goalRepository: Repository<Goal>,
   ) {}
 
   async create(
@@ -112,6 +115,40 @@ export class ActivityService {
       message: SuccessMessage.GET_DATA_SUCCESS,
     };
   }
+  async findCanAddToGoal(goalId: number, userId: number) {
+    const existGoal = await this.goalRepository.findOne({
+      where: { id: goalId, userId },
+    });
+    if (!existGoal) {
+      return buildError(ErrorMessage.GOAL_NOT_FOUND);
+    }
+    const data = await this.activityRepository.find({
+      where: {
+        userId,
+        isDelete: false,
+        startedAt: Between(existGoal.startedTime, existGoal.endedTime),
+        endedAt: Between(existGoal.startedTime, existGoal.endedTime),
+      },
+      relations: ['goalOnActivities'],
+      select: {
+        goalOnActivities: {
+          goalId: true,
+        },
+      },
+    });
+
+    const activities = data.filter((activity) => {
+      return !activity.goalOnActivities.some(
+        (goalOnActivity) => goalOnActivity.goalId === 2,
+      );
+    });
+
+    return {
+      data: activities,
+      isSuccess: true,
+      message: SuccessMessage.CREATE_DATA_SUCCESS,
+    };
+  }
 
   async update(
     userId: number,
@@ -138,21 +175,15 @@ export class ActivityService {
       if (updateActivityDto.startedAt || updateActivityDto.endedAt) {
         if (updateActivityDto.startedAt && updateActivityDto.endedAt) {
           if (updateActivityDto.endedAt <= updateActivityDto.startedAt) {
-            return buildError(
-              `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
-            );
+            return buildError(`StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`);
           }
         } else if (updateActivityDto.endedAt) {
           if (updateActivityDto.endedAt >= checkActivity.startedAt) {
-            return buildError(
-              `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
-            );
+            return buildError(`StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`);
           }
         } else if (updateActivityDto.startedAt) {
           if (updateActivityDto.startedAt <= checkActivity.endedAt) {
-            return buildError(
-              `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
-            );
+            return buildError(`StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`);
           }
         }
       }

@@ -1,21 +1,73 @@
 import { activityQuery } from "@components/hooks/activity";
-import React from "react";
+import React, { useState } from "react";
 import classcat from "classcat";
+import Popup from "@components/components/popup/Popup";
+import Input from "@components/components/Input";
+import { z } from "zod";
+import { set } from "date-fns";
+import { useForm } from "react-hook-form";
+import dayjs from "dayjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  useGetActivityOnGoal,
+  useGetGoal,
+} from "@components/query/goal/queryHooks";
 
 interface Props {
   name: string;
   id: number;
   isDone?: boolean;
+  endedAt: Date;
+  startedAt: Date;
+  goalId: number;
 }
 
-const ActivityGoalCard = ({ name, id, isDone }: Props) => {
+const CompleteActivitySchema = z.object({
+  hour: z.string(),
+  minute: z.string(),
+});
+
+type CompleteActivityForm = z.infer<typeof CompleteActivitySchema>;
+
+const ActivityGoalCard = ({
+  name,
+  id,
+  isDone,
+  endedAt,
+  startedAt,
+  goalId,
+}: Props) => {
+  const { refetch } = useGetActivityOnGoal(goalId);
+  const { refetch: refetchGetGoal } = useGetGoal();
   const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
 
-  const onUpdateStatusActivities = () => {
-    updateActivity({
-      id,
-      status: "COMPLETED",
-    });
+  const timeSpent = dayjs(endedAt).diff(dayjs(startedAt), "minute") + 1;
+
+  const [openCompletePopup, setOpenCompletePopup] = useState<boolean>(false);
+
+  const { register, handleSubmit, formState } = useForm<CompleteActivityForm>({
+    defaultValues: {
+      hour: Math.floor(timeSpent / 60).toString(),
+      minute: (timeSpent % 60).toString(),
+    },
+    resolver: zodResolver(CompleteActivitySchema),
+  });
+
+  const onComplete = (data: CompleteActivityForm) => {
+    updateActivity(
+      {
+        id,
+        status: "COMPLETED",
+        realSpendTime: +data.hour * 60 + +data.minute,
+      },
+      {
+        onSuccess() {
+          refetchGetGoal();
+          refetch();
+          setOpenCompletePopup(false);
+        },
+      }
+    );
   };
 
   return (
@@ -27,7 +79,7 @@ const ActivityGoalCard = ({ name, id, isDone }: Props) => {
       <p className="text-base font-bold ">{name}</p>
       {isDone && (
         <div
-          onClick={onUpdateStatusActivities}
+          onClick={() => setOpenCompletePopup(true)}
           className="p-1 border-[1px] border-white rounded-md bg-green-500"
         >
           <svg
@@ -63,6 +115,51 @@ const ActivityGoalCard = ({ name, id, isDone }: Props) => {
           />
         </svg>
       </div>
+
+      <Popup
+        open={openCompletePopup}
+        title="Complete activity"
+        setOpen={setOpenCompletePopup}
+      >
+        <div>
+          <p className="text-sm font-semibold text-gray-700 mb-4">
+            How much time did you spend on this activity?
+          </p>
+          <form className="flex gap-4 mb-4">
+            <Input
+              label="Hours"
+              name="hour"
+              placeholder="Hours"
+              register={register}
+              error={formState.errors.hour?.message}
+              className="col-span-2"
+            />
+            <Input
+              label="Minutes"
+              name="minute"
+              placeholder="Minutes"
+              register={register}
+              error={formState.errors.minute?.message}
+              className="col-span-2"
+            />
+          </form>
+          <div className="flex justify-end gap-4">
+            <button
+              className="px-3 py-1 bg-blue-400 text-white rounded-md w-[110px]"
+              onClick={() => setOpenCompletePopup(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit(onComplete)}
+              className="px-3 py-1 bg-colors-main text-white rounded-md w-[110px]"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 };

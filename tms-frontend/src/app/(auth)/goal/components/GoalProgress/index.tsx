@@ -34,7 +34,7 @@ const GoalProgress = ({ percent }: Props) => {
       </svg>
       <div className="absolute top-1/2 start-1/2 transform -translate-y-1/2 -translate-x-1/2">
         <span className={`text-center text-lg font-bold text-colors-main`}>
-          {percent}%
+          {Math.round(percent * 10) / 10}%
         </span>
       </div>
     </div>

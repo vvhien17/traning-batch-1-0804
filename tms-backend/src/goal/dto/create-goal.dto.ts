@@ -1,12 +1,10 @@
 import { ErrorMessage } from '../../common/utils/message-const';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsDateString, IsNotEmpty } from 'class-validator';
 import {
-  IsString,
-  IsDateString,
-  IsInt,
-  IsNotEmpty,
-  IsDate,
-} from 'class-validator';
+  IsAfterOrEqualToday,
+  IsAfterStartDate,
+} from '../../common/utils/Utility';
 
 export class CreateGoalDto {
   @ApiProperty({})
@@ -15,17 +13,18 @@ export class CreateGoalDto {
   name: string;
 
   @ApiProperty({})
+  @IsAfterOrEqualToday({
+    message: `StartedTime ${ErrorMessage.INVALID_DATE} (must be today or later)`,
+  })
   @IsDateString({}, { message: `StartedTime ${ErrorMessage.INVALID_DATE}` })
   @IsNotEmpty({ message: `StartedTime ${ErrorMessage.IS_REQUIRED}` })
   startedTime: string;
 
   @ApiProperty({})
-  @IsDateString({}, { message: `EndTime ${ErrorMessage.INVALID_DATE}` })
-  @IsNotEmpty({ message: `EndTime ${ErrorMessage.IS_REQUIRED}` })
+  @IsAfterStartDate('startedTime', {
+    message: `EndedTime ${ErrorMessage.INVALID_DATE} (must be later than start date)`,
+  })
+  @IsDateString({}, { message: `EndedTime ${ErrorMessage.INVALID_DATE}` })
+  @IsNotEmpty({ message: `EndedTime ${ErrorMessage.IS_REQUIRED}` })
   endedTime: string;
-
-  // @ApiProperty({})
-  // @IsNotEmpty()
-  // @IsString()
-  // status: string;
 }

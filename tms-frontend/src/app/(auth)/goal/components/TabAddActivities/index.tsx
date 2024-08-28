@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useGetActivityOnGoal,
   useGetCanAddToGoal,
 } from "@components/query/goal/queryHooks";
 import ActivityGoalCard from "../ActivityGoalCard";
 import DropdownSelect from "../DropdownSelect";
+import { TItemActivitiesOnGoal } from "@components/types/goal";
 
 interface Props {
-  idGoal: number;
+  goalId: number;
 }
 
-const TabAddActivities = ({ idGoal }: Props) => {
-  const { data: dataCanAddGoal } = useGetCanAddToGoal(idGoal);
-  const { data: dataAddedGoal } = useGetActivityOnGoal(idGoal);
+const TabAddActivities = ({ goalId }: Props) => {
+  const { data: dataCanAddGoal } = useGetCanAddToGoal(goalId);
+  const { data: dataNotCompleteGoal } = useGetActivityOnGoal(goalId);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState<TItemActivitiesOnGoal[]>(
+    dataNotCompleteGoal || []
+  );
+
+  useEffect(() => {
+    if (!dataNotCompleteGoal) return;
+
+    const dataFilter = dataNotCompleteGoal.filter(
+      (item) => item.status !== "COMPLETED"
+    );
+
+    setData(dataFilter);
+  }, [dataNotCompleteGoal]);
+
   return (
     <div className="flex flex-wrap gap-2">
       <div className="relative">
@@ -38,14 +53,23 @@ const TabAddActivities = ({ idGoal }: Props) => {
           </svg>
         </div>
         <DropdownSelect
-          goalId={idGoal}
+          setIsClose={() => setIsOpen(false)}
+          goalId={goalId}
           isOpen={isOpen}
           setIsOpen={() => setIsOpen(true)}
           arr={dataCanAddGoal || []}
         />
       </div>
-      {dataAddedGoal?.map((item) => (
-        <ActivityGoalCard id={item.id} key={item.id} isDone name={item?.name} />
+      {data?.map((item) => (
+        <ActivityGoalCard
+          goalId={goalId}
+          endedAt={item.endedAt}
+          startedAt={item.startedAt}
+          id={item.id}
+          key={item.id}
+          isDone
+          name={item?.name}
+        />
       ))}
     </div>
   );

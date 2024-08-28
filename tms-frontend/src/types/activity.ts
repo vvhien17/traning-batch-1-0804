@@ -12,7 +12,7 @@ export type TActivity = {
 };
 
 export type TGetActivityRequest = {
-  categoryIds: number[]
+  categoryIds: number[];
 };
 
 export type TCreateActivityRequest = {
@@ -31,6 +31,7 @@ export type TUpdateActivityRequest = {
   status?: "NOT_COMPLETED" | "COMPLETED" | "CANCELED";
   startedAt?: string;
   endedAt?: string;
+  realSpendTime?: number;
 };
 
 export type TCategory = {

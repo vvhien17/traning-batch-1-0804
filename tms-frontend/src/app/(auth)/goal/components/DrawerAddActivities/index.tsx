@@ -33,12 +33,12 @@ const DrawerAddActivitiesOnGoal = ({ isOpen, setIsOpen, itemGoal }: Props) => {
       {
         key: 0,
         title: "Current Activities",
-        comp: <TabAddActivities idGoal={itemGoal?.id} />,
+        comp: <TabAddActivities goalId={itemGoal?.id} />,
       },
       {
         key: 1,
         title: "Completed Activities",
-        comp: <TabActivitiesCompleted idGoal={itemGoal?.id} />,
+        comp: <TabActivitiesCompleted goalId={itemGoal?.id} />,
       },
     ],
     [state.isOpenTab, isOpen]

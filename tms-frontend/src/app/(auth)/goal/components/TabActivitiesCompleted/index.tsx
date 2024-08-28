@@ -4,13 +4,13 @@ import ActivityGoalCard from "../ActivityGoalCard";
 import { TItemActivitiesOnGoal } from "@components/types/goal";
 
 interface Props {
-  idGoal: number;
+  goalId: number;
 }
 
-const TabActivitiesCompleted = ({ idGoal }: Props) => {
-  const { data } = useGetActivityOnGoal(idGoal);
+const TabActivitiesCompleted = ({ goalId }: Props) => {
+  const { data } = useGetActivityOnGoal(goalId);
 
-  const [_data, setData] = useState<Array<TItemActivitiesOnGoal>>([]);
+  const [_data, setData] = useState<Array<TItemActivitiesOnGoal>>(data || []);
 
   useEffect(() => {
     if (!data) return;
@@ -22,16 +22,19 @@ const TabActivitiesCompleted = ({ idGoal }: Props) => {
   return (
     <React.Fragment>
       {_data && _data.length >= 1 ? (
-        <>
+        <div className="flex flex-wrap gap-2">
           {_data?.map((item) => (
             <ActivityGoalCard
+              endedAt={item.endedAt}
+              startedAt={item.startedAt}
+              goalId={goalId}
               isDone={false}
               id={item.id}
               key={item.id}
               name={item.name}
             />
           ))}
-        </>
+        </div>
       ) : (
         <p className="text-center m-1 text-green-700 underline">
           You current is don&apos;t anything activity is complete
