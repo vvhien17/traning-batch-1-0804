@@ -120,8 +120,10 @@ jobs:
           git add tms-backend/test-report.html  # Adjust the path to the report
           git commit -m "Update test-report [ci skip]"
           # Use Personal Access Token for authentication
-          git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
+          # git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
           git push origin test-reports --force  # Push to the desired branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
 
   deploy-report:
     name: Deploy Test Report to GitHub Pages
