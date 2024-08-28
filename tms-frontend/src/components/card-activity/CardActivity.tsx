@@ -132,7 +132,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
         {dayjs(startedAt).format("DD/MM/YYYY HH:mm")} -{" "}
         {dayjs(endedAt).format("DD/MM/YYYY HH:mm")}
       </p>
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center justify-end mt-4">
         {!!categoryName && (
           <div className="flex flex-wrap basis-3/4 gap-1">
             <span className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs">
@@ -140,7 +140,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
             </span>
           </div>
         )}
-        <div className="flex basis-1/4 justify-end">
+        <div className="flex">
           <button onClick={onEdit} aria-label="Edit activity">
             <PencilSquareIcon className="size-5 text-black-500" />
           </button>
