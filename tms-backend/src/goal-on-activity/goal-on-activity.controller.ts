@@ -30,9 +30,10 @@ export class GoalOnActivityController {
     return this.goalOnActivityService.create(userId, createGoalOnActivityDto);
   }
 
-  @Get()
-  findAll() {
-    return this.goalOnActivityService.findAll();
+  @Get(':goalId')
+  findAll(@Request() req, @Param('goalId') goalId: string) {
+    const userId = +req.user.id;
+    return this.goalOnActivityService.findAll(userId, +goalId);
   }
 
   @Get(':id')
