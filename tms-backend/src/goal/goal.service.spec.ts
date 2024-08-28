@@ -94,7 +94,6 @@ describe('GoalService', () => {
     };
 
     const result: BaseResponse = await service.create(dto, 1);
-    console.log(result);
     expect(result).toBeDefined();
     expect(result.isSuccess).toEqual(true);
     expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
@@ -130,9 +129,129 @@ describe('GoalService', () => {
     expect(result.data).toEqual(null);
     expect(result.message).toContain(`Name ${ErrorMessage.IS_REQUIRED}`);
   });
+  // Test Case for StartedTime less than current date
+  it('should return an error if startedTime is in the past', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+
+    const pastDate = new Date(now.getDate() - 1);
+
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+
+    const result: BaseResponse = await service.create(
+      {
+        name: 'Past Start Time Goal',
+        startedTime: pastDate.toISOString(),
+        endedTime: oneHourLater.toISOString(),
+      },
+      userId,
+    );
+
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+    expect(result.message).toEqual(
+      `StartedTime ${ErrorMessage.INVALID_DATE} (must be today or later)`,
+    );
+  });
+
+  it('should return an error if endedTime is before startedTime', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+
+    const earlierEndTime = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes after start time
+
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+
+    const result: BaseResponse = await service.create(
+      {
+        name: 'Invalid End Time Goal',
+        startedTime: oneHourLater.toISOString(), // Starts in one hour
+        endedTime: earlierEndTime.toISOString(), // Ends in 30 minutes, before it even starts
+      },
+      userId,
+    );
+
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toBe(false);
+    expect(result.data).toEqual(null);
+    expect(result.message).toEqual(
+      `EndedTime ${ErrorMessage.INVALID_DATE} (must be later than start date)`,
+    ); // Custom validation error message
+  });
+
+  // Test Case for Valid Date Range
+  it('should create a goal with valid date range', async () => {
+    const userId = 1;
+    const mockUser: User = {
+      id: userId,
+      email: 'test@example.com',
+      username: 'testuser',
+      password: 'password123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      categories: [],
+      activities: [],
+      goals: [],
+    };
+
+    const validStartTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour later
+    const validEndTime = new Date(now.getTime() + 2 * 60 * 60 * 1000); // 2 hours later
+
+    const mockGoal: Goal = {
+      id: 1,
+      name: 'Valid Date Range Goal',
+      startedTime: validStartTime,
+      endedTime: validEndTime,
+      status: GoalStatus.NOT_COMPLETED,
+      userId: userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      user: mockUser,
+      goalOnActivities: [],
+    };
+
+    jest.spyOn(goalRepository, 'save').mockResolvedValue(mockGoal);
+    jest.spyOn(goalRepository, 'create').mockReturnValue(mockGoal);
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
+
+    const result: BaseResponse = await service.create(
+      {
+        name: 'Valid Date Range Goal',
+        startedTime: validStartTime.toISOString(),
+        endedTime: validEndTime.toISOString(),
+      },
+      userId,
+    );
+
+    expect(result).toBeDefined();
+    expect(result.isSuccess).toEqual(true);
+    expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
+    expect(result.data).toEqual(mockGoal);
+  });
 
   // Test Case for Invalid StartedTime
-  it('should return an error if startedTime is invalid', async () => {
+  it('should return an error if startedTime is missing', async () => {
     const userId = 1;
     const mockUser: User = {
       id: userId,
@@ -159,11 +278,11 @@ describe('GoalService', () => {
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(`StartedTime ${ErrorMessage.IS_REQUIRED}`);
+    expect(result.message).toEqual(`StartedTime ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid EndedTime
-  it('should return an error if endedTime is invalid', async () => {
+  it('should return an error if endedTime is missing', async () => {
     const userId = 1;
     const mockUser: User = {
       id: userId,
@@ -190,7 +309,7 @@ describe('GoalService', () => {
     expect(result).toBeDefined();
     expect(result.isSuccess).toBe(false);
     expect(result.data).toEqual(null);
-    expect(result.message).toContain(`EndTime ${ErrorMessage.IS_REQUIRED}`);
+    expect(result.message).toEqual(`EndedTime ${ErrorMessage.IS_REQUIRED}`);
   });
 
   // Test Case for Invalid UserId

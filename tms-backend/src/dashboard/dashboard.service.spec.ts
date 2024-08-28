@@ -41,7 +41,7 @@ describe('DashboardService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('should return data following percents of each category', () => {
+  describe('getCategoryTimePercentages', () => {
     it('should calculate category time percentages for a specific user', async () => {
       const userId = 1;
       const activities = [
@@ -51,6 +51,7 @@ describe('DashboardService', () => {
           endedAt: new Date('2024-08-01T12:00:00Z'),
           category: { id: 1, name: 'Work' },
           userId: 1,
+          realSpendTime: 2,
         },
         {
           id: 2,
@@ -58,6 +59,7 @@ describe('DashboardService', () => {
           endedAt: new Date('2024-08-01T14:00:00Z'),
           category: { id: 1, name: 'Work' },
           userId: 1,
+          realSpendTime: 1,
         },
         {
           id: 3,
@@ -65,6 +67,7 @@ describe('DashboardService', () => {
           endedAt: new Date('2024-08-01T15:00:00Z'),
           category: { id: 2, name: 'Exercise' },
           userId: 1,
+          realSpendTime: 1,
         },
       ];
 
@@ -81,7 +84,8 @@ describe('DashboardService', () => {
       ]);
     });
   });
-  describe('should return summary time', () => {
+
+  describe('getSummaryTime', () => {
     it('should return the total time spent on completed activities for today', async () => {
       const userId = 1;
       const now = new Date();
@@ -103,17 +107,16 @@ describe('DashboardService', () => {
       const activities = [
         {
           userId,
-          status: 'complete',
-          startedAt: new Date(startOfDay).toISOString(),
-          endedAt: new Date(
-            startOfDay.getTime() + 60 * 60 * 1000,
-          ).toISOString(), // 1 hour
+          status: ActivityStatus.COMPLETED,
+          startedAt: startOfDay,
+          endedAt: new Date(startOfDay.getTime() + 60 * 60 * 1000), // 1 hour
+          realSpendTime: 1,
         },
       ];
 
       jest
         .spyOn(activityRepository, 'find')
-        .mockResolvedValue(activities as any);
+        .mockResolvedValue(activities as Activity[]);
 
       const result = await service.getSummaryTime(userId, 'day');
 
@@ -150,16 +153,15 @@ describe('DashboardService', () => {
         {
           userId,
           status: ActivityStatus.COMPLETED,
-          startedAt: new Date(startOfPeriod).toISOString(),
-          endedAt: new Date(
-            startOfPeriod.getTime() + 60 * 60 * 1000,
-          ).toISOString(),
+          startedAt: startOfPeriod,
+          endedAt: new Date(startOfPeriod.getTime() + 60 * 60 * 1000), // 1 hour
+          realSpendTime: 1,
         },
       ];
 
       jest
         .spyOn(activityRepository, 'find')
-        .mockResolvedValue(activities as any);
+        .mockResolvedValue(activities as Activity[]);
 
       const result = await service.getSummaryTime(userId, 'week');
 
