@@ -93,7 +93,7 @@ export class GoalOnActivityService {
     if (goalOnActivities.length > 0) {
       data = goalOnActivities.map((goalOnActivity) => ({
         ...goalOnActivity.activity,
-        category: {
+        goal: {
           name: result[0].name,
         },
       }));
