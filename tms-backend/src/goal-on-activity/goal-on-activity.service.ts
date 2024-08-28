@@ -26,68 +26,68 @@ export class GoalOnActivityService {
     userId: number,
     createGoalOnActivityDto: CreateGoalOnActivityDto,
   ) {
-    const goalOnActivityDto = plainToInstance(
-      CreateGoalOnActivityDto,
-      createGoalOnActivityDto,
-    );
-    const errors = await validate(goalOnActivityDto);
-    const activityDto = { ...goalOnActivityDto };
-    delete activityDto.goalId;
-    delete activityDto.categoryId;
-    if (errors.length) {
-      return buildError(getCustomErrorMessage(errors[0]));
-    }
-    const existGoal = await this.goalRepository.findOne({
-      where: {
-        id: createGoalOnActivityDto.goalId,
-        userId: userId,
-      },
-    });
-    if (new Date(activityDto.startedAt) > new Date(activityDto.endedAt)) {
-      return buildError(ErrorMessage.START_DATE_INVALID);
-    }
-    if (
-      new Date(activityDto.startedAt).toLocaleDateString() !==
-      new Date(activityDto.endedAt).toLocaleDateString()
-    ) {
-      return buildError(ErrorMessage.SAME_DATE);
-    }
-    if (!existGoal) {
-      return buildError(ErrorMessage.GOAL_NOT_FOUND);
-    } else {
-      if (
-        new Date(activityDto.startedAt) < new Date(existGoal.startedTime) ||
-        new Date(activityDto.startedAt) > new Date(existGoal.endedTime) ||
-        new Date(activityDto.endedAt) < new Date(existGoal.startedTime) ||
-        new Date(activityDto.endedAt) > new Date(existGoal.endedTime)
-      ) {
-        return buildError(ErrorMessage.ACTIVITY_NOT_IN_GOAL_TIME);
-      }
-    }
+    // const goalOnActivityDto = plainToInstance(
+    //   CreateGoalOnActivityDto,
+    //   createGoalOnActivityDto,
+    // );
+    // const errors = await validate(goalOnActivityDto);
+    // const activityDto = { ...goalOnActivityDto };
+    // delete activityDto.goalId;
+    // delete activityDto.categoryId;
+    // if (errors.length) {
+    //   return buildError(getCustomErrorMessage(errors[0]));
+    // }
+    // const existGoal = await this.goalRepository.findOne({
+    //   where: {
+    //     id: createGoalOnActivityDto.goalId,
+    //     userId: userId,
+    //   },
+    // });
+    // if (new Date(activityDto.startedAt) > new Date(activityDto.endedAt)) {
+    //   return buildError(ErrorMessage.START_DATE_INVALID);
+    // }
+    // if (
+    //   new Date(activityDto.startedAt).toLocaleDateString() !==
+    //   new Date(activityDto.endedAt).toLocaleDateString()
+    // ) {
+    //   return buildError(ErrorMessage.SAME_DATE);
+    // }
+    // if (!existGoal) {
+    //   return buildError(ErrorMessage.GOAL_NOT_FOUND);
+    // } else {
+    //   if (
+    //     new Date(activityDto.startedAt) < new Date(existGoal.startedTime) ||
+    //     new Date(activityDto.startedAt) > new Date(existGoal.endedTime) ||
+    //     new Date(activityDto.endedAt) < new Date(existGoal.startedTime) ||
+    //     new Date(activityDto.endedAt) > new Date(existGoal.endedTime)
+    //   ) {
+    //     return buildError(ErrorMessage.ACTIVITY_NOT_IN_GOAL_TIME);
+    //   }
+    // }
 
-    const activity = this.activityRepository.create({
-      userId: userId,
-      ...activityDto,
-    });
-    const saveActivity = await this.activityRepository.save(activity);
-    if (!saveActivity) {
-      return {
-        data: null,
-        isSuccess: false,
-        message: ErrorMessage.BAD_REQUEST,
-      };
-    }
-    const goalOnActivity = this.goalOnActivityRepository.create({
-      goalId: createGoalOnActivityDto.goalId,
-      activityId: saveActivity.id,
-    });
-    const saveGoalOnActivity =
-      await this.goalOnActivityRepository.save(goalOnActivity);
+    // const activity = this.activityRepository.create({
+    //   userId: userId,
+    //   ...activityDto,
+    // });
+    // const saveActivity = await this.activityRepository.save(activity);
+    // if (!saveActivity) {
+    //   return {
+    //     data: null,
+    //     isSuccess: false,
+    //     message: ErrorMessage.BAD_REQUEST,
+    //   };
+    // }
+    // const goalOnActivity = this.goalOnActivityRepository.create({
+    //   goalId: createGoalOnActivityDto.goalId,
+    //   activityId: saveActivity.id,
+    // });
+    // const saveGoalOnActivity =
+    //   await this.goalOnActivityRepository.save(goalOnActivity);
 
     return {
-      data: saveGoalOnActivity,
+      data: null,
       isSuccess: true,
-      message: SuccessMessage.CREATE_DATA_SUCCESS,
+      message: ErrorMessage.BAD_REQUEST,
     };
   }
 
