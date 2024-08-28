@@ -22,14 +22,45 @@ const AddOrEditActivitySchema = z.object({
   category: z.string(),
   startDate: z.string(),
   endDate: z.string(),
-}).refine((data) => {
-  const start = new Date(data.startDate);
-  const end = new Date(data.endDate);
-  return start < end;
-}, {
-  message: "Start Date must be before End Date",
-  path: ["endDate"],
-});;
+}).refine(
+  (data) => {
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
+
+    const startDateOnly = start.toISOString().split("T")[0];
+    const endDateOnly = end.toISOString().split("T")[0];
+
+    return startDateOnly === endDateOnly;
+  },
+  {
+    message: "Start Date and End Date must be on the same day",
+    path: ["endDate"],
+  }
+).refine(
+  (data) => {
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
+    const startDateOnly = start.toISOString().split("T")[0];
+    const endDateOnly = end.toISOString().split("T")[0];
+
+    return startDateOnly === endDateOnly;
+  },
+  {
+    message: "Start Date and End Date must be on the same day",
+    path: ["endDate"],
+  }
+)
+.refine(
+  (data) => {
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
+    return start < end;
+  },
+  {
+    message: "Start Date must be before End Date",
+    path: ["endDate"],
+  }
+);
 
 const parseDate = (dateString: string): Date => {
   const parsed = new Date(dateString);
@@ -189,6 +220,7 @@ export default function CreateOrEditActivityDrawer({
             </p>
             <DateTimePickerCustom
               id="startDate"
+              name="startdate"
               dateTime={startDate}
               setDateTime={(val) => handleDateChange('startDate', val)}
             />
@@ -197,6 +229,7 @@ export default function CreateOrEditActivityDrawer({
             <p className="text-sm font-semibold text-gray-700 mb-1">End date</p>
             <DateTimePickerCustom
               id="endDate"
+              name="enddate"
               dateTime={endDate}
               setDateTime={(val) => handleDateChange('endDate', val)}
             />
