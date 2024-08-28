@@ -126,9 +126,9 @@ jobs:
         run: |
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
-          # Verify if test-report.html exists
-          ls -l tms-backend/test-report.html
-          git checkout -b test-reports || git checkout test-reports
+          # # Verify if test-report.html exists
+          # ls -l tms-backend/test-report.html
+          # git checkout -b test-reports || git checkout test-reports
           git add -f tms-backend/test-report.html
           git commit -m "Update test-report [ci skip]"
           # Use Personal Access Token for authentication
