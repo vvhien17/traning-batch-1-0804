@@ -127,8 +127,6 @@ jobs:
           git commit -m "Update test-report [ci skip]"  # The [ci skip] prevents triggering the pipeline again
           git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
           git push origin test-reports --force
-        env:
-          GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
 
   deploy-report:
     name: Deploy Test Report to GitHub Pages
