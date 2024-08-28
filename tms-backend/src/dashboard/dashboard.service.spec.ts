@@ -20,10 +20,22 @@ describe('DashboardService', () => {
         {
           provide: getRepositoryToken(Category),
           useClass: Repository,
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+          },
         },
         {
           provide: getRepositoryToken(Activity),
           useClass: Repository,
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -83,104 +95,146 @@ describe('DashboardService', () => {
         { categoryId: 2, name: 'Exercise', percentage: 25 },
       ]);
     });
-  });
 
-  describe('getSummaryTime', () => {
-    it('should return the total time spent on completed activities for today', async () => {
+    it('should return an error if all the activities is lack of categoryId', async () => {
       const userId = 1;
-      const now = new Date();
-      const startOfDay = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-      );
-      const endOfDay = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-        0,
-        0,
-        0,
-        -1,
-      );
-
-      const activities = [
-        {
-          userId,
-          status: ActivityStatus.COMPLETED,
-          startedAt: startOfDay,
-          endedAt: new Date(startOfDay.getTime() + 60 * 60 * 1000), // 1 hour
-          realSpendTime: 1,
-        },
-      ];
-
+      const activities = [];
       jest
         .spyOn(activityRepository, 'find')
         .mockResolvedValue(activities as Activity[]);
-
-      const result = await service.getSummaryTime(userId, 'day');
-
-      expect(result).toEqual({
-        data: {
-          totalHours: 1,
-          totalMinutes: 0,
-        },
-        isSuccess: true,
-        message: SuccessMessage.GET_DATA_SUCCESS,
-      });
+      const result = await service.getCategoryTimePercentages(userId);
+      expect(result).toEqual(buildError(ErrorMessage.ACTIVITY_NOT_FOUND));
     });
 
-    it('should return the total time spent on completed activities for this week', async () => {
-      const userId = 1;
-      const now = new Date();
-      const startOfWeek = now.getDate() - now.getDay(); // Assuming Sunday as the start of the week
-      const startOfPeriod = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        startOfWeek,
-      );
-      const endOfPeriod = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        startOfWeek + 7,
-        0,
-        0,
-        0,
-        -1,
-      );
+    describe('getSummaryTime', () => {
+      it('should return the total time spent on completed activities for today', async () => {
+        const userId = 1;
+        const now = new Date();
+        const startOfDay = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+        const endOfDay = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + 1,
+          0,
+          0,
+          0,
+          -1,
+        );
 
-      const activities = [
-        {
-          userId,
-          status: ActivityStatus.COMPLETED,
-          startedAt: startOfPeriod,
-          endedAt: new Date(startOfPeriod.getTime() + 60 * 60 * 1000), // 1 hour
-          realSpendTime: 1,
-        },
-      ];
+        const activities = [
+          {
+            userId,
+            status: ActivityStatus.COMPLETED,
+            startedAt: startOfDay,
+            endedAt: new Date(startOfDay.getTime() + 60 * 60 * 1000), // 1 hour
+            realSpendTime: 1,
+          },
+        ];
 
-      jest
-        .spyOn(activityRepository, 'find')
-        .mockResolvedValue(activities as Activity[]);
+        jest
+          .spyOn(activityRepository, 'find')
+          .mockResolvedValue(activities as Activity[]);
 
-      const result = await service.getSummaryTime(userId, 'week');
+        const result = await service.getSummaryTime(userId, 'day');
 
-      expect(result).toEqual({
-        data: {
-          totalHours: 1,
-          totalMinutes: 0,
-        },
-        isSuccess: true,
-        message: SuccessMessage.GET_DATA_SUCCESS,
+        expect(result).toEqual({
+          data: {
+            totalHours: 1,
+            totalMinutes: 0,
+          },
+          isSuccess: true,
+          message: SuccessMessage.GET_DATA_SUCCESS,
+        });
       });
-    });
 
-    it('should return an error for an invalid option', async () => {
-      const userId = 1;
+      it('should return the total time spent on completed activities for this week', async () => {
+        const userId = 1;
+        const now = new Date();
+        const startOfWeek = now.getDate() - now.getDay(); // Assuming Sunday as the start of the week
+        const startOfPeriod = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          startOfWeek,
+        );
+        const endOfPeriod = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          startOfWeek + 7,
+          0,
+          0,
+          0,
+          -1,
+        );
 
-      const result = await service.getSummaryTime(userId, 'INVALID_OPTION');
+        const activities = [
+          {
+            userId,
+            status: ActivityStatus.COMPLETED,
+            startedAt: startOfPeriod,
+            endedAt: new Date(startOfPeriod.getTime() + 60 * 60 * 1000), // 1 hour
+            realSpendTime: 1,
+          },
+        ];
 
-      expect(result).toEqual(buildError('Invalid option'));
+        jest
+          .spyOn(activityRepository, 'find')
+          .mockResolvedValue(activities as Activity[]);
+
+        const result = await service.getSummaryTime(userId, 'week');
+
+        expect(result).toEqual({
+          data: {
+            totalHours: 1,
+            totalMinutes: 0,
+          },
+          isSuccess: true,
+          message: SuccessMessage.GET_DATA_SUCCESS,
+        });
+      });
+
+      it('should return an error for an invalid option', async () => {
+        const userId = 1;
+
+        const result = await service.getSummaryTime(userId, 'INVALID_OPTION');
+
+        expect(result).toEqual(buildError('Invalid option'));
+      });
+
+      // it('should return an error if userId is missing', async () => {
+      //   const userId = undefined;
+      //   const option = 'day';
+      //   const result = await service.getSummaryTime(userId, option);
+      //   expect(result).toEqual(buildError(ErrorMessage.USER_NOT_FOUND));
+      // });
+
+      it('should return an error if the user does not have any completed activities', async () => {
+        const userId = 1;
+        const now = new Date();
+        const startOfDay = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
+        const endOfDay = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + 1,
+          0,
+          0,
+          0,
+          -1,
+        );
+        const activities = [];
+        jest
+          .spyOn(activityRepository, 'find')
+          .mockResolvedValue(activities as Activity[]);
+        const result = await service.getSummaryTime(userId, 'day');
+        expect(result).toEqual(buildError(ErrorMessage.ACTIVITY_NOT_FOUND));
+      });
     });
   });
 });
