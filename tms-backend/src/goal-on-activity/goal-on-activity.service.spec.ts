@@ -20,7 +20,6 @@ const mockActivities = [
     id: 1,
     name: 'Activity 1',
     userId: 1,
-    categoryId: 1,
     status: ActivityStatus.NOT_COMPLETED,
     createdAt: currentDate,
     updatedAt: currentDate,

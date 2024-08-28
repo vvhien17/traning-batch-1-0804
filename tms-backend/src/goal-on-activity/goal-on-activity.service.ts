@@ -33,6 +33,7 @@ export class GoalOnActivityService {
     const errors = await validate(goalOnActivityDto);
     const activityDto = { ...goalOnActivityDto };
     delete activityDto.goalId;
+    delete activityDto.categoryId;
     if (errors.length) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
