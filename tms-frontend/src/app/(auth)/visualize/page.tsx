@@ -57,13 +57,13 @@ export default function VisualizePage() {
                 {loadingSummaryTime ? (
                   <span className="w-6 h-4 animate-pulse inline-block bg-neutral-400"></span>
                 ) : (
-                  summaryTimeData?.data.totalHours
+                  summaryTimeData?.data?.totalHours
                 )}{" "}
                 hours and{" "}
                 {loadingSummaryTime ? (
                   <span className="w-6 h-4 animate-pulse inline-block bg-neutral-400"></span>
                 ) : (
-                  summaryTimeData?.data.totalMinutes
+                  summaryTimeData?.data?.totalMinutes
                 )}{" "}
                 minutes
               </span>{" "}
