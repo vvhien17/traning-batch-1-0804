@@ -36,6 +36,7 @@ export interface TItemGoal {
   updatedAt: Date;
   userId: number;
   goalOnActivities?: Array<TItemGoalOnActivities>;
+  percentComplete: number;
 }
 
 export interface TCreateGoalResponse {

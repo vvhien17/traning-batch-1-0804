@@ -3,6 +3,8 @@ import { TItemGoal } from "@components/types/goal";
 import dayjs from "dayjs";
 import classcat from "classcat";
 import GoalProgress from "./GoalProgress";
+import React, { useState } from "react";
+import DrawerAddActivitiesOnGoal from "./DrawerAddActivities";
 
 const styleMaps = {
   [EnumStatusGoal.COMPLETED]: {
@@ -22,21 +24,33 @@ const styleMaps = {
     borderColor: "border-blue-400",
   },
 };
-
-export default function GoalCard({
-  name,
-  createdAt,
-  updatedAt,
-  goalOnActivities,
-  status,
-}: TItemGoal) {
+interface Props {
+  items: TItemGoal;
+}
+export default function GoalCard({ items }: Props) {
+  const {
+    createdAt,
+    name,
+    percentComplete,
+    status,
+    updatedAt,
+    goalOnActivities,
+  } = items;
   const { statusColor, borderColor } = styleMaps[status] || {
     statusColor: "bg-colors-main",
     borderColor: "border-neutral-400",
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [itemGoal, setItemGoal] = useState<TItemGoal>();
+
+  const onOpenDrawer = (item: TItemGoal) => {
+    setIsOpen(true);
+    setItemGoal(item);
+  };
   return (
     <div
+      onClick={() => onOpenDrawer(items)}
       className={classcat([
         "p-4 cursor-pointer rounded-xl border bg-white",
         borderColor,
@@ -62,22 +76,31 @@ export default function GoalCard({
             {dayjs(updatedAt).format("DD/MM/YYYY HH:mm")}
           </p>
         </div>
-        <GoalProgress percent={20} />
+        <GoalProgress percent={percentComplete} />
       </div>
-
-      <p className="text-sm mt-1 underline text-green-500">
-        What you have to do :{" "}
-      </p>
-      <div className="flex flex-wrap gap-1 mt-1">
-        {goalOnActivities?.map((item) => (
-          <div
-            key={item.id}
-            className="p-1 rounded-md border border-neutral-400 bg-white w-max"
-          >
-            <p className="text-sm font-[500]">{item.activity.name}</p>
+      {goalOnActivities && goalOnActivities.length >= 1 && (
+        <React.Fragment>
+          <p className="text-sm mt-1 underline text-green-500">
+            What you have to do :{" "}
+          </p>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {goalOnActivities?.map((item) => (
+              <div
+                key={item.id}
+                className="p-1 rounded-md border border-neutral-400 bg-white w-max"
+              >
+                <p className="text-sm font-[500]">{item.activity.name}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </React.Fragment>
+      )}
+
+      <DrawerAddActivitiesOnGoal
+        itemGoal={itemGoal as TItemGoal}
+        isOpen={isOpen}
+        setIsOpen={() => setIsOpen(false)}
+      />
     </div>
   );
 }

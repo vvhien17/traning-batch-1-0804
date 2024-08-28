@@ -25,17 +25,11 @@ interface DetailsTab {
 }
 
 export default function ActivitiesPage() {
-  const { setIsAuthenticated } = useContext(GlobalContext);
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [open, setOpen] = useState(false);
 
   const handleSelectChange = (selected: string[]) => {
     setSelectedOptions(selected);
-  };
-
-  const handleLogout = () => {
-    cookie.delete(ACCESS_TOKEN);
-    setIsAuthenticated(false);
   };
 
   const handleCreateNewActivity = () => {

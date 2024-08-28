@@ -28,7 +28,7 @@ const GoalProgress = ({ percent }: Props) => {
           className={`stroke-current text-colors-main`}
           strokeWidth={2}
           strokeDasharray={100}
-          strokeDashoffset={80}
+          strokeDashoffset={100 - percent}
           strokeLinecap="round"
         />
       </svg>
