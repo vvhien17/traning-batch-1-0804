@@ -57,6 +57,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    permissions: write-all
     needs: build
     steps:
       - name: Checkout code
@@ -113,7 +114,6 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Push test-report to Repository
-        permissions: write-all
         run: |
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
