@@ -21,6 +21,7 @@ export enum ErrorMessage {
   ACTIVITY_INPUT_INVALID = 'Activity not in goal time or not exist',
   MUST_BE_ARRAY = 'must be an array',
   MUST_BE_ARRAY_INT = 'must be an arary of integer',
+  REAL_SPEND_TIME_INVALID = 'Real spend time must between 0 and 24 hours',
 }
 
 export enum SuccessMessage {
