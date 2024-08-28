@@ -14,11 +14,12 @@ export enum ErrorMessage {
   VALIDATION_FAILED = 'Validation failed',
   IS_REQUIRED = 'is required',
   DATA_NOT_FOUND = 'Data not found',
-  MUST_GREATER_THAN = 'must greater than',
+  MUST_BEFORE = 'must before',
   INVALID_DATE = 'Invalid date',
   START_DATE_INVALID = 'Start date must be greater than or equal to present date',
   SAME_DATE = 'Start and end must be same date',
   ACTIVITY_NOT_IN_GOAL_TIME = 'Activity not in goal time',
+  REAL_SPEND_TIME_INVALID = 'Real spend time must between 0 and 24 hours',
 }
 
 export enum SuccessMessage {
