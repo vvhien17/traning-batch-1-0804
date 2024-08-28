@@ -12,6 +12,7 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Category } from '../category/entities/category.entity';
 import { ActivityStatus } from '../common/constants/activity-status';
+import { Goal } from '../goal/entities/goal.entity';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -28,6 +29,7 @@ const mockActivities = [
     endedAt: currentDate,
     description: 'test desc',
     isDelete: false,
+    goalOnActivities: [1, 3],
   },
   {
     id: 2,
@@ -63,11 +65,31 @@ const mockDataUser: User = {
 } as User;
 const userId = 1;
 
+const mockGoal = [
+  {
+    id: 1,
+    name: 'Goal 1',
+    userId: 1,
+    status: ActivityStatus.NOT_COMPLETED,
+    startedTime: currentDate,
+    endedTime: endedAt,
+  },
+  {
+    id: 2,
+    name: 'Goal 2',
+    userId: 1,
+    status: ActivityStatus.NOT_COMPLETED,
+    startedTime: currentDate,
+    endedTime: endedAt,
+  },
+] as Goal[];
+
 describe('ActivitiesController', () => {
   let service: ActivityService;
   let activityRepository: Repository<Activity>;
   let userRepository: Repository<User>;
   let categoryRepository: Repository<Category>;
+  let goalRepository: Repository<Goal>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -96,6 +118,15 @@ describe('ActivitiesController', () => {
             findOne: jest.fn().mockResolvedValue(mockCategory as Category),
           },
         },
+        {
+          provide: getRepositoryToken(Goal),
+          useValue: {
+            find: jest.fn().mockResolvedValue(mockGoal),
+            findOne: jest.fn(),
+            create: jest.fn().mockResolvedValue(mockGoal[0]),
+            save: jest.fn().mockResolvedValue(mockGoal[0]),
+          },
+        },
       ],
     }).compile();
     service = module.get<ActivityService>(ActivityService);
@@ -106,6 +137,7 @@ describe('ActivitiesController', () => {
     categoryRepository = module.get<Repository<Category>>(
       getRepositoryToken(Category),
     );
+    goalRepository = module.get<Repository<Goal>>(getRepositoryToken(Goal));
   });
 
   it('Activity service should be defined', () => {
@@ -489,5 +521,25 @@ describe('ActivitiesController', () => {
       expect(result.isSuccess).toBe(false);
       expect(result.message).toEqual(ErrorMessage.ACTIVITY_NOT_FOUND);
     });
+  });
+
+  describe('Get activity in range of goal', () => {
+    it("Should return success if valid input ", async () => {
+      jest.spyOn(goalRepository, "findOne").mockResolvedValue(mockGoal[0] as Goal);
+      jest.spyOn(activityRepository, 'find').mockResolvedValue([mockActivities[0]]);
+      const result: BaseResponse = await service.findCanAddToGoal(1, 1);
+      expect(result.data).toEqual([mockActivities[0]]);
+      expect(result.isSuccess).toBe(true);
+      expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
+    })
+
+    it("Should return error goalId is missing", async () => {
+      jest.spyOn(goalRepository, "findOne").mockResolvedValue(null);
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.GOAL_NOT_FOUND,
+      );
+      const result: BaseResponse = await service.findCanAddToGoal(1, 1);
+      expect(result).toEqual(expectedResponse);
+    })
   });
 });
