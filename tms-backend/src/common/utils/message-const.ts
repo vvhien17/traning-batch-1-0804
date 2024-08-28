@@ -20,8 +20,7 @@ export enum ErrorMessage {
   SAME_DATE = 'Start and end must be same date',
   ACTIVITY_INPUT_INVALID = 'Activity not in goal time or not exist',
   MUST_BE_ARRAY = 'must be an array',
-  MUST_BE_ARRAY_INT = 'must be a number',
-  REAL_SPEND_TIME_INVALID = 'Real spend time must between 0 and 24 hours',
+  MUST_BE_ARRAY_INT = 'must be an arary of integer',
 }
 
 export enum SuccessMessage {

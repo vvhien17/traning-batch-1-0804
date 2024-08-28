@@ -161,6 +161,7 @@ describe('GoalOnActivityService', () => {
     });
 
     it('Should return error if array input activityIds have  an invalid ( activity not exist)', async () => {
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal[0]);
       jest.spyOn(activityRepository, 'find').mockResolvedValue([]);
       const expectedResponse: BaseResponse = buildError(
         ErrorMessage.ACTIVITY_INPUT_INVALID,
@@ -176,12 +177,11 @@ describe('GoalOnActivityService', () => {
       jest
         .spyOn(goalRepository, 'findOne')
         .mockResolvedValue(mockGoal[0] as Goal);
-      const activityEndDate = new Date();
-      activityEndDate.setHours(endedAt.getHours() + 1);
-      jest.spyOn(activityRepository, 'findOne').mockResolvedValue({
-        ...mockActivities[0],
-        startedAt: activityEndDate,
-      } as Activity);
+      const activityEndDate = new Date(mockGoal[0].endedTime);
+      activityEndDate.setHours(endedAt.getHours() + 3);
+      jest
+        .spyOn(activityRepository, 'find')
+        .mockResolvedValue([mockActivities[0]]);
       const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
       });
@@ -198,8 +198,9 @@ describe('GoalOnActivityService', () => {
     });
 
     it('should return error if array input is an empty array', async () => {
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal[0]);
       const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.MUST_BE_ARRAY_INT,
+        `Activity ${ErrorMessage.MUST_BE_ARRAY_INT}`,
       );
       const result = await service.create(userId, {
         ...createGoalOnActivityDto,

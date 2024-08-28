@@ -46,7 +46,7 @@ export class GoalOnActivityService {
     if (!existGoal) {
       return buildError(ErrorMessage.GOAL_NOT_FOUND);
     }
-    const invalidActivity = await this.activityRepository.find({
+    const validActivity = await this.activityRepository.find({
       where: {
         id: In(createGoalOnActivityDto.activityIds),
         userId: userId,
@@ -55,16 +55,19 @@ export class GoalOnActivityService {
         endedAt: Between(existGoal.startedTime, existGoal.endedTime),
       },
     });
-    if (invalidActivity.length > 0) {
+
+    if (validActivity.length !== createGoalOnActivityDto.activityIds.length) {
+      console.log('invalidActivityas as');
       return buildError(ErrorMessage.ACTIVITY_INPUT_INVALID);
     }
+
     const goalMaps = createGoalOnActivityDto.activityIds.map((id) => ({
       goalId: createGoalOnActivityDto.goalId,
       activityId: id,
     }));
     const goalOnActivity = await this.goalOnActivityRepository.create(goalMaps);
     const saveGoalOnActivity =
-      await this.goalOnActivityRepository.insert(goalOnActivity);
+      await this.goalOnActivityRepository.save(goalOnActivity);
 
     return {
       data: saveGoalOnActivity,
@@ -82,7 +85,7 @@ export class GoalOnActivityService {
       relations: ['goalOnActivities', 'goalOnActivities.activity'],
     });
 
-    if (result.length < 0) {
+    if (!result.length) {
       return buildError(ErrorMessage.GOAL_NOT_FOUND);
     }
     let data = [];
