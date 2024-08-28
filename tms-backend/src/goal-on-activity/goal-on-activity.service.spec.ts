@@ -25,7 +25,7 @@ const mockActivities = [
     createdAt: currentDate,
     updatedAt: currentDate,
     startedAt: currentDate,
-    endedAt: currentDate,
+    endedAt: endedAt,
     description: 'test desc',
     isDelete: false,
   },
@@ -36,7 +36,7 @@ const mockActivities = [
     createdAt: currentDate,
     updatedAt: currentDate,
     startedAt: currentDate,
-    endedAt: currentDate,
+    endedAt: endedAt,
     status: ActivityStatus.NOT_COMPLETED,
     isDelete: false,
   },
@@ -49,7 +49,7 @@ const mockGoal = [
     userId: 1,
     status: ActivityStatus.NOT_COMPLETED,
     startedTime: currentDate,
-    endedTime: currentDate,
+    endedTime: endedAt,
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ const mockGoal = [
     userId: 1,
     status: ActivityStatus.NOT_COMPLETED,
     startedTime: currentDate,
-    endedTime: currentDate,
+    endedTime: endedAt,
   },
 ] as Goal[];
 
@@ -216,31 +216,52 @@ describe('GoalOnActivityService', () => {
 
     it('Should return error if activity date range out of goal date range', async () => {
       const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.BAD_REQUEST,
+        ErrorMessage.ACTIVITY_NOT_IN_GOAL_TIME,
       );
-      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal[0] as Goal);
-      const activityDate = mockGoal[0].endedTime;
-      activityDate.setDate(endedAt.getDate() + 1);
+      jest
+        .spyOn(goalRepository, 'findOne')
+        .mockResolvedValue(mockGoal[0] as Goal);
+      const activityEndDate = new Date();
+      activityEndDate.setHours(endedAt.getHours() + 1);
       const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
-        startedAt: activityDate,
+        endedAt: activityEndDate,
       });
-
       expect(result).toEqual(expectedResponse);
-    })
+    });
 
     it('Should return error if statedAt, and endedAt not same date ', async () => {
       const endedAt = new Date();
       endedAt.setDate(endedAt.getDate() + 1);
-      const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.BAD_REQUEST,
-      );
+      const expectedResponse: BaseResponse = buildError(ErrorMessage.SAME_DATE);
       const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
         endedAt: endedAt,
       });
 
       expect(result).toEqual(expectedResponse);
-    })
+    });
+
+    it('Create new activity enough data but endedDate before startedDate', async () => {
+      const endedAt = new Date();
+      endedAt.setDate(endedAt.getDate() - 1);
+
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue({
+        id: 1,
+        name: 'Goal 1',
+        userId: 1,
+        status: ActivityStatus.NOT_COMPLETED,
+        startedTime: currentDate,
+        endedTime: endedAt,
+      } as Goal);
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.START_DATE_INVALID,
+      );
+      const result: BaseResponse = await service.create(userId, {
+        ...createGoalOnActivityDto,
+        endedAt: endedAt,
+      });
+      expect(result).toEqual(expectedResponse);
+    });
   });
 });

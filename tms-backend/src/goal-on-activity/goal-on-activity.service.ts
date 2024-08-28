@@ -42,10 +42,15 @@ export class GoalOnActivityService {
         userId: userId,
       },
     });
-    if (new Date(activityDto.startedAt) >= new Date(activityDto.endedAt)) {
+    if (new Date(activityDto.startedAt) > new Date(activityDto.endedAt)) {
       return buildError(ErrorMessage.START_DATE_INVALID);
     }
-
+    if (
+      new Date(activityDto.startedAt).toLocaleDateString() !==
+      new Date(activityDto.endedAt).toLocaleDateString()
+    ) {
+      return buildError(ErrorMessage.SAME_DATE);
+    }
     if (!existGoal) {
       return buildError(ErrorMessage.GOAL_NOT_FOUND);
     } else {
@@ -64,14 +69,6 @@ export class GoalOnActivityService {
       ...activityDto,
     });
     const saveActivity = await this.activityRepository.save(activity);
-
-    console.log(
-      'saveActivity',
-      existGoal,
-
-      'saveActivity',
-      saveActivity,
-    );
     if (!saveActivity) {
       return {
         data: null,
