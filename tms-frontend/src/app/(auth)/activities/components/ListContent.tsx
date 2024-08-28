@@ -1,23 +1,38 @@
 import { CardActivity } from "@components/components/card-activity";
-import { TStatus } from "@components/components/card-activity/CardActivity";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateOrEditActivityDrawer from "./CreateOrEditActivity";
 import { activityQuery } from "@components/hooks/activity";
 import { TActivity } from "@components/types/activity";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline"
+import { useSearchParams } from "next/navigation";
+import queryString from "query-string";
 
-interface ListContentProps { }
+interface ListContentProps {
+}
 
 export const ListContent: React.FC<ListContentProps> = ({ }) => {
   const [editItem, setEditItem] = useState<TActivity | undefined>();
   const [open, setOpen] = useState(false);
-  const { data: activitiesData } = activityQuery.query.useGetActivities({});
+  const searchParams = useSearchParams()
+  const query = queryString.parse(searchParams.toString())
+  const { categories } = query
+
+  const categoryIds = categories ? Array.isArray(categories) ? categories.map(Number) : [+categories] : []
+
+  const { data: activitiesData, refetch } = activityQuery.query.useGetActivities({ categoryIds });
   const activities = activitiesData?.data || [];
+
 
   const handleEdit = (item: TActivity) => () => {
     setEditItem(item);
     setOpen(true);
   };
+
+  useEffect(() => {
+    if (query) {
+      refetch()
+    }
+  }, [searchParams]);
 
   if (activities.length < 1)
     return (

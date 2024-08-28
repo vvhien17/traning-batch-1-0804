@@ -11,6 +11,15 @@ const dashboardApi = {
       }[]
     >
   > => axiosClient.get("/dashboard"),
+
+  getSummaryTime: (
+    option: "day" | "week"
+  ): Promise<
+    TBaseResponse<{
+      totalHours: number;
+      totalMinutes: number;
+    }>
+  > => axiosClient.get(`/dashboard/summary-time/${option}`),
 };
 
 export default dashboardApi;

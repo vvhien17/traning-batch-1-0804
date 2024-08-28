@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import classcat from "classcat";
 import { useClickOutside } from "@components/hooks";
+import { useSearchParams } from "next/navigation";
+import queryString from "query-string";
 
 interface MultipleSelectProps {
   label?: string;
   name?: string;
-  options: { value: string; label: string }[];
+  options?: { value: string; label: string }[];
   selectedValues?: string[];
   onChange?: (selected: string[]) => void;
   error?: string;
@@ -25,8 +27,9 @@ export const MultipleSelect: React.FC<MultipleSelectProps> = ({
 }) => {
   const [selected, setSelected] = useState<string[]>(selectedValues);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { visible, handleToggleVisible, handleCloseVisible } =
-    useClickOutside();
+  const searchParams = useSearchParams();
+  const query = queryString.parse(searchParams.toString());
+  const { visible, handleToggleVisible, handleCloseVisible } = useClickOutside();
 
   const handleSelect = (value: string) => {
     let newSelected = [...selected];
@@ -40,13 +43,16 @@ export const MultipleSelect: React.FC<MultipleSelectProps> = ({
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
       handleCloseVisible();
     }
   };
+
+  useEffect(() => {
+    if (query.categories) {
+      setSelected(Array.isArray(query.categories) ? (query.categories as string[]) : [query.categories]);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -56,15 +62,9 @@ export const MultipleSelect: React.FC<MultipleSelectProps> = ({
   }, []);
 
   return (
-    <div
-      className={classcat(["relative min-w-40 max-w-60", className])}
-      ref={dropdownRef}
-    >
+    <div className={classcat(["relative min-w-40 max-w-60", className])} ref={dropdownRef}>
       {label && (
-        <label
-          htmlFor={name}
-          className="block text-sm font-semibold text-gray-700"
-        >
+        <label htmlFor={name} className="block text-sm font-semibold text-gray-700">
           {label}
         </label>
       )}
@@ -74,9 +74,7 @@ export const MultipleSelect: React.FC<MultipleSelectProps> = ({
       >
         <span className="mr-8">
           {selected.length > 0 ? (
-            selected
-              .map((val) => options.find((o) => o.value === val)?.label)
-              .join(", ")
+            selected.map((val) => options?.find((o) => o.value === val)?.label).join(", ")
           ) : (
             <span className="text-gray-400">{placeholder}</span>
           )}
@@ -115,16 +113,31 @@ export const MultipleSelect: React.FC<MultipleSelectProps> = ({
       </div>
       {visible && (
         <div className="absolute left-0 right-0 mt-1 z-10 bg-white border border-gray-300 rounded-md shadow-lg">
-          {options.map((option) => (
+          {options?.map((option) => (
             <div
               key={option.value}
               className={classcat([
-                "px-4 py-2 text-sm cursor-pointer hover:bg-gray-100",
+                "px-4 py-2 text-sm cursor-pointer flex items-center justify-between hover:bg-gray-100",
                 { "bg-gray-100": selected.includes(option.value) },
               ])}
               onClick={() => handleSelect(option.value)}
             >
               {option.label}
+              {selected.includes(option.value) && (
+                <svg
+                  className="h-4 w-4 text-green-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586l-3.293-3.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
             </div>
           ))}
         </div>

@@ -1,5 +1,6 @@
 import { Header } from "@components/components/header/Header";
 import { SideMenu } from "@components/components/side-menu/SideMenu";
+import { Suspense } from "react";
 
 export default function AuthLayout({
   children,
@@ -12,7 +13,9 @@ export default function AuthLayout({
       <div className="flex">
         <SideMenu />
         <div className="min-h-screen bg-zinc-100 w-full pl-10">
-          {children}
+          <Suspense fallback={<div>Loading....</div>}>
+            {children}
+          </Suspense>
         </div>
       </div>
     </div>
