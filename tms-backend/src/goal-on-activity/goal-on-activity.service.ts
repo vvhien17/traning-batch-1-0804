@@ -31,7 +31,8 @@ export class GoalOnActivityService {
       createGoalOnActivityDto,
     );
     const errors = await validate(goalOnActivityDto);
-
+    const activityDto = { ...goalOnActivityDto };
+    delete activityDto.goalId;
     if (errors.length) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
@@ -41,12 +42,22 @@ export class GoalOnActivityService {
         userId: userId,
       },
     });
+    if (new Date(activityDto.startedAt) >= new Date(activityDto.endedAt)) {
+      return buildError(ErrorMessage.START_DATE_INVALID);
+    }
 
     if (!existGoal) {
       return buildError(ErrorMessage.GOAL_NOT_FOUND);
+    } else {
+      if (
+        new Date(activityDto.startedAt) < new Date(existGoal.startedTime) ||
+        new Date(activityDto.startedAt) > new Date(existGoal.endedTime) ||
+        new Date(activityDto.endedAt) < new Date(existGoal.startedTime) ||
+        new Date(activityDto.endedAt) > new Date(existGoal.endedTime)
+      ) {
+        return buildError(ErrorMessage.ACTIVITY_NOT_IN_GOAL_TIME);
+      }
     }
-    const activityDto = { ...goalOnActivityDto };
-    delete activityDto.goalId;
 
     const activity = this.activityRepository.create({
       userId: userId,
@@ -54,6 +65,13 @@ export class GoalOnActivityService {
     });
     const saveActivity = await this.activityRepository.save(activity);
 
+    console.log(
+      'saveActivity',
+      existGoal,
+
+      'saveActivity',
+      saveActivity,
+    );
     if (!saveActivity) {
       return {
         data: null,
@@ -65,9 +83,11 @@ export class GoalOnActivityService {
       goalId: createGoalOnActivityDto.goalId,
       activityId: saveActivity.id,
     });
+    const saveGoalOnActivity =
+      await this.goalOnActivityRepository.save(goalOnActivity);
 
     return {
-      data: goalOnActivity,
+      data: saveGoalOnActivity,
       isSuccess: true,
       message: SuccessMessage.CREATE_DATA_SUCCESS,
     };

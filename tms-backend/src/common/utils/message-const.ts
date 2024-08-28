@@ -17,6 +17,7 @@ export enum ErrorMessage {
   MUST_GREATER_THAN = 'must greater than',
   INVALID_DATE = 'Invalid date',
   START_DATE_INVALID = 'Start date must be greater than or equal to present date',
+  ACTIVITY_NOT_IN_GOAL_TIME = 'Activity not in goal time',
 }
 
 export enum SuccessMessage {
