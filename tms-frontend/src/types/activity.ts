@@ -8,13 +8,17 @@ export type TActivity = {
   };
   startedAt: string;
   endedAt: string;
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
+  status: "NOT_COMPLETED" | "COMPLETED" | "CANCELED";
+};
+
+export type TGetActivityRequest = {
+  categoryIds: number[]
 };
 
 export type TCreateActivityRequest = {
   name: string;
   description: string;
-  categoryId: number;
+  categoryId?: number;
   startedAt: string;
   endedAt: string;
 };
@@ -24,6 +28,7 @@ export type TUpdateActivityRequest = {
   name?: string;
   description?: string;
   categoryId?: number;
+  status?: "NOT_COMPLETED" | "COMPLETED" | "CANCELED";
   startedAt?: string;
   endedAt?: string;
 };

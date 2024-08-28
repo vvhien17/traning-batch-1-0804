@@ -23,7 +23,17 @@ export class GoalService {
     @InjectRepository(GoalOnActivity)
     private readonly goalOnActivityRepository: Repository<GoalOnActivity>,
   ) {}
-
+  parseDate = (dateString: string): Date => {
+    const [day, month, year, time] = dateString.split(/[/ :]/);
+    const [hour, minute] = time.split(':');
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour),
+      Number(minute),
+    );
+  };
   async create(
     createGoalDto: CreateGoalDto,
     userId: number,
@@ -34,11 +44,16 @@ export class GoalService {
     if (errors.length > 0) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
+
+    // Validate dates
     const startDate = new Date(startedTime);
+    const endDate = new Date(endedTime);
     const currentDate = new Date();
-    if (startDate <= currentDate) {
-      return buildError(ErrorMessage.START_DATE_INVALID);
-    }
+
+    // Normalize dates to ensure comparison is accurate
+
+    // Validate dates
+
     const userExists = await this.userRepository.findOne({
       where: { id: userId },
     });

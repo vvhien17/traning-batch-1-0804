@@ -20,14 +20,23 @@ const AddOrEditActivitySchema = z.object({
   name: z.string().min(1, "Name must be at least 1 character"),
   description: z.string().min(1, "Description must be at least 1 character"),
   category: z.string(),
-});
+  startDate: z.string(),
+  endDate: z.string(),
+}).refine((data) => {
+  const start = new Date(data.startDate);
+  const end = new Date(data.endDate);
+  return start < end;
+}, {
+  message: "Start Date must be before End Date",
+  path: ["endDate"],
+});;
 
 const parseDate = (dateString: string): Date => {
   const parsed = new Date(dateString);
   return isNaN(parsed.getTime()) ? new Date() : parsed;
 };
 
-type AddOrEditActivityForm = z.infer<typeof AddOrEditActivitySchema> & { startDate: string, endDate: string };
+type AddOrEditActivityForm = z.infer<typeof AddOrEditActivitySchema>;
 
 type CreateOrEditActivityDrawerProps = {
   open: boolean;
@@ -57,12 +66,14 @@ export default function CreateOrEditActivityDrawer({
     label: category.name,
   }));
 
-  const { handleSubmit, register, formState, setValue, reset } =
+  const { handleSubmit, register, formState, setValue, reset, trigger } =
     useForm<AddOrEditActivityForm>({
       defaultValues: {
         name: "",
         description: "",
         category: "",
+        startDate: new Date().toISOString(),
+        endDate: new Date().toISOString(),
       },
       resolver: zodResolver(AddOrEditActivitySchema),
     });
@@ -74,7 +85,7 @@ export default function CreateOrEditActivityDrawer({
           id: editItem.id,
           name: data.name,
           description: data.description,
-          categoryId: +(data.category || 0),
+          categoryId: data.category ? +data.category : undefined,
           startedAt: startDate.toISOString(),
           endedAt: endDate.toISOString(),
         },
@@ -96,8 +107,9 @@ export default function CreateOrEditActivityDrawer({
     } else
       createActivity(
         {
-          ...data,
-          categoryId: +(data.category || 0),
+          name: data.name,
+          description: data.description,
+          categoryId: data.category ? +data.category : undefined,
           startedAt: startDate.toISOString(),
           endedAt: endDate.toISOString(),
         },
@@ -123,11 +135,21 @@ export default function CreateOrEditActivityDrawer({
     if (editItem) {
       setValue("name", editItem.name);
       setValue("description", editItem.description);
-      setValue("category", editItem.category);
+      setValue("category", editItem.category.toString());
       setStartDate(parseDate(editItem.startDate));
       setEndDate(parseDate(editItem.endDate));
     }
   }, [editItem, setValue]);
+
+  const handleDateChange = (field: 'startDate' | 'endDate', date: Date) => {
+    if (field === 'startDate') {
+      setStartDate(date);
+    } else {
+      setEndDate(date);
+    }
+    setValue(field, date.toISOString());
+    trigger(field);
+  };
 
   return (
     <Drawer open={open} onClose={() => setOpen(false)}>
@@ -168,7 +190,7 @@ export default function CreateOrEditActivityDrawer({
             <DateTimePickerCustom
               id="startDate"
               dateTime={startDate}
-              setDateTime={(val) => setStartDate(val)}
+              setDateTime={(val) => handleDateChange('startDate', val)}
             />
           </div>
           <div className="[&>div]:w-full">
@@ -176,8 +198,11 @@ export default function CreateOrEditActivityDrawer({
             <DateTimePickerCustom
               id="endDate"
               dateTime={endDate}
-              setDateTime={(val) => setEndDate(val)}
+              setDateTime={(val) => handleDateChange('endDate', val)}
             />
+            {formState.errors.endDate && (
+              <p className="text-red-500 text-sm mt-1">{formState.errors.endDate.message}</p>
+            )}
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-700 mb-1">Category</p>

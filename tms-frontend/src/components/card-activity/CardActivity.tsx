@@ -12,7 +12,7 @@ import { activityQuery } from "@components/hooks/activity";
 import { toast } from "react-toastify";
 import { TypeErrorResponse } from "@components/types/types";
 
-export type TStatus = "PENDING" | "COMPLETED" | "IN_PROGRESS" | "CANCELED";
+export type TStatus = "NOT_COMPLETED" | "COMPLETED" | "CANCELED";
 
 interface CardActivityProps {
   id: number;
@@ -40,6 +40,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const descriptionRef = useRef<HTMLParagraphElement | null>(null);
 
+  const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
   const { mutate: deleteActivity } = activityQuery.mutation.useDeleteActivity();
 
   const handleDelete = () => {
@@ -57,6 +58,13 @@ export const CardActivity: React.FC<CardActivityProps> = ({
       },
     });
     setOpenPopup(false);
+  };
+
+  const handleComplete = () => {
+    updateActivity({
+      id,
+      status: "COMPLETED",
+    });
   };
 
   useEffect(() => {
@@ -79,11 +87,11 @@ export const CardActivity: React.FC<CardActivityProps> = ({
     <div
       className={classcat([
         "border border-t-4 max-w-[400px] min-w-[400px] bg-white rounded-lg p-4 shadow-lg relative",
-        status === Status.PENDING
+        status === Status.COMPLETED
           ? "border-t-green-500"
           : status === Status.CANCELED
           ? "border-t-red-500"
-          : status === Status.IN_PROGRESS
+          : status === Status.NOT_COMPLETED
           ? "border-t-yellow-500"
           : "border-t-colors-main",
       ])}
@@ -93,11 +101,11 @@ export const CardActivity: React.FC<CardActivityProps> = ({
         <span
           className={classcat([
             "rounded-lg px-2 text-white",
-            status === Status.PENDING
+            status === Status.COMPLETED
               ? "bg-green-500"
               : status === Status.CANCELED
               ? "bg-red-500"
-              : status === Status.IN_PROGRESS
+              : status === Status.NOT_COMPLETED
               ? "bg-yellow-500"
               : "bg-colors-main",
           ])}
@@ -124,7 +132,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
         {dayjs(startedAt).format("DD/MM/YYYY HH:mm")} -{" "}
         {dayjs(endedAt).format("DD/MM/YYYY HH:mm")}
       </p>
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center justify-end mt-4">
         {!!categoryName && (
           <div className="flex flex-wrap basis-3/4 gap-1">
             <span className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs">
@@ -132,13 +140,21 @@ export const CardActivity: React.FC<CardActivityProps> = ({
             </span>
           </div>
         )}
-        <div className="flex basis-1/4 justify-end">
+        <div className="flex">
           <button onClick={onEdit} aria-label="Edit activity">
             <PencilSquareIcon className="size-5 text-black-500" />
           </button>
           <button onClick={() => setOpenPopup(true)} className="px-3 py-1">
             <TrashIcon className="size-5 text-red-500" />
           </button>
+          {status !== "COMPLETED" && (
+            <button
+              className="px-3 py-1 bg-blue-400 text-white rounded-md w-[110px]"
+              onClick={handleComplete}
+            >
+              Mark done
+            </button>
+          )}
         </div>
       </div>
       <Popup open={openPopup} title="Delete activity" setOpen={setOpenPopup}>

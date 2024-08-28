@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { GoalOnActivityService } from './goal-on-activity.service';
 import { CreateGoalOnActivityDto } from './dto/create-goal-on-activity.dto';
@@ -21,8 +22,12 @@ export class GoalOnActivityController {
   constructor(private readonly goalOnActivityService: GoalOnActivityService) {}
 
   @Post()
-  create(@Body() createGoalOnActivityDto: CreateGoalOnActivityDto) {
-    return this.goalOnActivityService.create(createGoalOnActivityDto);
+  create(
+    @Request() req,
+    @Body() createGoalOnActivityDto: CreateGoalOnActivityDto,
+  ) {
+    const userId = +req.user.id;
+    return this.goalOnActivityService.create(userId, createGoalOnActivityDto);
   }
 
   @Get()

@@ -3,9 +3,14 @@ import PieChart from "@components/components/chart/PieChart";
 import Container from "@components/components/container";
 import Select from "@components/components/Select";
 import { dashboardQuery } from "@components/hooks/dashboard";
+import { useState } from "react";
 
 export default function VisualizePage() {
+  const [timeRange, setTimeRange] = useState<"day" | "week">("day");
   const { data: dashboardData } = dashboardQuery.query.useGetDashboard();
+  const { data: summaryTimeData, isLoading: loadingSummaryTime } =
+    dashboardQuery.query.useGetSummaryTime(timeRange);
+
   const data = dashboardData?.data.map((item) => ({
     value: item.percentage,
     color:
@@ -39,12 +44,28 @@ export default function VisualizePage() {
                     label: "By current week",
                   },
                 ]}
+                onChange={(e) => {
+                  console.log(e.target.value);
+
+                  setTimeRange(e.target.value as "day" | "week");
+                }}
               />
             </div>
             <p>
               You spent{" "}
               <span className="text-lg font-semibold text-blue-400">
-                34 hours
+                {loadingSummaryTime ? (
+                  <span className="w-6 h-4 animate-pulse inline-block bg-neutral-400"></span>
+                ) : (
+                  summaryTimeData?.data?.totalHours
+                )}{" "}
+                hours and{" "}
+                {loadingSummaryTime ? (
+                  <span className="w-6 h-4 animate-pulse inline-block bg-neutral-400"></span>
+                ) : (
+                  summaryTimeData?.data?.totalMinutes
+                )}{" "}
+                minutes
               </span>{" "}
               on various activities
             </p>
@@ -71,10 +92,3 @@ export default function VisualizePage() {
     </div>
   );
 }
-
-const data = [
-  { value: 10, color: "#E53E3E", label: "Red Slice" },
-  { value: 20, color: "#28b42f", label: "Green Slice" },
-  { value: 30, color: "#2680cf", label: "Blue Slice" },
-  { value: 40, color: "#f0f369", label: "Yellow Slice" },
-];
