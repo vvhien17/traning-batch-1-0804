@@ -12,6 +12,7 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Category } from '../category/entities/category.entity';
 import { ActivityStatus } from '../common/constants/activity-status';
+import { Goal } from '../goal/entities/goal.entity';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -68,6 +69,7 @@ describe('ActivitiesController', () => {
   let activityRepository: Repository<Activity>;
   let userRepository: Repository<User>;
   let categoryRepository: Repository<Category>;
+  let goalRepository: Repository<Goal>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -96,6 +98,14 @@ describe('ActivitiesController', () => {
             findOne: jest.fn().mockResolvedValue(mockCategory as Category),
           },
         },
+        {
+          provide: getRepositoryToken(Goal),
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            findOne: jest.fn(),
+          },
+        },
       ],
     }).compile();
     service = module.get<ActivityService>(ActivityService);
@@ -106,6 +116,7 @@ describe('ActivitiesController', () => {
     categoryRepository = module.get<Repository<Category>>(
       getRepositoryToken(Category),
     );
+    goalRepository = module.get<Repository<Goal>>(getRepositoryToken(Goal));
   });
 
   it('Activity service should be defined', () => {
