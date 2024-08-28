@@ -112,12 +112,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      # Upload the test report as an artifact
-      - name: Upload Test Report as Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report # Name of the artifact
-          path: tms-backend/test-report.html # Path to the generated report
+      # # Upload the test report as an artifact
+      # - name: Upload Test Report as Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: test-report # Name of the artifact
+      #     path: tms-backend/test-report.html # Path to the generated report
+      - name: Push test-report to Repository
+        run: |
+          git config --global user.email "ci-bot@example.com"
+          git config --global user.name "CI Bot"
+          git checkout -b test-reports  # You can change this to a specific branch if needed
+          git add tms-backend/reports/test-report.html  # Adjust this path as per the report location
+          git commit -m "Update test-report [ci skip]"  # The [ci skip] prevents triggering the pipeline again
+          git push origin test-reports --force  # Push to the `test-reports` branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
 
   deploy-report:
     name: Deploy Test Report to GitHub Pages
