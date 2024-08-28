@@ -27,18 +27,23 @@ const parseDate = (dateString: string): Date => {
   return isNaN(parsed.getTime()) ? new Date() : parsed;
 };
 
-type AddOrEditActivityForm = z.infer<typeof AddOrEditActivitySchema> & { startDate: string, endDate: string };
+type AddOrEditActivityForm = z.infer<typeof AddOrEditActivitySchema> & {
+  startDate: string;
+  endDate: string;
+};
 
 type CreateOrEditActivityDrawerProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   editItem?: AddOrEditActivityForm & { id: number };
+  className?: string;
 };
 
 export default function CreateOrEditActivityDrawer({
   open,
   setOpen,
   editItem,
+  className,
 }: CreateOrEditActivityDrawerProps) {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date>(
@@ -131,17 +136,12 @@ export default function CreateOrEditActivityDrawer({
   }, [editItem, setValue]);
 
   return (
-    <Drawer open={open} onClose={() => setOpen(false)}>
+    <Drawer className={className} open={open} onClose={() => setOpen(false)}>
       <div>
         <div className="flex items-center justify-between p-6 border-b border-stone-300">
           <p className="text-lg font-semibold">
             {!!editItem ? "Edit" : "Add"} activity
           </p>
-          <Button
-            className="w-max !m-0"
-            name="Save"
-            onClick={handleSubmit(onSubmit)}
-          />
         </div>
         <form className="grid grid-cols-2 gap-4 p-6">
           <Input
@@ -170,7 +170,7 @@ export default function CreateOrEditActivityDrawer({
               id="startDate"
               dateTime={startDate}
               setDateTime={(val) => {
-                setStartDate(val)
+                setStartDate(val);
               }}
             />
           </div>
@@ -180,7 +180,7 @@ export default function CreateOrEditActivityDrawer({
               id="endDate"
               dateTime={endDate}
               setDateTime={(val) => {
-                setEndDate(val)
+                setEndDate(val);
               }}
             />
           </div>
@@ -200,6 +200,16 @@ export default function CreateOrEditActivityDrawer({
             </div>
           </div>
         </form>
+      </div>
+
+      <div className="p-6 grid grid-cols-2 gap-4 ease-in duration-200">
+        <Button
+          type="button"
+          className="!m-0 bg-slate-400 hover:bg-slate-300 ease-in duration-200"
+          name="Cancel"
+          onClick={() => setOpen(false)}
+        />
+        <Button className="!m-0" name="Save" onClick={handleSubmit(onSubmit)} />
       </div>
       <Popup open={openPopup} title="Create category" setOpen={setOpenPopup}>
         <CreateCategory setOpen={setOpenPopup} />

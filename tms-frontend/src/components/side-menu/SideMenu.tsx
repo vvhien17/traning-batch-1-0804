@@ -1,14 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import PATH from "@components/constants/path";
 import {
   BeakerIcon,
-  CogIcon,
-  EyeIcon,
   BugAntIcon,
   ChartBarIcon,
-  ChevronRightIcon,
 } from "@heroicons/react/24/solid";
-import PATH from "@components/constants/path";
+import React, { useState } from "react";
 
 interface MenuItem {
   icon: React.ReactNode;
@@ -25,11 +22,11 @@ export const SideMenu: React.FC = () => {
       label: "Activities",
       link: PATH.activities,
     },
-    {
-      icon: <EyeIcon className="size-5 text-black-500" />,
-      label: "Summary",
-      link: PATH.activities,
-    },
+    // {
+    //   icon: <EyeIcon className="size-5 text-black-500" />,
+    //   label: "Summary",
+    //   link: PATH.activities,
+    // },
     {
       icon: <BugAntIcon className="size-5 text-black-500" />,
       label: "Goal Setting",

@@ -5,38 +5,21 @@ import classcat from "classcat";
 import GoalProgress from "./GoalProgress";
 import React, { useState } from "react";
 import DrawerAddActivitiesOnGoal from "./DrawerAddActivities";
+import { STYLES_STATUS } from "@components/constants/common";
 
-const styleMaps = {
-  [EnumStatusGoal.COMPLETED]: {
-    statusColor: "bg-green-500",
-    borderColor: "border-green-400",
-  },
-  [EnumStatusGoal.CANCELED]: {
-    statusColor: "bg-red-500",
-    borderColor: "border-red-400",
-  },
-  [EnumStatusGoal.IN_PROGRESS]: {
-    statusColor: "bg-yellow-500",
-    borderColor: "border-yellow-400",
-  },
-  [EnumStatusGoal.PENDING]: {
-    statusColor: "bg-blue-500",
-    borderColor: "border-blue-400",
-  },
-};
 interface Props {
   items: TItemGoal;
 }
 export default function GoalCard({ items }: Props) {
   const {
-    createdAt,
+    endedTime = new Date(),
     name,
     percentComplete,
     status,
-    updatedAt,
+    startedTime = new Date(),
     goalOnActivities,
   } = items;
-  const { statusColor, borderColor } = styleMaps[status] || {
+  const { statusColor, borderColor } = STYLES_STATUS[status] || {
     statusColor: "bg-colors-main",
     borderColor: "border-neutral-400",
   };
@@ -72,8 +55,8 @@ export default function GoalCard({ items }: Props) {
             </div>
           </div>
           <p className="text-sm text-gray-500 text-end">
-            {dayjs(createdAt).format("DD/MM/YYYY HH:mm")} -{" "}
-            {dayjs(updatedAt).format("DD/MM/YYYY HH:mm")}
+            {dayjs(startedTime).format("DD/MM/YYYY HH:mm")} -{" "}
+            {dayjs(endedTime).format("DD/MM/YYYY HH:mm")}
           </p>
         </div>
         <GoalProgress percent={percentComplete} />
