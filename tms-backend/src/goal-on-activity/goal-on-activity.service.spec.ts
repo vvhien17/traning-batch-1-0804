@@ -69,16 +69,12 @@ const mockGoalOnActivity = [
   {
     id: 2,
     goalId: 2,
-    activityId: 2,
+    activityId: 1,
   },
 ] as GoalOnActivity[];
 const createGoalOnActivityDto: CreateGoalOnActivityDto = {
   goalId: 1,
-  name: 'Activity 1',
-  startedAt: currentDate,
-  endedAt: endedAt,
-  categoryId: 1,
-  description: 'test desc',
+  activityIds: [1, 2]
 };
 
 describe('GoalOnActivityService', () => {
@@ -143,124 +139,186 @@ describe('GoalOnActivityService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create activity for goal', () => {
+  // describe('create activity for goal', () => {
+  //   const userId = 1;
+  //   it('Should return success with valid data ( data activity valid & goal exist)', async () => {
+  //     jest
+  //       .spyOn(goalRepository, 'findOne')
+  //       .mockResolvedValue(mockGoal[0] as Goal);
+  //     jest
+  //       .spyOn(goalOnActivityRepository, 'create')
+  //       .mockReturnValue(mockGoalOnActivity[0] as GoalOnActivity);
+  //     jest
+  //       .spyOn(goalOnActivityRepository, 'save')
+  //       .mockResolvedValue(mockGoalOnActivity[0] as GoalOnActivity);
+  //     const result = await service.create(userId, createGoalOnActivityDto);
+  //     expect(result.data).toEqual(mockGoalOnActivity[0] as GoalOnActivity);
+  //     expect(result.isSuccess).toBe(true);
+  //     expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
+  //   });
+
+  //   it("Should return error when user's goal is not exist", async () => {
+  //     jest.spyOn(goalRepository, 'findOne').mockResolvedValue(undefined);
+  //     const result = await service.create(userId, createGoalOnActivityDto);
+  //     expect(result.data).toEqual(null);
+  //     expect(result.isSuccess).toBe(false);
+  //     expect(result.message).toEqual(ErrorMessage.GOAL_NOT_FOUND);
+  //   });
+
+  //   it('Should return error when activity input invalid - missing name', async () => {
+  //     const expectedResponse: BaseResponse = buildError(
+  //       `Name ${ErrorMessage.IS_REQUIRED}`,
+  //     );
+  //     const result: BaseResponse = await service.create(userId, {
+  //       ...createGoalOnActivityDto,
+  //       name: null,
+  //     });
+  //     expect(result).toEqual(expectedResponse);
+  //   });
+
+  //   it('Should return error when activity input invalid - missing startedAt', async () => {
+  //     const expectedResponse: BaseResponse = buildError(
+  //       `StartedAt ${ErrorMessage.IS_REQUIRED}`,
+  //     );
+  //     const result: BaseResponse = await service.create(userId, {
+  //       ...createGoalOnActivityDto,
+  //       startedAt: null,
+  //     });
+  //     expect(result).toEqual(expectedResponse);
+  //   });
+
+  //   it('Should return error when activity input invalid - missing endedAt', async () => {
+  //     const expectedResponse: BaseResponse = buildError(
+  //       `EndedAt ${ErrorMessage.IS_REQUIRED}`,
+  //     );
+  //     const result: BaseResponse = await service.create(userId, {
+  //       ...createGoalOnActivityDto,
+  //       endedAt: null,
+  //     });
+  //     expect(result).toEqual(expectedResponse);
+  //   });
+
+  //   it('Should return error when missing goal input ', async () => {
+  //     const expectedResponse: BaseResponse = buildError(
+  //       `GoalId ${ErrorMessage.IS_REQUIRED}`,
+  //     );
+  //     const result: BaseResponse = await service.create(userId, {
+  //       ...createGoalOnActivityDto,
+  //       goalId: null,
+  //     });
+  //     expect(result).toEqual(expectedResponse);
+  //   });
+
+  //   it('Should return error if activity date range out of goal date range', async () => {
+  //     const expectedResponse: BaseResponse = buildError(
+  //       ErrorMessage.ACTIVITY_NOT_IN_GOAL_TIME,
+  //     );
+  //     jest
+  //       .spyOn(goalRepository, 'findOne')
+  //       .mockResolvedValue(mockGoal[0] as Goal);
+  //     const activityEndDate = new Date();
+  //     activityEndDate.setHours(endedAt.getHours() + 1);
+  //     const result: BaseResponse = await service.create(userId, {
+  //       ...createGoalOnActivityDto,
+  //       endedAt: activityEndDate,
+  //     });
+  //     expect(result).toEqual(expectedResponse);
+  //   });
+
+  //   it('Should return error if statedAt, and endedAt not same date ', async () => {
+  //     const endedAt = new Date();
+  //     endedAt.setDate(endedAt.getDate() + 1);
+  //     const expectedResponse: BaseResponse = buildError(ErrorMessage.SAME_DATE);
+  //     const result: BaseResponse = await service.create(userId, {
+  //       ...createGoalOnActivityDto,
+  //       endedAt: endedAt,
+  //     });
+
+  //     expect(result).toEqual(expectedResponse);
+  //   });
+
+  //   it('Create new activity enough data but endedDate before startedDate', async () => {
+  //     const endedAt = new Date();
+  //     endedAt.setDate(endedAt.getDate() - 1);
+
+  //     jest.spyOn(goalRepository, 'findOne').mockResolvedValue({
+  //       id: 1,
+  //       name: 'Goal 1',
+  //       userId: 1,
+  //       status: ActivityStatus.NOT_COMPLETED,
+  //       startedTime: currentDate,
+  //       endedTime: endedAt,
+  //     } as Goal);
+  //     const expectedResponse: BaseResponse = buildError(
+  //       ErrorMessage.START_DATE_INVALID,
+  //     );
+  //     const result: BaseResponse = await service.create(userId, {
+  //       ...createGoalOnActivityDto,
+  //       endedAt: endedAt,
+  //     });
+  //     expect(result).toEqual(expectedResponse);
+  //   });
+  // });
+
+  describe("Create from exist activity", () => {
     const userId = 1;
-    it('Should return success with valid data ( data activity valid & goal exist)', async () => {
-      jest
-        .spyOn(goalRepository, 'findOne')
-        .mockResolvedValue(mockGoal[0] as Goal);
-      jest
-        .spyOn(goalOnActivityRepository, 'create')
-        .mockReturnValue(mockGoalOnActivity[0] as GoalOnActivity);
-      jest
-        .spyOn(goalOnActivityRepository, 'save')
-        .mockResolvedValue(mockGoalOnActivity[0] as GoalOnActivity);
+    it("Should return success with valid data", async () => {
+      jest.spyOn(goalRepository, "findOne").mockResolvedValue(mockGoal[0] as Goal);
+      jest.spyOn(activityRepository, "find").mockResolvedValue(mockActivities as Activity[]);
+      jest.spyOn(goalOnActivityRepository, "create").mockReturnValue(mockGoalOnActivity[0] as GoalOnActivity);
+      jest.spyOn(goalOnActivityRepository, "save").mockResolvedValue(mockGoalOnActivity[0] as GoalOnActivity);
       const result = await service.create(userId, createGoalOnActivityDto);
-      expect(result.data).toEqual(mockGoalOnActivity[0] as GoalOnActivity);
+      expect(result.data).toEqual(mockGoalOnActivity[0]);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
-    });
+    })
 
-    it("Should return error when user's goal is not exist", async () => {
-      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(undefined);
+    it("Should return error if array input activityIds have  an invalid ( activity not exist)", async () => {
+      jest.spyOn(activityRepository, "find").mockResolvedValue([]);
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.ACTIVITY_INPUT_INVALID,
+      );
       const result = await service.create(userId, createGoalOnActivityDto);
-      expect(result.data).toEqual(null);
-      expect(result.isSuccess).toBe(false);
-      expect(result.message).toEqual(ErrorMessage.GOAL_NOT_FOUND);
-    });
-
-    it('Should return error when activity input invalid - missing name', async () => {
-      const expectedResponse: BaseResponse = buildError(
-        `Name ${ErrorMessage.IS_REQUIRED}`,
-      );
-      const result: BaseResponse = await service.create(userId, {
-        ...createGoalOnActivityDto,
-        name: null,
-      });
       expect(result).toEqual(expectedResponse);
-    });
+    })
 
-    it('Should return error when activity input invalid - missing startedAt', async () => {
+    it("Should return error if array input activityIds have an invalid (date range)", async () => {
       const expectedResponse: BaseResponse = buildError(
-        `StartedAt ${ErrorMessage.IS_REQUIRED}`,
-      );
-      const result: BaseResponse = await service.create(userId, {
-        ...createGoalOnActivityDto,
-        startedAt: null,
-      });
-      expect(result).toEqual(expectedResponse);
-    });
-
-    it('Should return error when activity input invalid - missing endedAt', async () => {
-      const expectedResponse: BaseResponse = buildError(
-        `EndedAt ${ErrorMessage.IS_REQUIRED}`,
-      );
-      const result: BaseResponse = await service.create(userId, {
-        ...createGoalOnActivityDto,
-        endedAt: null,
-      });
-      expect(result).toEqual(expectedResponse);
-    });
-
-    it('Should return error when missing goal input ', async () => {
-      const expectedResponse: BaseResponse = buildError(
-        `GoalId ${ErrorMessage.IS_REQUIRED}`,
-      );
-      const result: BaseResponse = await service.create(userId, {
-        ...createGoalOnActivityDto,
-        goalId: null,
-      });
-      expect(result).toEqual(expectedResponse);
-    });
-
-    it('Should return error if activity date range out of goal date range', async () => {
-      const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.ACTIVITY_NOT_IN_GOAL_TIME,
+        ErrorMessage.ACTIVITY_INPUT_INVALID,
       );
       jest
         .spyOn(goalRepository, 'findOne')
         .mockResolvedValue(mockGoal[0] as Goal);
       const activityEndDate = new Date();
       activityEndDate.setHours(endedAt.getHours() + 1);
+      jest.spyOn(activityRepository, "findOne").mockResolvedValue({
+        ...mockActivities[0],
+        startedAt: activityEndDate,
+      } as Activity);
       const result: BaseResponse = await service.create(userId, {
-        ...createGoalOnActivityDto,
-        endedAt: activityEndDate,
+        ...createGoalOnActivityDto
       });
       expect(result).toEqual(expectedResponse);
-    });
+    })
 
-    it('Should return error if statedAt, and endedAt not same date ', async () => {
-      const endedAt = new Date();
-      endedAt.setDate(endedAt.getDate() + 1);
-      const expectedResponse: BaseResponse = buildError(ErrorMessage.SAME_DATE);
-      const result: BaseResponse = await service.create(userId, {
-        ...createGoalOnActivityDto,
-        endedAt: endedAt,
-      });
-
-      expect(result).toEqual(expectedResponse);
-    });
-
-    it('Create new activity enough data but endedDate before startedDate', async () => {
-      const endedAt = new Date();
-      endedAt.setDate(endedAt.getDate() - 1);
-
-      jest.spyOn(goalRepository, 'findOne').mockResolvedValue({
-        id: 1,
-        name: 'Goal 1',
-        userId: 1,
-        status: ActivityStatus.NOT_COMPLETED,
-        startedTime: currentDate,
-        endedTime: endedAt,
-      } as Goal);
+    it("should return error if goal not exist", async () => {
+      jest.spyOn(goalRepository, "findOne").mockResolvedValue(null);
       const expectedResponse: BaseResponse = buildError(
-        ErrorMessage.START_DATE_INVALID,
+        ErrorMessage.GOAL_NOT_FOUND,
       );
-      const result: BaseResponse = await service.create(userId, {
+      const result = await service.create(userId, createGoalOnActivityDto);
+      expect(result).toEqual(expectedResponse);
+    })
+
+    it("should return error if array input is an empty array", async () => {
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.MUST_BE_ARRAY_INT,
+      );
+      const result = await service.create(userId, {
         ...createGoalOnActivityDto,
-        endedAt: endedAt,
+        activityIds: [],
       });
       expect(result).toEqual(expectedResponse);
-    });
-  });
+    })
+  })
 });
