@@ -113,6 +113,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Push test-report to Repository
+        permissions: write-all
         run: |
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
@@ -121,7 +122,7 @@ jobs:
           git commit -m "Update test-report [ci skip]"
           # Use Personal Access Token for authentication
           # git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
-          git push origin test-reports --force  # Push to the desired branch
+          git push origin main  # Push to the desired branch
         env:
           GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
 
