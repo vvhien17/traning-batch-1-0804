@@ -26,6 +26,8 @@ export class Activity {
   startedAt: Date;
   @Column({ type: 'timestamp' })
   endedAt: Date;
+  @Column({ nullable: true })
+  realSpendTime: number; // save in minutes => hour and minute
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string;
   @Column({ default: ActivityStatus.NOT_COMPLETED })

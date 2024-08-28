@@ -331,7 +331,7 @@ describe('ActivitiesController', () => {
       id: 1,
       name: 'Activity change',
       startedAt: newStartedAt,
-      status: ActivityStatus.COMPLETED,
+      status: ActivityStatus.CANCELED,
       endedAt: newEndedAt,
       categoryId: 2,
       description: 'Description change',
@@ -400,8 +400,22 @@ describe('ActivitiesController', () => {
       expect(result.data).toEqual(null);
       expect(result.isSuccess).toBe(false);
       expect(result.message).toEqual(
-        `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
+        `StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`,
       );
+    });
+    it('Update activity done', async () => {
+      jest
+        .spyOn(activityRepository, 'findOne')
+        .mockResolvedValue(mockActivities[0] as Activity);
+
+      const result: BaseResponse = await service.update(userId, {
+        id: updateActivityDto.id,
+        status: ActivityStatus.COMPLETED,
+      });
+
+      expect(result.data).toEqual(null);
+      expect(result.isSuccess).toBe(false);
+      expect(result.message).toEqual(ErrorMessage.REAL_SPEND_TIME_INVALID);
     });
 
     it('Update end but start > end', async () => {
@@ -417,7 +431,7 @@ describe('ActivitiesController', () => {
       expect(result.data).toEqual(null);
       expect(result.isSuccess).toBe(false);
       expect(result.message).toEqual(
-        `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
+        `StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`,
       );
     });
 

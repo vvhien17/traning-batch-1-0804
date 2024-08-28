@@ -138,21 +138,15 @@ export class ActivityService {
       if (updateActivityDto.startedAt || updateActivityDto.endedAt) {
         if (updateActivityDto.startedAt && updateActivityDto.endedAt) {
           if (updateActivityDto.endedAt <= updateActivityDto.startedAt) {
-            return buildError(
-              `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
-            );
+            return buildError(`StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`);
           }
         } else if (updateActivityDto.endedAt) {
           if (updateActivityDto.endedAt >= checkActivity.startedAt) {
-            return buildError(
-              `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
-            );
+            return buildError(`StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`);
           }
         } else if (updateActivityDto.startedAt) {
           if (updateActivityDto.startedAt <= checkActivity.endedAt) {
-            return buildError(
-              `StartedAt ${ErrorMessage.MUST_GREATER_THAN} EndedAt`,
-            );
+            return buildError(`StartedAt ${ErrorMessage.MUST_BEFORE} EndedAt`);
           }
         }
       }
