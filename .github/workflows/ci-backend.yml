@@ -125,8 +125,8 @@ jobs:
           git checkout -b test-reports  # You can change this to a specific branch if needed
           git add tms-backend/test-report.html  # Adjust this path as per the report location
           git commit -m "Update test-report [ci skip]"  # The [ci skip] prevents triggering the pipeline again
-          git push origin test-reports --force  # Push to the `test-reports` branch
-          git push origin main --force
+          git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
+          git push origin test-reports --force
         env:
           GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
 
