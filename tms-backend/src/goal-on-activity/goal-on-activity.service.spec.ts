@@ -14,7 +14,7 @@ import { ActivityService } from '../activity/activity.service';
 
 const currentDate = new Date();
 const endedAt = new Date();
-endedAt.setDate(endedAt.getDate() + 1);
+endedAt.setHours(endedAt.getHours() + 1);
 const mockActivities = [
   {
     id: 1,
@@ -224,6 +224,20 @@ describe('GoalOnActivityService', () => {
       const result: BaseResponse = await service.create(userId, {
         ...createGoalOnActivityDto,
         startedAt: activityDate,
+      });
+
+      expect(result).toEqual(expectedResponse);
+    })
+
+    it('Should return error if statedAt, and endedAt not same date ', async () => {
+      const endedAt = new Date();
+      endedAt.setDate(endedAt.getDate() + 1);
+      const expectedResponse: BaseResponse = buildError(
+        ErrorMessage.BAD_REQUEST,
+      );
+      const result: BaseResponse = await service.create(userId, {
+        ...createGoalOnActivityDto,
+        endedAt: endedAt,
       });
 
       expect(result).toEqual(expectedResponse);
