@@ -122,7 +122,7 @@ jobs:
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
           git checkout -b test-reports || git checkout test-reports
-          git add tms-backend/test-report.html  # Adjust the path to the report
+          git add .
           git commit -m "Update test-report [ci skip]"
           # Use Personal Access Token for authentication
           # git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
