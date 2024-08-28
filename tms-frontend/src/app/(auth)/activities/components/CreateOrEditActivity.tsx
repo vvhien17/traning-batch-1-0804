@@ -207,7 +207,6 @@ export default function CreateOrEditActivityDrawer({
             </p>
             <DateTimePickerCustom
               id="startDate"
-              name="startdate"
               dateTime={startDate}
               setDateTime={(val) => handleDateChange('startDate', val)}
             />
@@ -216,7 +215,6 @@ export default function CreateOrEditActivityDrawer({
             <p className="text-sm font-semibold text-gray-700 mb-1">End date</p>
             <DateTimePickerCustom
               id="endDate"
-              name="enddate"
               dateTime={endDate}
               setDateTime={(val) => handleDateChange('endDate', val)}
             />
