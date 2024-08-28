@@ -8,7 +8,7 @@ import { validate } from 'class-validator';
 import { GoalOnActivity } from './entities/goal-on-activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Activity } from '../activity/entities/activity.entity';
-import { Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { Goal } from '../goal/entities/goal.entity';
 
@@ -22,6 +22,7 @@ export class GoalOnActivityService {
     @InjectRepository(GoalOnActivity)
     private readonly goalOnActivityRepository: Repository<GoalOnActivity>,
   ) {}
+
   async create(
     userId: number,
     createGoalOnActivityDto: CreateGoalOnActivityDto,
@@ -31,9 +32,7 @@ export class GoalOnActivityService {
       createGoalOnActivityDto,
     );
     const errors = await validate(goalOnActivityDto);
-    const activityDto = { ...goalOnActivityDto };
-    delete activityDto.goalId;
-    delete activityDto.categoryId;
+
     if (errors.length) {
       return buildError(getCustomErrorMessage(errors[0]));
     }
@@ -43,44 +42,30 @@ export class GoalOnActivityService {
         userId: userId,
       },
     });
-    if (new Date(activityDto.startedAt) > new Date(activityDto.endedAt)) {
-      return buildError(ErrorMessage.START_DATE_INVALID);
-    }
-    if (
-      new Date(activityDto.startedAt).toLocaleDateString() !==
-      new Date(activityDto.endedAt).toLocaleDateString()
-    ) {
-      return buildError(ErrorMessage.SAME_DATE);
-    }
+
     if (!existGoal) {
       return buildError(ErrorMessage.GOAL_NOT_FOUND);
-    } else {
-      if (
-        new Date(activityDto.startedAt) < new Date(existGoal.startedTime) ||
-        new Date(activityDto.startedAt) > new Date(existGoal.endedTime) ||
-        new Date(activityDto.endedAt) < new Date(existGoal.startedTime) ||
-        new Date(activityDto.endedAt) > new Date(existGoal.endedTime)
-      ) {
-        return buildError(ErrorMessage.ACTIVITY_NOT_IN_GOAL_TIME);
-      }
+    }
+    const validActivity = await this.activityRepository.find({
+      where: {
+        id: In(createGoalOnActivityDto.activityIds),
+        userId: userId,
+        isDelete: false,
+        startedAt: Between(existGoal.startedTime, existGoal.endedTime),
+        endedAt: Between(existGoal.startedTime, existGoal.endedTime),
+      },
+    });
+
+    if (validActivity.length !== createGoalOnActivityDto.activityIds.length) {
+      console.log('invalidActivityas as');
+      return buildError(ErrorMessage.ACTIVITY_INPUT_INVALID);
     }
 
-    const activity = this.activityRepository.create({
-      userId: userId,
-      ...activityDto,
-    });
-    const saveActivity = await this.activityRepository.save(activity);
-    if (!saveActivity) {
-      return {
-        data: null,
-        isSuccess: false,
-        message: ErrorMessage.BAD_REQUEST,
-      };
-    }
-    const goalOnActivity = this.goalOnActivityRepository.create({
+    const goalMaps = createGoalOnActivityDto.activityIds.map((id) => ({
       goalId: createGoalOnActivityDto.goalId,
-      activityId: saveActivity.id,
-    });
+      activityId: id,
+    }));
+    const goalOnActivity = await this.goalOnActivityRepository.create(goalMaps);
     const saveGoalOnActivity =
       await this.goalOnActivityRepository.save(goalOnActivity);
 
@@ -91,8 +76,34 @@ export class GoalOnActivityService {
     };
   }
 
-  findAll() {
-    return `This action returns all goalOnActivity`;
+  async findAll(userId: number, goalId: number) {
+    const result = await this.goalRepository.find({
+      where: {
+        id: goalId,
+        userId,
+      },
+      relations: ['goalOnActivities', 'goalOnActivities.activity'],
+    });
+
+    if (!result.length) {
+      return buildError(ErrorMessage.GOAL_NOT_FOUND);
+    }
+    let data = [];
+    const goalOnActivities = result[0].goalOnActivities;
+    if (goalOnActivities.length > 0) {
+      data = goalOnActivities.map((goalOnActivity) => ({
+        ...goalOnActivity.activity,
+        category: {
+          name: result[0].name,
+        },
+      }));
+    }
+
+    return {
+      data: data,
+      isSuccess: true,
+      message: SuccessMessage.GET_DATA_SUCCESS,
+    };
   }
 
   findOne(id: number) {
