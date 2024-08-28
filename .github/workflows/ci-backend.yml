@@ -83,6 +83,10 @@ jobs:
         working-directory: tms-backend
         run: mkdir -p ./coverage
 
+      - name: Delete old test-report.html
+        working-directory: tms-backend
+        run: rm -f test-report.html
+
       - name: Run backend tests
         working-directory: tms-backend
         run: pnpm run test
