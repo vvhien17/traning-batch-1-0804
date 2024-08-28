@@ -123,7 +123,7 @@ jobs:
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
           git checkout -b test-reports  # You can change this to a specific branch if needed
-          git add tms-backend/reports/test-report.html  # Adjust this path as per the report location
+          git add tms-backend/test-report.html  # Adjust this path as per the report location
           git commit -m "Update test-report [ci skip]"  # The [ci skip] prevents triggering the pipeline again
           git push origin test-reports --force  # Push to the `test-reports` branch
         env:
