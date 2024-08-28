@@ -23,10 +23,10 @@ const useCreateCategory = () => {
   });
 };
 
-const useGetActivities = ({ category }: { category?: string }) => {
+const useGetActivities = ({ categoryIds }: { categoryIds?: number[] }) => {
   return useQuery({
     queryKey: ["activities"],
-    queryFn: () => activityApi.getActivities({ category: category }),
+    queryFn: () => activityApi.getActivities(categoryIds),
     refetchOnWindowFocus: false,
   });
 };

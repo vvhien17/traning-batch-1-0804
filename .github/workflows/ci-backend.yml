@@ -111,6 +111,25 @@ jobs:
           key: ${{ runner.os }}-pnpm-${{ hashFiles('tms-backend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
+
+      # # Upload the test report as an artifact
+      # - name: Upload Test Report as Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: test-report # Name of the artifact
+      #     path: tms-backend/test-report.html # Path to the generated report
+      - name: Push test-report to Repository
+        run: |
+          git config --global user.email "quanduong@xpodc.com"
+          git config --global user.name "CI Bot"
+          git checkout -b test-reports  # You can change this to a specific branch if needed
+          git add tms-backend/test-report.html  # Adjust this path as per the report location
+          git commit -m "Update test-report [ci skip]"  # The [ci skip] prevents triggering the pipeline again
+          git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
+          git push origin test-reports --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
+
   deploy-report:
     name: Deploy Test Report to GitHub Pages
     runs-on: ubuntu-latest
@@ -143,6 +162,8 @@ jobs:
           github_token: ${{ secrets.CI_TOKEN }} # GitHub token to authenticate
           publish_dir: ./tms-backend # Directory containing your Jest HTML report
           publish_branch: gh-pages # The branch where the report will be published
+          force_orphan: true # Force-push to ensure the branch is updated
+          clean: true # Clean previous files to ensure no old data remains
   release:
     name: Create Release
     runs-on: ubuntu-24.04

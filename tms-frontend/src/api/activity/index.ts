@@ -3,6 +3,7 @@ import {
   TActivity,
   TCategory,
   TCreateActivityRequest,
+  TGetActivityRequest,
   TUpdateActivityRequest,
 } from "@components/types/activity";
 import { TBaseResponse } from "@components/types/types";
@@ -12,12 +13,9 @@ const activityApi = {
     axiosClient.get("/categories"),
   createCategory: (data: any): Promise<TBaseResponse<any>> =>
     axiosClient.post("/categories", data),
-  getActivities: (params: {
-    category?: string;
-  }): Promise<TBaseResponse<TActivity[]>> =>
-    axiosClient.get("/activity", {
-      params,
-    }),
+  getActivities: (
+    data: any): Promise<TBaseResponse<TActivity[]>> =>
+    axiosClient.post("/activity/all", { categoryIds: data }),
   getActivityById: (id: string): Promise<TBaseResponse<any>> =>
     axiosClient.get(`/activities/${id}`),
   createActivity: (data: TCreateActivityRequest): Promise<TBaseResponse<any>> =>
