@@ -122,8 +122,6 @@ jobs:
           # Use Personal Access Token for authentication
           git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
           git push origin test-reports --force  # Push to the desired branch
-        with:
-          github_token: ${{ secrets.CI_TOKEN }} # GitHub token to authenticate
 
   deploy-report:
     name: Deploy Test Report to GitHub Pages
