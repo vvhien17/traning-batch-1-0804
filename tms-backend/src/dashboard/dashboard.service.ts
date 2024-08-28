@@ -33,18 +33,15 @@ export class DashboardService {
     }
 
     const totalTime = filteredActivities.reduce((total, activity) => {
-      const timeSpent =
-        new Date(activity.endedAt).getTime() -
-        new Date(activity.startedAt).getTime();
+      const timeSpent = activity.realSpendTime;
+
       return total + timeSpent;
     }, 0);
 
     // Aggregate time spent per category
     const categoryTimes = filteredActivities.reduce(
       (acc, activity) => {
-        const timeSpent =
-          new Date(activity.endedAt).getTime() -
-          new Date(activity.startedAt).getTime();
+        const timeSpent = activity.realSpendTime;
         const categoryId = activity.category.id;
         if (!acc[categoryId]) {
           acc[categoryId] = {
@@ -61,8 +58,6 @@ export class DashboardService {
         { categoryId: number; totalTime: number; name: string }
       >,
     );
-
-    console.log('categoryTimes', categoryTimes);
 
     const result: ResponseDashboard[] = Object.values(categoryTimes).map(
       (categoryTime) => ({
@@ -138,25 +133,17 @@ export class DashboardService {
       return buildError(ErrorMessage.ACTIVITY_NOT_FOUND);
     }
 
-    const totalTime = activities.reduce((total, activity) => {
-      const startedAt = new Date(activity.startedAt).getTime();
-      const endedAt = new Date(activity.endedAt).getTime();
-      if (typeof startedAt === 'number' && typeof endedAt === 'number') {
-        const timeSpent = endedAt - startedAt;
-        return total + timeSpent;
-      }
-      return total;
+    const totalTimeInMinutes = activities.reduce((total, activity) => {
+      return total + activity.realSpendTime * 60; // Assuming realSpendTime is in hours
     }, 0);
 
-    const totalTimeInHours = Math.floor(totalTime / (1000 * 60 * 60));
-    const totalTimeInMinutes = Math.floor(
-      (totalTime % (1000 * 60 * 60)) / (1000 * 60),
-    );
+    const totalTimeInHours = Math.floor(totalTimeInMinutes / 60);
+    const remainingMinutes = totalTimeInMinutes % 60;
 
     return {
       data: {
         totalHours: totalTimeInHours,
-        totalMinutes: totalTimeInMinutes,
+        totalMinutes: remainingMinutes,
       },
       isSuccess: true,
       message: SuccessMessage.GET_DATA_SUCCESS,
