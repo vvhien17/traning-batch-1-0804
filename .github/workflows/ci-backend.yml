@@ -117,40 +117,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      # - name: Show git status
-      #   run: |
-      #     git branch
-      #     git status # This will show if the file is being staged correctly
-
-      # - name: Push test-report to Repository
-      #   run: |
-      #     git config --global user.email "ci-bot@example.com"
-      #     git config --global user.name "CI Bot"
-      #     # # Verify if test-report.html exists
-      #     # ls -l tms-backend/test-report.html
-      #     # git checkout -b test-reports || git checkout test-reports
-      #     git add -f tms-backend/test-report.html
-      #     git commit -m "Update test-report [ci skip]"
-      #     # Use Personal Access Token for authentication
-      #     # git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git
-      #     git push origin main  # Push to the desired branch
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
-
-  deploy-report:
-    name: Deploy Test Report to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: test # Ensure this job runs after the test job
-    if: |
-      github.ref == 'refs/heads/main' &&
-      needs.test.result == 'success'
-    steps:
       - name: Show git status
         run: |
           git branch
           git status # This will show if the file is being staged correctly
 
       - name: Push test-report to Repository
+        if: |
+          github.ref == 'refs/heads/main' &&
+          needs.test.result == 'success'
         run: |
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
@@ -165,6 +140,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
 
+  deploy-report:
+    name: Deploy Test Report to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: test # Ensure this job runs after the test job
+    if: needs.test.result == 'success'
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
