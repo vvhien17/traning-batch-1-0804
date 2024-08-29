@@ -14,8 +14,6 @@ interface Props {
 const TabAddActivities = ({ goalId }: Props) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const { data: dataCanAddGoal, isLoading: isLoadingCanAddGoal } =
-    useGetCanAddToGoal(goalId);
   const { data: dataActivityOnGoal, isLoading: isLoadingActivityGoal } =
     useGetActivityOnGoal(goalId);
 
@@ -80,11 +78,9 @@ const TabAddActivities = ({ goalId }: Props) => {
         <DropdownSelect
           setIsClose={() => setIsOpen(false)}
           dropdownRef={dropdownRef}
-          isLoading={isLoadingCanAddGoal}
           setIsOpen={() => setIsOpen(true)}
           goalId={goalId}
           isOpen={isOpen}
-          arr={dataCanAddGoal || []}
         />
       </div>
       {isLoadingActivityGoal ? (
