@@ -36,6 +36,8 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
     };
   });
 
+  console.log({ slices });
+
   return (
     <div className="relative w-64 h-64">
       <svg viewBox="0 0 32 32" className="w-full h-full">
@@ -46,7 +48,14 @@ const PieChart: React.FC<PieChartProps> = ({ data }) => {
           const start = polarToCartesian(16, 16, 15, endAngle);
           const end = polarToCartesian(16, 16, 15, startAngle);
 
-          const d = `M 16 16 L ${start.x} ${start.y} A 15 15 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+          const d =
+            data.length === 1
+              ? `M 16 16 m -16, 0 a 16,16 0 1,0 32,0 a 16,16 0 1,0 -32,0`
+              : `M 16 16 L ${polarToCartesian(16, 16, 16, endAngle).x} ${
+                  polarToCartesian(16, 16, 16, endAngle).y
+                } A 16 16 0 ${largeArcFlag} 0 ${
+                  polarToCartesian(16, 16, 16, startAngle).x
+                } ${polarToCartesian(16, 16, 16, startAngle).y} Z`;
 
           return (
             <path
