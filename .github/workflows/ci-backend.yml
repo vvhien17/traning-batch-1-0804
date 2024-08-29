@@ -141,7 +141,9 @@ jobs:
     name: Deploy Test Report to GitHub Pages
     runs-on: ubuntu-latest
     needs: test # Ensure this job runs after the test job
-    if: needs.test.result == 'success' # Only run this if tests pass
+    if: |
+      github.ref == 'refs/heads/main' &&
+      needs.test.result == 'success'
     steps:
       - name: Show git status
         run: |
@@ -196,9 +198,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions: write-all
     needs: test # Ensure `release` depends on `test`
-    if: |
-      github.ref == 'refs/heads/main' &&
-      needs.test.result == 'success' # Check that `test` succeeded
+    if: needs.test.result == 'success' # Check that `test` succeeded
     steps:
       - uses: actions/checkout@v3
 
