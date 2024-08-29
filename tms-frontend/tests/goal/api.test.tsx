@@ -1,8 +1,8 @@
 import GoalPage from "@components/app/(auth)/goal/page";
-import { useCreateGoal, useGetGoal } from "@components/query/goal/queryHooks";
+import { useGetGoal } from "@components/query/goal/queryHooks";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@testing-library/jest-dom"; // Ensure this import is present
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
 jest.mock("react-toastify", () => ({
   toast: {
