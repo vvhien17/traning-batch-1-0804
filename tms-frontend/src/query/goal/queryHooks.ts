@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   addActivityOnGoalQuery,
   createGoalQuery,
+  deleteActivityOnGoalQuery,
   getActivityOnGoalQuery,
   getCanAddToGoalQuery,
   getGoalQuery,
@@ -41,5 +42,12 @@ export const useAddActivityOnGoal = () => {
   return useMutation({
     mutationFn: addActivityOnGoalQuery,
     mutationKey: [QueryKeysGoal.ADD_ACTIVITY_ON_GOAL],
+  });
+};
+
+export const useDeleteActivityOnGoal = () => {
+  return useMutation({
+    mutationFn: deleteActivityOnGoalQuery,
+    mutationKey: [QueryKeysGoal.DELETE_ACTIVITY_ON_GOAL],
   });
 };

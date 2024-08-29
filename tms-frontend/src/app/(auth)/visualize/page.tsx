@@ -11,17 +11,15 @@ export default function VisualizePage() {
   const { data: summaryTimeData, isLoading: loadingSummaryTime } =
     dashboardQuery.query.useGetSummaryTime(timeRange);
 
-  const data = dashboardData?.data
-    ?.filter((item) => item.percentage > 0)
-    .map((item) => ({
-      value: item.percentage,
-      color:
-        "#" +
-        Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, "0"),
-      label: item.name,
-    }));
+  const data = dashboardData?.data?.map((item) => ({
+    value: item.percentage,
+    color:
+      "#" +
+      Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0"),
+    label: item.name,
+  }));
 
   return (
     <div>
@@ -57,13 +55,13 @@ export default function VisualizePage() {
                 {loadingSummaryTime ? (
                   <span className="w-6 h-4 animate-pulse inline-block bg-neutral-400"></span>
                 ) : (
-                  summaryTimeData?.data?.totalHours || 0
+                  summaryTimeData?.data?.totalHours
                 )}{" "}
                 hours and{" "}
                 {loadingSummaryTime ? (
                   <span className="w-6 h-4 animate-pulse inline-block bg-neutral-400"></span>
                 ) : (
-                  summaryTimeData?.data?.totalMinutes || 0
+                  summaryTimeData?.data?.totalMinutes
                 )}{" "}
                 minutes
               </span>{" "}

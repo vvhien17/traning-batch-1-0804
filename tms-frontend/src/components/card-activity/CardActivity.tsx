@@ -52,13 +52,14 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   const [openCompletePopup, setOpenCompletePopup] = useState<boolean>(false);
   const descriptionRef = useRef<HTMLParagraphElement | null>(null);
   const timeSpent = dayjs(endedAt).diff(dayjs(startedAt), "minute") + 1;
-  const { register, handleSubmit, formState } = useForm<CompleteActivityForm>({
-    defaultValues: {
-      hour: Math.floor(timeSpent / 60).toString(),
-      minute: (timeSpent % 60).toString(),
-    },
-    resolver: zodResolver(CompleteActivitySchema),
-  });
+  const { register, handleSubmit, formState, getValues, watch } =
+    useForm<CompleteActivityForm>({
+      defaultValues: {
+        hour: Math.floor(timeSpent / 60).toString(),
+        minute: (timeSpent % 60).toString(),
+      },
+      resolver: zodResolver(CompleteActivitySchema),
+    });
 
   const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
   const { mutate: deleteActivity } = activityQuery.mutation.useDeleteActivity();
@@ -81,11 +82,19 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   };
 
   const handleComplete = (data: CompleteActivityForm) => {
+    const realSpendTime = +data.hour * 60 + +data.minute;
+
+    if (realSpendTime < 1) {
+      return toast.warning(
+        "Activities completion time must be greater than 1 minute"
+      );
+    }
+
     updateActivity(
       {
         id,
         status: "COMPLETED",
-        realSpendTime: +data.hour * 60 + +data.minute,
+        realSpendTime,
       },
       {
         onSuccess() {
