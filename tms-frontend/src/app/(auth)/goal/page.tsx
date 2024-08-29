@@ -47,11 +47,11 @@ export default function GoalPage() {
       ) : (
         <div className="flex items-center gap-2 text-gray-500">
           <ExclamationCircleIcon className="size-5" />
-          <span>No data activity</span>
+          <span>No data goals</span>
         </div>
       )}
       <Popup
-        title="Create New Activities"
+        title="Create New Goal"
         open={isOpen}
         setOpen={() => setIsOpen(true)}
       >
