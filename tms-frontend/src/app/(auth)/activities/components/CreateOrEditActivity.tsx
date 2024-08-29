@@ -26,10 +26,9 @@ const AddOrEditActivitySchema = z.object({
   (data) => {
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
-
+    
     const startDateOnly = start.toISOString().split("T")[0];
     const endDateOnly = end.toISOString().split("T")[0];
-
     return startDateOnly === endDateOnly;
   },
   {
@@ -154,6 +153,8 @@ export default function CreateOrEditActivityDrawer({
       setValue("name", editItem.name);
       setValue("description", editItem.description);
       setValue("category", editItem.category.toString());
+      setValue("startDate", editItem.startDate);
+      setValue("endDate", editItem.endDate);
       setStartDate(parseDate(editItem.startDate));
       setEndDate(parseDate(editItem.endDate));
     }
