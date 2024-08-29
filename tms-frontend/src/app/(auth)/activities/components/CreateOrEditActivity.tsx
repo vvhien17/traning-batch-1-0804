@@ -63,6 +63,7 @@ type CreateOrEditActivityDrawerProps = {
   setOpen: (open: boolean) => void;
   editItem?: AddOrEditActivityForm & { id: number };
   className?: string;
+  refetch?: () => void;
 };
 
 export default function CreateOrEditActivityDrawer({
@@ -70,6 +71,7 @@ export default function CreateOrEditActivityDrawer({
   setOpen,
   editItem,
   className,
+  refetch,
 }: CreateOrEditActivityDrawerProps) {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date>(
@@ -142,6 +144,7 @@ export default function CreateOrEditActivityDrawer({
               type: data.isSuccess ? "success" : "error",
             });
             setOpen(false);
+            refetch && refetch();
           },
           onError: (error: any) => {
             const _error: TypeErrorResponse = error;
