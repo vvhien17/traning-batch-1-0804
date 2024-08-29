@@ -117,12 +117,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
+      - name: Show git status
+        run: |
+          git branch
+          git status # This will show if the file is being staged correctly
+
       - name: Push test-report to Repository
         run: |
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
-          git checkout -b test-reports  # Or use a different branch as needed
-          git add tms-backend/test-report.html  # Adjust the path to the report
+          # # Verify if test-report.html exists
+          # ls -l tms-backend/test-report.html
+          # git checkout -b test-reports || git checkout test-reports
+          git add -f tms-backend/test-report.html
           git commit -m "Update test-report [ci skip]"
           # Use Personal Access Token for authentication
           # git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/vvhien17/traning-batch-1-0804.git

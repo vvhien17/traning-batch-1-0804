@@ -51,7 +51,7 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [openCompletePopup, setOpenCompletePopup] = useState<boolean>(false);
   const descriptionRef = useRef<HTMLParagraphElement | null>(null);
-  const timeSpent = dayjs(endedAt).diff(dayjs(startedAt), "minute");
+  const timeSpent = dayjs(endedAt).diff(dayjs(startedAt), "minute") + 1;
   const { register, handleSubmit, formState } = useForm<CompleteActivityForm>({
     defaultValues: {
       hour: Math.floor(timeSpent / 60).toString(),
@@ -81,11 +81,18 @@ export const CardActivity: React.FC<CardActivityProps> = ({
   };
 
   const handleComplete = (data: CompleteActivityForm) => {
-    updateActivity({
-      id,
-      status: "COMPLETED",
-      realSpendTime: +data.hour * 60 + +data.minute,
-    });
+    updateActivity(
+      {
+        id,
+        status: "COMPLETED",
+        realSpendTime: +data.hour * 60 + +data.minute,
+      },
+      {
+        onSuccess() {
+          setOpenCompletePopup(false);
+        },
+      }
+    );
   };
 
   useEffect(() => {
