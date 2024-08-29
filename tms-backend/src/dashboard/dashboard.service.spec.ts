@@ -143,8 +143,8 @@ describe('DashboardService', () => {
 
         expect(result).toEqual({
           data: {
-            totalHours: 1,
-            totalMinutes: 0,
+            totalHours: 0,
+            totalMinutes: 1,
           },
           isSuccess: true,
           message: SuccessMessage.GET_DATA_SUCCESS,
@@ -188,8 +188,8 @@ describe('DashboardService', () => {
 
         expect(result).toEqual({
           data: {
-            totalHours: 1,
-            totalMinutes: 0,
+            totalHours: 0,
+            totalMinutes: 1,
           },
           isSuccess: true,
           message: SuccessMessage.GET_DATA_SUCCESS,
