@@ -27,6 +27,11 @@ export const goalApi = {
   ): Promise<TBaseResponse<TCreateGoalResponse>> =>
     axiosClient.post("/goal-on-activity", data),
 
+  deleteActivityOnGoal: (
+    data: TGoalOnActivitiesRequest
+  ): Promise<TBaseResponse<TCreateGoalResponse>> =>
+    axiosClient.delete("/goal-on-activity", { data }),
+
   getCanAddToGoal: (
     id: number
   ): Promise<TBaseResponse<Array<TItemActivitiesOnGoal>>> =>
