@@ -143,7 +143,7 @@ export class ActivityService {
     });
 
     const activities = data.filter((activity) => {
-      return !activity.goalOnActivities.some(
+      return !activity.goalOnActivities?.some(
         (goalOnActivity) => goalOnActivity.goalId === goalId,
       );
     });
