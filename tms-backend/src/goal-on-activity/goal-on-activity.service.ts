@@ -11,6 +11,8 @@ import { Activity } from '../activity/entities/activity.entity';
 import { Between, In, Repository } from 'typeorm';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { Goal } from '../goal/entities/goal.entity';
+import { DeleteGoalOnActivityDto } from './dto/delete-goal-on-activity.dto';
+import { GoalStatus } from '../common/constants/goal-status';
 
 @Injectable()
 export class GoalOnActivityService {
@@ -57,18 +59,21 @@ export class GoalOnActivityService {
     });
 
     if (validActivity.length !== createGoalOnActivityDto.activityIds.length) {
-      console.log('invalidActivityas as');
       return buildError(ErrorMessage.ACTIVITY_INPUT_INVALID);
     }
 
-    const goalMaps = createGoalOnActivityDto.activityIds.map((id) => ({
+    const activityMaps = createGoalOnActivityDto.activityIds.map((id) => ({
       goalId: createGoalOnActivityDto.goalId,
       activityId: id,
     }));
-    const goalOnActivity = await this.goalOnActivityRepository.create(goalMaps);
+    const goalOnActivity =
+      await this.goalOnActivityRepository.create(activityMaps);
     const saveGoalOnActivity =
       await this.goalOnActivityRepository.save(goalOnActivity);
-
+    await this.goalRepository.save({
+      id: existGoal.id,
+      status: GoalStatus.NOT_COMPLETED,
+    });
     return {
       data: saveGoalOnActivity,
       isSuccess: true,
@@ -93,7 +98,7 @@ export class GoalOnActivityService {
     if (goalOnActivities.length > 0) {
       data = goalOnActivities.map((goalOnActivity) => ({
         ...goalOnActivity.activity,
-        category: {
+        goal: {
           name: result[0].name,
         },
       }));
@@ -114,7 +119,45 @@ export class GoalOnActivityService {
     return `This action updates a #${id} goalOnActivity`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} goalOnActivity`;
+  async delete(userId: number, deleteActivity: DeleteGoalOnActivityDto) {
+    const goalOnActivityDto = plainToInstance(
+      DeleteGoalOnActivityDto,
+      deleteActivity,
+    );
+    const errors = await validate(goalOnActivityDto);
+
+    if (errors.length) {
+      return buildError(getCustomErrorMessage(errors[0]));
+    }
+    const existGoal = await this.goalRepository.findOne({
+      where: {
+        id: goalOnActivityDto.goalId,
+        userId: userId,
+      },
+    });
+
+    if (!existGoal) {
+      return buildError(ErrorMessage.GOAL_NOT_FOUND);
+    }
+    const validActivity = await this.goalOnActivityRepository.find({
+      where: {
+        activityId: In(goalOnActivityDto.activityIds),
+        goalId: goalOnActivityDto.goalId,
+      },
+    });
+
+    if (validActivity.length !== goalOnActivityDto.activityIds.length) {
+      return buildError(ErrorMessage.ACTIVITY_INPUT_INVALID);
+    }
+    const deletedData = await this.goalOnActivityRepository.delete({
+      goalId: goalOnActivityDto.goalId,
+      activityId: In(goalOnActivityDto.activityIds),
+    });
+
+    return {
+      data: deletedData,
+      isSuccess: true,
+      message: SuccessMessage.DELETE_DATA_SUCCESS,
+    };
   }
 }

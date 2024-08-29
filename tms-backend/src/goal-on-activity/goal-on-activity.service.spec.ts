@@ -11,6 +11,7 @@ import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
 import { CreateGoalOnActivityDto } from './dto/create-goal-on-activity.dto';
 import { ActivityService } from '../activity/activity.service';
+import { GoalStatus } from '../common/constants/goal-status';
 
 const currentDate = new Date();
 const endedAt = new Date();
@@ -154,7 +155,15 @@ describe('GoalOnActivityService', () => {
       jest
         .spyOn(goalOnActivityRepository, 'save')
         .mockResolvedValue(mockGoalOnActivity[0] as GoalOnActivity);
+      jest.spyOn(goalRepository, 'save').mockResolvedValue({
+        id: mockGoal[0].id,
+        status: GoalStatus.NOT_COMPLETED,
+      } as Goal);
       const result = await service.create(userId, createGoalOnActivityDto);
+      expect(goalRepository.save).toHaveBeenCalledWith({
+        id: mockGoal[0].id,
+        status: GoalStatus.NOT_COMPLETED,
+      });
       expect(result.data).toEqual(mockGoalOnActivity[0]);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);

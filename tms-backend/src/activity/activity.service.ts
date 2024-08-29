@@ -13,6 +13,9 @@ import { plainToInstance } from 'class-transformer';
 import { getCustomErrorMessage } from '../common/utils/custom-message-validator';
 import { Category } from '../category/entities/category.entity';
 import { Goal } from '../goal/entities/goal.entity';
+import { ActivityStatus } from '../common/constants/activity-status';
+import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
+import { GoalStatus } from '../common/constants/goal-status';
 
 @Injectable()
 export class ActivityService {
@@ -25,6 +28,8 @@ export class ActivityService {
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Goal)
     private readonly goalRepository: Repository<Goal>,
+    @InjectRepository(GoalOnActivity)
+    private readonly goalOnActivityRepository: Repository<GoalOnActivity>,
   ) {}
 
   async create(
@@ -139,7 +144,7 @@ export class ActivityService {
 
     const activities = data.filter((activity) => {
       return !activity.goalOnActivities.some(
-        (goalOnActivity) => goalOnActivity.goalId === 2,
+        (goalOnActivity) => goalOnActivity.goalId === goalId,
       );
     });
 
@@ -198,22 +203,82 @@ export class ActivityService {
   ): Promise<BaseResponse> {
     const activity = await this.activityRepository.findOne({
       where: { id: updateActivityDto.id },
+      relations: ['goalOnActivities'],
+      select: {
+        goalOnActivities: {
+          goalId: true,
+        },
+      },
     });
+    //for each goal,  if ( all has been complete and that is the last one => will return complete)
+    if (
+      updateActivityDto.status &&
+      updateActivityDto.status === ActivityStatus.COMPLETED
+    ) {
+      if (activity.goalOnActivities && activity.goalOnActivities.length > 0) {
+        const goalIds = activity.goalOnActivities.map((i) => i.goalId);
+        for (let i = 0; i < goalIds.length; i++) {
+          const goalId = goalIds[i];
+          const activities = await this.goalOnActivityRepository
+            .createQueryBuilder('goalOnActivity')
+            .innerJoinAndSelect('goalOnActivity.activity', 'activity')
+            .where('goalOnActivity.goalId = :goalId', { goalId })
+            .andWhere('activity.isDelete = :isDelete', { isDelete: false })
+            .select('activity.status', 'status')
+            .addSelect('COUNT(activity.id)', 'count')
+            .groupBy('activity.status')
+            .getRawMany();
+          const finalNotCompleted = activities.some(
+            (activity) =>
+              activity.status === 'NOT_COMPLETED' &&
+              (activity.count === 1 || activity.count === '1'),
+          );
+
+          if (finalNotCompleted) {
+            await this.goalRepository.save({
+              id: goalId,
+              status: GoalStatus.COMPLETED,
+            });
+          }
+        }
+      }
+    }
+    delete activity.goalOnActivities;
     Object.assign(activity, updateActivityDto);
     const result = await this.activityRepository.save(activity);
+
     return {
       data: result,
       isSuccess: true,
       message: SuccessMessage.UPDATE_DATA_SUCCESS,
     };
   }
+
   async delete(id: number, userId: number) {
     const checkActivity = await this.activityRepository.findOne({
       where: { id: id, userId: userId },
+      relations: ['goalOnActivities'],
+      select: {
+        goalOnActivities: {
+          goalId: true,
+        },
+      },
     });
+
     if (!checkActivity) {
       return buildError(ErrorMessage.ACTIVITY_NOT_FOUND);
     }
+    if (
+      checkActivity.goalOnActivities &&
+      checkActivity.goalOnActivities.length > 0
+    ) {
+      const goalIds = checkActivity.goalOnActivities.map((i) => i.goalId);
+      await this.goalOnActivityRepository.delete({
+        goalId: In(goalIds),
+        activityId: checkActivity.id,
+      });
+    }
+
     checkActivity.isDelete = true;
     await this.activityRepository.save(checkActivity);
     return {

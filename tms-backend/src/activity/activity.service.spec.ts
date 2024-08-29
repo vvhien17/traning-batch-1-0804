@@ -13,6 +13,7 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Category } from '../category/entities/category.entity';
 import { ActivityStatus } from '../common/constants/activity-status';
 import { Goal } from '../goal/entities/goal.entity';
+import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -121,10 +122,17 @@ describe('ActivitiesController', () => {
         {
           provide: getRepositoryToken(Goal),
           useValue: {
-            find: jest.fn().mockResolvedValue(mockGoal),
+            create: jest.fn(),
+            save: jest.fn(),
             findOne: jest.fn(),
-            create: jest.fn().mockResolvedValue(mockGoal[0]),
-            save: jest.fn().mockResolvedValue(mockGoal[0]),
+          },
+        },
+        {
+          provide: getRepositoryToken(GoalOnActivity),
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            findOne: jest.fn(),
           },
         },
       ],
@@ -524,22 +532,26 @@ describe('ActivitiesController', () => {
   });
 
   describe('Get activity in range of goal', () => {
-    it("Should return success if valid input ", async () => {
-      jest.spyOn(goalRepository, "findOne").mockResolvedValue(mockGoal[0] as Goal);
-      jest.spyOn(activityRepository, 'find').mockResolvedValue([mockActivities[0]]);
+    it('Should return success if valid input ', async () => {
+      jest
+        .spyOn(goalRepository, 'findOne')
+        .mockResolvedValue(mockGoal[0] as Goal);
+      jest
+        .spyOn(activityRepository, 'find')
+        .mockResolvedValue([mockActivities[0]]);
       const result: BaseResponse = await service.findCanAddToGoal(1, 1);
       expect(result.data).toEqual([mockActivities[0]]);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
-    })
+    });
 
-    it("Should return error goalId is missing", async () => {
-      jest.spyOn(goalRepository, "findOne").mockResolvedValue(null);
+    it('Should return error goalId is missing', async () => {
+      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(null);
       const expectedResponse: BaseResponse = buildError(
         ErrorMessage.GOAL_NOT_FOUND,
       );
       const result: BaseResponse = await service.findCanAddToGoal(1, 1);
       expect(result).toEqual(expectedResponse);
-    })
+    });
   });
 });
