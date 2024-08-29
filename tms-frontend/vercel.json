@@ -9,7 +9,7 @@
   "git": {
     "enabled": true,
     "deployments": {
-      "production": ["main"]
+      "production": ["release"]
     }
   }
 }
