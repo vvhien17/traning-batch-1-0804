@@ -12,6 +12,7 @@ import { buildError } from '../common/utils/Utility';
 import { CreateGoalOnActivityDto } from './dto/create-goal-on-activity.dto';
 import { ActivityService } from '../activity/activity.service';
 import { DeleteGoalOnActivityDto } from './dto/delete-goal-on-activity.dto';
+import { GoalStatus } from '../common/constants/goal-status';
 
 const currentDate = new Date();
 const endedAt = new Date();
@@ -160,7 +161,15 @@ describe('GoalOnActivityService', () => {
       jest
         .spyOn(goalOnActivityRepository, 'save')
         .mockResolvedValue(mockGoalOnActivity[0] as GoalOnActivity);
+      jest.spyOn(goalRepository, 'save').mockResolvedValue({
+        id: mockGoal[0].id,
+        status: GoalStatus.NOT_COMPLETED,
+      } as Goal);
       const result = await service.create(userId, createGoalOnActivityDto);
+      expect(goalRepository.save).toHaveBeenCalledWith({
+        id: mockGoal[0].id,
+        status: GoalStatus.NOT_COMPLETED,
+      });
       expect(result.data).toEqual(mockGoalOnActivity[0]);
       expect(result.isSuccess).toBe(true);
       expect(result.message).toEqual(SuccessMessage.CREATE_DATA_SUCCESS);
@@ -216,10 +225,12 @@ describe('GoalOnActivityService', () => {
     });
   });
 
-  describe("Delete activity on goal", () => {
+  describe('Delete activity on goal', () => {
     it('should return success if valid input', async () => {
       jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal[0]);
-      jest.spyOn(goalOnActivityRepository, 'find').mockResolvedValue(mockGoalOnActivity);
+      jest
+        .spyOn(goalOnActivityRepository, 'find')
+        .mockResolvedValue(mockGoalOnActivity);
       jest.spyOn(goalOnActivityRepository, 'delete');
       const result = await service.delete(1, deleteGoalOnActivityDto);
       expect(result.data).toEqual({ affected: 1 });
@@ -237,7 +248,9 @@ describe('GoalOnActivityService', () => {
     });
 
     it('should return error if not exist activity on goal', async () => {
-      jest.spyOn(goalRepository, 'findOne').mockResolvedValue(mockGoal[0] as Goal);
+      jest
+        .spyOn(goalRepository, 'findOne')
+        .mockResolvedValue(mockGoal[0] as Goal);
       jest.spyOn(goalOnActivityRepository, 'find').mockResolvedValue([]);
       const expectedResponse: BaseResponse = buildError(
         ErrorMessage.ACTIVITY_INPUT_INVALID,
@@ -245,6 +258,5 @@ describe('GoalOnActivityService', () => {
       const result = await service.delete(1, deleteGoalOnActivityDto);
       expect(result).toEqual(expectedResponse);
     });
-
-  })
+  });
 });
