@@ -16,29 +16,26 @@ import Popup from "@components/components/popup/Popup";
 import CreateCategory from "./CreateCategory";
 import { PlusIcon } from "@heroicons/react/24/solid";
 
-const AddOrEditActivitySchema = z
-  .object({
-    name: z.string().min(1, "Name must be at least 1 character"),
-    description: z.string().min(1, "Description must be at least 1 character"),
-    category: z.string(),
-    startDate: z.string(),
-    endDate: z.string(),
-  })
-  .refine(
-    (data) => {
-      const start = new Date(data.startDate);
-      const end = new Date(data.endDate);
-
-      const startDateOnly = start.toISOString().split("T")[0];
-      const endDateOnly = end.toISOString().split("T")[0];
-
-      return startDateOnly === endDateOnly;
-    },
-    {
-      message: "Start Date and End Date must be on the same day",
-      path: ["endDate"],
-    }
-  )
+const AddOrEditActivitySchema = z.object({
+  name: z.string().min(1, "Name must be at least 1 character"),
+  description: z.string().min(1, "Description must be at least 1 character"),
+  category: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+}).refine(
+  (data) => {
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
+    
+    const startDateOnly = start.toISOString().split("T")[0];
+    const endDateOnly = end.toISOString().split("T")[0];
+    return startDateOnly === endDateOnly;
+  },
+  {
+    message: "Start Date and End Date must be on the same day",
+    path: ["endDate"],
+  }
+)
   .refine(
     (data) => {
       const start = new Date(data.startDate);
@@ -158,6 +155,8 @@ export default function CreateOrEditActivityDrawer({
       setValue("name", editItem.name);
       setValue("description", editItem.description);
       setValue("category", editItem.category.toString());
+      setValue("startDate", editItem.startDate);
+      setValue("endDate", editItem.endDate);
       setStartDate(parseDate(editItem.startDate));
       setEndDate(parseDate(editItem.endDate));
     }
