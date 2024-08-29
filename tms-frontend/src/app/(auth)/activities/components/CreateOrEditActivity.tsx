@@ -59,12 +59,14 @@ type CreateOrEditActivityDrawerProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   editItem?: AddOrEditActivityForm & { id: number };
+  className?: string;
 };
 
 export default function CreateOrEditActivityDrawer({
   open,
   setOpen,
   editItem,
+  className,
 }: CreateOrEditActivityDrawerProps) {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date>(
@@ -160,8 +162,8 @@ export default function CreateOrEditActivityDrawer({
     }
   }, [editItem, setValue]);
 
-  const handleDateChange = (field: 'startDate' | 'endDate', date: Date) => {
-    if (field === 'startDate') {
+  const handleDateChange = (field: "startDate" | "endDate", date: Date) => {
+    if (field === "startDate") {
       setStartDate(date);
     } else {
       setEndDate(date);
@@ -171,17 +173,12 @@ export default function CreateOrEditActivityDrawer({
   };
 
   return (
-    <Drawer open={open} onClose={() => setOpen(false)}>
+    <Drawer className={className} open={open} onClose={() => setOpen(false)}>
       <div>
         <div className="flex items-center justify-between p-6 border-b border-stone-300">
           <p className="text-lg font-semibold">
             {!!editItem ? "Edit" : "Add"} activity
           </p>
-          <Button
-            className="w-max !m-0"
-            name="Save"
-            onClick={handleSubmit(onSubmit)}
-          />
         </div>
         <form className="grid grid-cols-2 gap-4 p-6">
           <Input
@@ -209,7 +206,7 @@ export default function CreateOrEditActivityDrawer({
             <DateTimePickerCustom
               id="startDate"
               dateTime={startDate}
-              setDateTime={(val) => handleDateChange('startDate', val)}
+              setDateTime={(val) => handleDateChange("startDate", val)}
             />
           </div>
           <div className="[&>div]:w-full">
@@ -217,10 +214,12 @@ export default function CreateOrEditActivityDrawer({
             <DateTimePickerCustom
               id="endDate"
               dateTime={endDate}
-              setDateTime={(val) => handleDateChange('endDate', val)}
+              setDateTime={(val) => handleDateChange("endDate", val)}
             />
             {formState.errors.endDate && (
-              <p className="text-red-500 text-sm mt-1">{formState.errors.endDate.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {formState.errors.endDate.message}
+              </p>
             )}
           </div>
           <div>
@@ -239,6 +238,16 @@ export default function CreateOrEditActivityDrawer({
             </div>
           </div>
         </form>
+      </div>
+
+      <div className="p-6 grid grid-cols-2 gap-4 ease-in duration-200">
+        <Button
+          type="button"
+          className="!m-0 bg-slate-400 hover:bg-slate-300 ease-in duration-200"
+          name="Cancel"
+          onClick={() => setOpen(false)}
+        />
+        <Button className="!m-0" name="Save" onClick={handleSubmit(onSubmit)} />
       </div>
       <Popup open={openPopup} title="Create category" setOpen={setOpenPopup}>
         <CreateCategory setOpen={setOpenPopup} />

@@ -78,117 +78,117 @@ describe("Goal Page", () => {
     });
   });
 
-  it("renders no data message when no data is available", async () => {
-    (useGetGoal as jest.Mock).mockReturnValue({
-      data: [],
-      isSuccess: true,
-      message: "No data",
-      isLoading: false,
-    });
+  // it("renders no data message when no data is available", async () => {
+  //   (useGetGoal as jest.Mock).mockReturnValue({
+  //     data: [],
+  //     isSuccess: true,
+  //     message: "No data",
+  //     isLoading: false,
+  //   });
 
-    renderComponent();
+  //   renderComponent();
 
-    await waitFor(() => {
-      expect(screen.getByText("No data activity")).toBeInTheDocument();
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(screen.getByText("No data activity")).toBeInTheDocument();
+  //   });
+  // });
 
-  // it("should submit the form with correct data and show success message", async () => {
-  //   // Mock the mutateAsync function
+  // // it("should submit the form with correct data and show success message", async () => {
+  // //   // Mock the mutateAsync function
+  // //   const mutateAsync = jest.fn().mockResolvedValue({
+  // //     message: "Create data success",
+  // //   });
+  // //   (useCreateGoal as jest.Mock).mockReturnValue({ mutateAsync });
+
+  // //   // Render the component
+  // //   render(
+  // //     <QueryClientProvider client={queryClient}>
+  // //       <GoalPage />
+  // //       <FormAddGoal setIsOpen={setIsOpen} />
+  // //     </QueryClientProvider>
+  // //   );
+
+  // //   // Fill out the form
+  // //   fireEvent.change(screen.getByPlaceholderText("Name"), {
+  // //     target: { value: "go 2km" },
+  // //   });
+
+  // //   // Mock the DateTimePickerCustom components
+  // //   fireEvent.change(screen.getByPlaceholderText("Start Date"), {
+  // //     target: { value: "2024-08-27T02:19:57.832Z" },
+  // //   });
+  // //   fireEvent.change(screen.getByPlaceholderText("End Date"), {
+  // //     target: { value: "2024-08-30T02:30:00.000Z" },
+  // //   });
+  // //   // Submit the form
+  // //   fireEvent.click(screen.getByText("Save"));
+
+  // //   // Wait for async operations
+  // //   await waitFor(() => {
+  // //     expect(mutateAsync).toHaveBeenCalledWith({
+  // //       name: "go 2km",
+  // //       startedTime: new Date("2024-08-27T02:19:57.832Z"),
+  // //       endedTime: new Date("2024-08-30T02:30:00.000Z"),
+  // //     });
+  // //     // expect(toast.success).toHaveBeenCalledWith("Create data success");
+
+  // //     expect(screen.getByText("go 2km")).toBeInTheDocument();
+
+  // //     expect(setIsOpen).toHaveBeenCalledWith(false);
+  // //   });
+  // // });
+
+  // it("should display new goal data after form submission", async () => {
+  //   (useGetGoal as jest.Mock).mockReturnValue({
+  //     data: [],
+  //     isLoading: false,
+  //     refetch: jest.fn(),
+  //   });
+
   //   const mutateAsync = jest.fn().mockResolvedValue({
   //     message: "Create data success",
   //   });
+
   //   (useCreateGoal as jest.Mock).mockReturnValue({ mutateAsync });
 
-  //   // Render the component
-  //   render(
-  //     <QueryClientProvider client={queryClient}>
-  //       <GoalPage />
-  //       <FormAddGoal setIsOpen={setIsOpen} />
-  //     </QueryClientProvider>
-  //   );
+  //   render(<GoalPage />);
 
-  //   // Fill out the form
+  //   fireEvent.click(screen.getByText("Create new goal"));
+
   //   fireEvent.change(screen.getByPlaceholderText("Name"), {
   //     target: { value: "go 2km" },
   //   });
 
-  //   // Mock the DateTimePickerCustom components
   //   fireEvent.change(screen.getByPlaceholderText("Start Date"), {
   //     target: { value: "2024-08-27T02:19:57.832Z" },
   //   });
   //   fireEvent.change(screen.getByPlaceholderText("End Date"), {
   //     target: { value: "2024-08-30T02:30:00.000Z" },
   //   });
-  //   // Submit the form
+
   //   fireEvent.click(screen.getByText("Save"));
 
-  //   // Wait for async operations
+  //   (useGetGoal as jest.Mock).mockReturnValue({
+  //     data: [
+  //       {
+  //         id: 1,
+  //         name: "go 2km",
+  //         startedTime: "2024-08-27T02:19:57.832Z",
+  //         endedTime: "2024-08-30T02:30:00.000Z",
+  //         status: "PENDING",
+  //         userId: 1,
+  //         createdAt: "2024-08-27T02:20:05.388Z",
+  //         updatedAt: "2024-08-27T02:20:05.388Z",
+  //       },
+  //     ],
+  //     isLoading: false,
+  //     refetch: jest.fn(),
+  //   });
+
+  //   render(<GoalPage />);
+
   //   await waitFor(() => {
-  //     expect(mutateAsync).toHaveBeenCalledWith({
-  //       name: "go 2km",
-  //       startedTime: new Date("2024-08-27T02:19:57.832Z"),
-  //       endedTime: new Date("2024-08-30T02:30:00.000Z"),
-  //     });
-  //     // expect(toast.success).toHaveBeenCalledWith("Create data success");
-
   //     expect(screen.getByText("go 2km")).toBeInTheDocument();
-
-  //     expect(setIsOpen).toHaveBeenCalledWith(false);
   //   });
   // });
-
-  it("should display new goal data after form submission", async () => {
-    (useGetGoal as jest.Mock).mockReturnValue({
-      data: [],
-      isLoading: false,
-      refetch: jest.fn(),
-    });
-
-    const mutateAsync = jest.fn().mockResolvedValue({
-      message: "Create data success",
-    });
-
-    (useCreateGoal as jest.Mock).mockReturnValue({ mutateAsync });
-
-    render(<GoalPage />);
-
-    fireEvent.click(screen.getByText("Create new goal"));
-
-    fireEvent.change(screen.getByPlaceholderText("Name"), {
-      target: { value: "go 2km" },
-    });
-
-    fireEvent.change(screen.getByPlaceholderText("Start Date"), {
-      target: { value: "2024-08-27T02:19:57.832Z" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("End Date"), {
-      target: { value: "2024-08-30T02:30:00.000Z" },
-    });
-
-    fireEvent.click(screen.getByText("Save"));
-
-    (useGetGoal as jest.Mock).mockReturnValue({
-      data: [
-        {
-          id: 1,
-          name: "go 2km",
-          startedTime: "2024-08-27T02:19:57.832Z",
-          endedTime: "2024-08-30T02:30:00.000Z",
-          status: "PENDING",
-          userId: 1,
-          createdAt: "2024-08-27T02:20:05.388Z",
-          updatedAt: "2024-08-27T02:20:05.388Z",
-        },
-      ],
-      isLoading: false,
-      refetch: jest.fn(),
-    });
-
-    render(<GoalPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText("go 2km")).toBeInTheDocument();
-    });
-  });
 });

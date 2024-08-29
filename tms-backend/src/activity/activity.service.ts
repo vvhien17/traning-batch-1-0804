@@ -143,7 +143,7 @@ export class ActivityService {
     });
 
     const activities = data.filter((activity) => {
-      return !activity.goalOnActivities.some(
+      return !activity.goalOnActivities?.some(
         (goalOnActivity) => goalOnActivity.goalId === goalId,
       );
     });
@@ -217,7 +217,6 @@ export class ActivityService {
     ) {
       if (activity.goalOnActivities && activity.goalOnActivities.length > 0) {
         const goalIds = activity.goalOnActivities.map((i) => i.goalId);
-        console.log(goalIds);
         for (let i = 0; i < goalIds.length; i++) {
           const goalId = goalIds[i];
           const activities = await this.goalOnActivityRepository
@@ -229,7 +228,6 @@ export class ActivityService {
             .addSelect('COUNT(activity.id)', 'count')
             .groupBy('activity.status')
             .getRawMany();
-          console.log(activities, 'this is result ');
           const finalNotCompleted = activities.some(
             (activity) =>
               activity.status === 'NOT_COMPLETED' &&
@@ -237,7 +235,6 @@ export class ActivityService {
           );
 
           if (finalNotCompleted) {
-            console.log('come to update goal');
             await this.goalRepository.save({
               id: goalId,
               status: GoalStatus.COMPLETED,

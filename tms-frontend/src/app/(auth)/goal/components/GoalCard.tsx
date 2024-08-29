@@ -1,42 +1,40 @@
-import { EnumStatusGoal } from "@components/enums";
 import { TItemGoal } from "@components/types/goal";
 import dayjs from "dayjs";
 import classcat from "classcat";
 import GoalProgress from "./GoalProgress";
+import React, { useState } from "react";
+import DrawerAddActivitiesOnGoal from "./DrawerAddActivities";
+import { STYLES_STATUS } from "@components/constants/common";
 
-const styleMaps = {
-  [EnumStatusGoal.COMPLETED]: {
-    statusColor: "bg-green-500",
-    borderColor: "border-green-400",
-  },
-  [EnumStatusGoal.CANCELED]: {
-    statusColor: "bg-red-500",
-    borderColor: "border-red-400",
-  },
-  [EnumStatusGoal.IN_PROGRESS]: {
-    statusColor: "bg-yellow-500",
-    borderColor: "border-yellow-400",
-  },
-  [EnumStatusGoal.PENDING]: {
-    statusColor: "bg-blue-500",
-    borderColor: "border-blue-400",
-  },
-};
-
-export default function GoalCard({
-  name,
-  createdAt,
-  updatedAt,
-  goalOnActivities,
-  status,
-}: TItemGoal) {
-  const { statusColor, borderColor } = styleMaps[status] || {
+interface Props {
+  items: TItemGoal;
+}
+export default function GoalCard({ items }: Props) {
+  const {
+    endedTime = new Date(),
+    name,
+    percentComplete,
+    status,
+    startedTime = new Date(),
+    goalOnActivities,
+  } = items;
+  const { statusColor, borderColor } = STYLES_STATUS[status] || {
     statusColor: "bg-colors-main",
     borderColor: "border-neutral-400",
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onOpenDrawer = () => {
+    setIsOpen(true);
+  };
+
+  const onCloseDrawer = () => {
+    setIsOpen(false);
+  };
   return (
     <div
+      onClick={onOpenDrawer}
       className={classcat([
         "p-4 cursor-pointer rounded-xl border bg-white",
         borderColor,
@@ -57,27 +55,38 @@ export default function GoalCard({
               </span>
             </div>
           </div>
-          <p className="text-sm text-gray-500 text-end">
-            {dayjs(createdAt).format("DD/MM/YYYY HH:mm")} -{" "}
-            {dayjs(updatedAt).format("DD/MM/YYYY HH:mm")}
+          <p className="text-sm text-gray-500 text-start">
+            {dayjs(startedTime).format("DD/MM/YYYY HH:mm")} -{" "}
+            {dayjs(endedTime).format("DD/MM/YYYY HH:mm")}
           </p>
         </div>
-        <GoalProgress percent={20} />
+        <GoalProgress percent={percentComplete} />
       </div>
-
-      <p className="text-sm mt-1 underline text-green-500">
-        What you have to do :{" "}
-      </p>
-      <div className="flex flex-wrap gap-1 mt-1">
-        {goalOnActivities?.map((item) => (
-          <div
-            key={item.id}
-            className="p-1 rounded-md border border-neutral-400 bg-white w-max"
-          >
-            <p className="text-sm font-[500]">{item.activity.name}</p>
+      {goalOnActivities && goalOnActivities.length >= 1 && (
+        <React.Fragment>
+          <p className="text-sm mt-1 underline text-green-500">
+            What you have to do :{" "}
+          </p>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {goalOnActivities?.map((item) => (
+              <div
+                key={item.id}
+                className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs"
+              >
+                <p className="text-sm font-[500]">{item.activity.name}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </React.Fragment>
+      )}
+
+      {items && (
+        <DrawerAddActivitiesOnGoal
+          itemGoal={isOpen ? items : null}
+          isOpen={isOpen}
+          setIsOpen={onCloseDrawer}
+        />
+      )}
     </div>
   );
 }

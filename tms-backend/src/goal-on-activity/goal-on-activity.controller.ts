@@ -51,7 +51,7 @@ export class GoalOnActivityController {
   }
 
   @Delete()
-  remove(@Request() req, @Body() deleteActivity: DeleteGoalOnActivityDto) {
+  delete(@Request() req, @Body() deleteActivity: DeleteGoalOnActivityDto) {
     const userId = req.user.id;
     return this.goalOnActivityService.delete(userId, deleteActivity);
   }
