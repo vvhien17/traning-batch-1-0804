@@ -20,7 +20,7 @@ export class DashboardService {
 
   async getCategoryTimePercentages(userId: number): Promise<BaseResponse> {
     const activities = await this.activityRepository.find({
-      where: { userId, categoryId: Not(IsNull()) },
+      where: { userId, categoryId: Not(IsNull()), isDelete: false },
       relations: ['category'],
     });
 
@@ -122,6 +122,7 @@ export class DashboardService {
         status: ActivityStatus.COMPLETED,
         startedAt: Between(startOfPeriod, endOfPeriod),
         endedAt: Between(startOfPeriod, endOfPeriod),
+        isDelete: false,
       },
     });
 
@@ -130,7 +131,7 @@ export class DashboardService {
     }
 
     const totalTimeInMinutes = activities.reduce((total, activity) => {
-      return total + activity.realSpendTime * 60; // Assuming realSpendTime is in hours
+      return total + activity.realSpendTime;
     }, 0);
 
     const totalTimeInHours = Math.floor(totalTimeInMinutes / 60);
