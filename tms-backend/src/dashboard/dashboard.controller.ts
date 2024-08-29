@@ -13,7 +13,6 @@ export class DashboardController {
   @Get()
   findAll(@Request() req) {
     const userId = req.user.id;
-    console.log(userId);
     return this.dashboardService.getCategoryTimePercentages(userId);
   }
   @Get('summary-time/:option')
