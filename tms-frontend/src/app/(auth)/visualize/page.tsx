@@ -11,7 +11,7 @@ export default function VisualizePage() {
   const { data: summaryTimeData, isLoading: loadingSummaryTime } =
     dashboardQuery.query.useGetSummaryTime(timeRange);
 
-  const data = dashboardData?.data.map((item) => ({
+  const data = dashboardData?.data?.map((item) => ({
     value: item.percentage,
     color:
       "#" +
@@ -45,8 +45,6 @@ export default function VisualizePage() {
                   },
                 ]}
                 onChange={(e) => {
-                  console.log(e.target.value);
-
                   setTimeRange(e.target.value as "day" | "week");
                 }}
               />

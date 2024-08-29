@@ -1,13 +1,14 @@
 "use client";
 import Button from "@components/components/button";
 import Container from "@components/components/container";
-import GoalCard from "./components/GoalCard";
-import { useGetGoal } from "@components/query/goal/queryHooks";
+import Loader from "@components/components/loader";
 import Popup from "@components/components/popup/Popup";
+import { useGetGoal } from "@components/query/goal/queryHooks";
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import React, { useState } from "react";
 import FormAddGoal from "./components/FormAddGoal";
-import Loader from "@components/components/loader";
-import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import GoalCard from "./components/GoalCard";
+import { TItemActivitiesOnGoal } from "@components/types/goal";
 
 export default function GoalPage() {
   const { data, isLoading } = useGetGoal();
@@ -28,6 +29,7 @@ export default function GoalPage() {
           onClick={handleCreateNewGoal}
         />
       </div>
+
       {data && data.length >= 1 ? (
         <React.Fragment>
           {isLoading ? (
@@ -37,7 +39,7 @@ export default function GoalPage() {
           ) : (
             <div className="grid grid-cols-3 gap-4">
               {data?.map((item) => (
-                <GoalCard key={item.id} {...item} />
+                <GoalCard key={item.id} items={item} />
               ))}
             </div>
           )}
@@ -45,12 +47,11 @@ export default function GoalPage() {
       ) : (
         <div className="flex items-center gap-2 text-gray-500">
           <ExclamationCircleIcon className="size-5" />
-          <span>No data activity</span>
+          <span>No data goals</span>
         </div>
       )}
-
       <Popup
-        title="Create New Activities"
+        title="Create New Goal"
         open={isOpen}
         setOpen={() => setIsOpen(true)}
       >

@@ -8,7 +8,7 @@ import { MultipleSelect } from "@components/components/multiple-select";
 import CreateOrEditActivityDrawer from "./components/CreateOrEditActivity";
 import { activityQuery } from "@components/hooks/activity";
 import { useRouter, useSearchParams } from "next/navigation";
-import queryString from 'query-string'
+import queryString from "query-string";
 
 interface DetailsOption {
   value: string;
@@ -20,30 +20,36 @@ export default function ActivitiesPage() {
   const [open, setOpen] = useState(false);
 
   const { data: categories } = activityQuery.query.useGetCategories();
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const query = queryString.parse(searchParams.toString())
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = queryString.parse(searchParams.toString());
 
   const handleSelectChange = (selected: string[]) => {
     setSelectedOptions(selected);
-    const newQuery = { ...query, categories: selected }
-    router.push(`?${queryString.stringify(newQuery)}`)
+    const newQuery = { ...query, categories: selected };
+    router.push(`?${queryString.stringify(newQuery)}`);
   };
 
   const handleCreateNewActivity = () => {
     setOpen(true);
   };
 
-  const categoryOptions: DetailsOption[] | undefined = categories?.data?.map((category) => ({
-    value: category.id.toString(),
-    label: category.name
-  }));
+  const categoryOptions: DetailsOption[] | undefined = categories?.data?.map(
+    (category) => ({
+      value: category.id.toString(),
+      label: category.name,
+    })
+  );
 
   useEffect(() => {
     const query = queryString.parse(searchParams.toString());
 
     if (query.categories) {
-      setSelectedOptions(Array.isArray(query.categories) ? query.categories as string[] : [query.categories]);
+      setSelectedOptions(
+        Array.isArray(query.categories)
+          ? (query.categories as string[])
+          : [query.categories]
+      );
     }
   }, [searchParams]);
 

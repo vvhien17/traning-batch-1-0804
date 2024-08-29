@@ -12,6 +12,7 @@ import { Between, In, Repository } from 'typeorm';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { Goal } from '../goal/entities/goal.entity';
 import { DeleteGoalOnActivityDto } from './dto/delete-goal-on-activity.dto';
+import { GoalStatus } from '../common/constants/goal-status';
 
 @Injectable()
 export class GoalOnActivityService {
@@ -58,18 +59,21 @@ export class GoalOnActivityService {
     });
 
     if (validActivity.length !== createGoalOnActivityDto.activityIds.length) {
-      console.log('invalidActivityas as');
       return buildError(ErrorMessage.ACTIVITY_INPUT_INVALID);
     }
 
-    const goalMaps = createGoalOnActivityDto.activityIds.map((id) => ({
+    const activityMaps = createGoalOnActivityDto.activityIds.map((id) => ({
       goalId: createGoalOnActivityDto.goalId,
       activityId: id,
     }));
-    const goalOnActivity = await this.goalOnActivityRepository.create(goalMaps);
+    const goalOnActivity =
+      await this.goalOnActivityRepository.create(activityMaps);
     const saveGoalOnActivity =
       await this.goalOnActivityRepository.save(goalOnActivity);
-
+    await this.goalRepository.save({
+      id: existGoal.id,
+      status: GoalStatus.NOT_COMPLETED,
+    });
     return {
       data: saveGoalOnActivity,
       isSuccess: true,
