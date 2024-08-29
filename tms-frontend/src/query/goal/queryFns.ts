@@ -35,3 +35,11 @@ export const addActivityOnGoalQuery = async (
 
   return data;
 };
+
+export const deleteActivityOnGoalQuery = async (
+  query: TGoalOnActivitiesRequest
+) => {
+  const data = await goalApi.deleteActivityOnGoal(query);
+
+  return data;
+};

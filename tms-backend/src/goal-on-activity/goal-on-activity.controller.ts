@@ -14,7 +14,6 @@ import { CreateGoalOnActivityDto } from './dto/create-goal-on-activity.dto';
 import { UpdateGoalOnActivityDto } from './dto/update-goal-on-activity.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../middleware/auth.guard';
-import { DeleteGoalOnActivityDto } from './dto/delete-goal-on-activity.dto';
 
 @Controller('goal-on-activity')
 @UseGuards(AuthGuard)
@@ -50,9 +49,8 @@ export class GoalOnActivityController {
     return this.goalOnActivityService.update(+id, updateGoalOnActivityDto);
   }
 
-  @Delete()
-  delete(@Request() req, @Body() deleteActivity: DeleteGoalOnActivityDto) {
-    const userId = req.user.id;
-    return this.goalOnActivityService.delete(userId, deleteActivity);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.goalOnActivityService.remove(+id);
   }
 }

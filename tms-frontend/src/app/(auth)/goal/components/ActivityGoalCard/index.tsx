@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  useDeleteActivityOnGoal,
   useGetActivityOnGoal,
   useGetGoal,
 } from "@components/query/goal/queryHooks";
@@ -41,6 +42,7 @@ const ActivityGoalCard = ({
   const { refetch: refetchGetGoal } = useGetGoal();
 
   const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
+  const { mutateAsync: deleteActivity } = useDeleteActivityOnGoal();
 
   const timeSpent = dayjs(endedAt).diff(dayjs(startedAt), "minute") + 1;
 
@@ -69,6 +71,18 @@ const ActivityGoalCard = ({
         },
       }
     );
+  };
+
+  const onDelete = () => {
+    deleteActivity({ goalId: goalId, activityIds: [id] })
+      .then((res) => {
+        if (res.isSuccess) {
+          refetch();
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   return (
@@ -100,7 +114,10 @@ const ActivityGoalCard = ({
         </div>
       )}
 
-      <div className="p-1 border-[1px] border-white rounded-md bg-red-500">
+      <div
+        onClick={onDelete}
+        className="p-1 border-[1px] border-white rounded-md bg-red-500"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

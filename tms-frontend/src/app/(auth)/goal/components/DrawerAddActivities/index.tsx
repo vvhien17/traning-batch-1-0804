@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import GoalProgress from "../GoalProgress";
 import TabActivitiesCompleted from "../TabActivitiesCompleted";
 import TabAddActivities from "../TabAddActivities";
+import { useGetCanAddToGoal } from "@components/query/goal/queryHooks";
 
 interface Props {
   isOpen: boolean;
@@ -16,6 +17,8 @@ interface Props {
 }
 
 const DrawerAddActivitiesOnGoal = ({ isOpen, setIsOpen, itemGoal }: Props) => {
+  const { refetch } = useGetCanAddToGoal(Number(itemGoal?.id));
+
   const [isOpenTab, setIsOpenTab] = useState(0);
   const [isOpenActivities, setIsOpenActivities] = useState(false);
 
@@ -139,6 +142,7 @@ const DrawerAddActivitiesOnGoal = ({ isOpen, setIsOpen, itemGoal }: Props) => {
       </Drawer>
 
       <CreateOrEditActivityDrawer
+        refetch={refetch}
         open={isOpenActivities}
         setOpen={handleCloseActivityDrawer}
       />
