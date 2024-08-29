@@ -11,15 +11,17 @@ export default function VisualizePage() {
   const { data: summaryTimeData, isLoading: loadingSummaryTime } =
     dashboardQuery.query.useGetSummaryTime(timeRange);
 
-  const data = dashboardData?.data?.map((item) => ({
-    value: item.percentage,
-    color:
-      "#" +
-      Math.floor(Math.random() * 16777215)
-        .toString(16)
-        .padStart(6, "0"),
-    label: item.name,
-  }));
+  const data = dashboardData?.data
+    ?.filter((item) => item.percentage > 0)
+    .map((item) => ({
+      value: item.percentage,
+      color:
+        "#" +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0"),
+      label: item.name,
+    }));
 
   return (
     <div>
