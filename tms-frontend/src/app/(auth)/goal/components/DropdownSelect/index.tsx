@@ -4,8 +4,10 @@ import {
   useAddActivityOnGoal,
   useGetActivityOnGoal,
   useGetCanAddToGoal,
+  useGetGoal,
 } from "@components/query/goal/queryHooks";
 import { TItemActivitiesOnGoal } from "@components/types/goal";
+import Loader from "@components/components/loader";
 
 interface Props {
   arr: TItemActivitiesOnGoal[];
@@ -13,19 +15,22 @@ interface Props {
   goalId: number;
   setIsOpen: (val: boolean) => void;
   setIsClose: (val: boolean) => void;
+  isLoading: boolean;
+  dropdownRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 const DropdownSelect = ({
   arr,
   isOpen,
   setIsOpen,
   setIsClose,
+  isLoading,
   goalId,
+  dropdownRef,
 }: Props) => {
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
-
   const { mutateAsync } = useAddActivityOnGoal();
   const { refetch: refetchGetActivitiesOnGoal } = useGetActivityOnGoal(goalId);
   const { refetch: refetchGetCanAddGoal } = useGetCanAddToGoal(goalId);
+  const { refetch: refetchGetGoal } = useGetGoal();
 
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
   const toggleOption = (value: number) => {
@@ -44,33 +49,16 @@ const DropdownSelect = ({
     })
       .then((res) => {
         if (res.isSuccess) {
+          refetchGetGoal();
           refetchGetActivitiesOnGoal();
           refetchGetCanAddGoal();
+          setIsClose(false);
         }
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsClose(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, setIsClose]);
 
   return (
     <React.Fragment>
@@ -79,27 +67,33 @@ const DropdownSelect = ({
           ref={dropdownRef}
           className="px-4 py-2 w-max absolute z-10 mt-2 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
         >
-          {arr.map((option) => (
-            <div
-              key={option.id}
-              className="flex items-center p-2 hover:bg-gray-100"
-            >
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  id={String(option.id)}
-                  value={option.id}
-                  checked={selectedOptions.includes(option.id)}
-                  onChange={() => toggleOption(option.id)}
-                  className="mr-2"
-                />
-                <span className="ml-2 text-sm text-gray-700">
-                  {option.name}
-                </span>
-              </label>
-            </div>
-          ))}
-          <Button className="!mt-1" name="Save" onClick={onSubmit} />
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <React.Fragment>
+              {arr.map((option) => (
+                <div
+                  key={option.id}
+                  className="flex items-center p-2 hover:bg-gray-100"
+                >
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      id={String(option.id)}
+                      value={option.id}
+                      checked={selectedOptions.includes(option.id)}
+                      onChange={() => toggleOption(option.id)}
+                      className="mr-2"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">
+                      {option.name}
+                    </span>
+                  </label>
+                </div>
+              ))}
+              <Button className="!mt-1" name="Save" onClick={onSubmit} />
+            </React.Fragment>
+          )}
         </div>
       )}
     </React.Fragment>

@@ -39,6 +39,7 @@ const ActivityGoalCard = ({
 }: Props) => {
   const { refetch } = useGetActivityOnGoal(goalId);
   const { refetch: refetchGetGoal } = useGetGoal();
+
   const { mutate: updateActivity } = activityQuery.mutation.useUpdateActivity();
 
   const timeSpent = dayjs(endedAt).diff(dayjs(startedAt), "minute") + 1;

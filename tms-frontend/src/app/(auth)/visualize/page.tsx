@@ -45,8 +45,6 @@ export default function VisualizePage() {
                   },
                 ]}
                 onChange={(e) => {
-                  console.log(e.target.value);
-
                   setTimeRange(e.target.value as "day" | "week");
                 }}
               />

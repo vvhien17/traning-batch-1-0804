@@ -1,4 +1,3 @@
-import { EnumStatusGoal } from "@components/enums";
 import { TItemGoal } from "@components/types/goal";
 import dayjs from "dayjs";
 import classcat from "classcat";
@@ -25,15 +24,17 @@ export default function GoalCard({ items }: Props) {
   };
 
   const [isOpen, setIsOpen] = useState(false);
-  const [itemGoal, setItemGoal] = useState<TItemGoal>();
 
-  const onOpenDrawer = (item: TItemGoal) => {
+  const onOpenDrawer = () => {
     setIsOpen(true);
-    setItemGoal(item);
+  };
+
+  const onCloseDrawer = () => {
+    setIsOpen(false);
   };
   return (
     <div
-      onClick={() => onOpenDrawer(items)}
+      onClick={onOpenDrawer}
       className={classcat([
         "p-4 cursor-pointer rounded-xl border bg-white",
         borderColor,
@@ -54,7 +55,7 @@ export default function GoalCard({ items }: Props) {
               </span>
             </div>
           </div>
-          <p className="text-sm text-gray-500 text-end">
+          <p className="text-sm text-gray-500 text-start">
             {dayjs(startedTime).format("DD/MM/YYYY HH:mm")} -{" "}
             {dayjs(endedTime).format("DD/MM/YYYY HH:mm")}
           </p>
@@ -70,7 +71,7 @@ export default function GoalCard({ items }: Props) {
             {goalOnActivities?.map((item) => (
               <div
                 key={item.id}
-                className="p-1 rounded-md border border-neutral-400 bg-white w-max"
+                className="mx-0.5 px-2 py-1 border-2 border-colors-main text-black rounded-full text-xs"
               >
                 <p className="text-sm font-[500]">{item.activity.name}</p>
               </div>
@@ -79,11 +80,13 @@ export default function GoalCard({ items }: Props) {
         </React.Fragment>
       )}
 
-      <DrawerAddActivitiesOnGoal
-        itemGoal={itemGoal as TItemGoal}
-        isOpen={isOpen}
-        setIsOpen={() => setIsOpen(false)}
-      />
+      {items && (
+        <DrawerAddActivitiesOnGoal
+          itemGoal={isOpen ? items : null}
+          isOpen={isOpen}
+          setIsOpen={onCloseDrawer}
+        />
+      )}
     </div>
   );
 }

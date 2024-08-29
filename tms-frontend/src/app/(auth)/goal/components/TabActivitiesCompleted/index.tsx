@@ -1,23 +1,26 @@
-import { useGetActivityOnGoal } from "@components/query/goal/queryHooks";
 import React, { useEffect, useState } from "react";
 import ActivityGoalCard from "../ActivityGoalCard";
 import { TItemActivitiesOnGoal } from "@components/types/goal";
+import { queryClient } from "@components/Provider/QueryProvider";
+import { QueryKeysGoal } from "@components/query/goal/queryKeys";
 
 interface Props {
   goalId: number;
 }
 
 const TabActivitiesCompleted = ({ goalId }: Props) => {
-  const { data } = useGetActivityOnGoal(goalId);
+  const data = queryClient.getQueryData<Array<TItemActivitiesOnGoal>>([
+    QueryKeysGoal.ACTIVITY_ON_GOAL,
+  ]);
 
   const [_data, setData] = useState<Array<TItemActivitiesOnGoal>>(data || []);
 
   useEffect(() => {
     if (!data) return;
 
-    const dataCompleted = data.filter((item) => item.status === "COMPLETED");
+    const dataFilter = data.filter((item) => item.status === "COMPLETED");
 
-    setData(dataCompleted);
+    setData(dataFilter);
   }, [data]);
   return (
     <React.Fragment>

@@ -8,6 +8,7 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import React, { useState } from "react";
 import FormAddGoal from "./components/FormAddGoal";
 import GoalCard from "./components/GoalCard";
+import { TItemActivitiesOnGoal } from "@components/types/goal";
 
 export default function GoalPage() {
   const { data, isLoading } = useGetGoal();
