@@ -13,6 +13,7 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Category } from '../category/entities/category.entity';
 import { ActivityStatus } from '../common/constants/activity-status';
 import { Goal } from '../goal/entities/goal.entity';
+import { GoalOnActivity } from '../goal-on-activity/entities/goal-on-activity.entity';
 const currentDate = new Date();
 const endedAt = new Date();
 endedAt.setDate(endedAt.getDate() + 1);
@@ -100,6 +101,14 @@ describe('ActivitiesController', () => {
         },
         {
           provide: getRepositoryToken(Goal),
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            findOne: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(GoalOnActivity),
           useValue: {
             create: jest.fn(),
             save: jest.fn(),
