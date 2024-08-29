@@ -123,9 +123,7 @@ jobs:
           git status # This will show if the file is being staged correctly
 
       - name: Push test-report to Repository
-        if: |
-          github.ref == 'refs/heads/main' &&
-          needs.test.result == 'success'
+        if: github.ref == 'refs/heads/main'
         run: |
           git config --global user.email "ci-bot@example.com"
           git config --global user.name "CI Bot"
