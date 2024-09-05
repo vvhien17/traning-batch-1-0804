@@ -1,9 +1,9 @@
 import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { AuthGuard } from '@/middleware/auth.guard';
+import { AuthGuard } from '../middleware/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Query } from 'typeorm/driver/Query';
-import { BaseResponse } from '@/common/base-response/base-response.dto';
+import { BaseResponse } from '../common/base-response/base-response.dto';
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
 @Controller('dashboard')

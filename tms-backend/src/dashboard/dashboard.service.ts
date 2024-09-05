@@ -4,7 +4,7 @@ import { Category } from '../category/entities/category.entity';
 import { Activity } from '..//activity/entities/activity.entity';
 import { Between, IsNull, Not, Repository } from 'typeorm';
 import { ResponseDashboard } from './dto/response-dashboard.dto';
-import { BaseResponse } from '@/common/base-response/base-response.dto';
+import { BaseResponse } from '../common/base-response/base-response.dto';
 import { buildError } from '../common/utils/Utility';
 import { ErrorMessage, SuccessMessage } from '../common/utils/message-const';
 import { ActivityStatus } from '../common/constants/activity-status';
