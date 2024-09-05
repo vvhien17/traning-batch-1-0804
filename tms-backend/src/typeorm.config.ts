@@ -6,11 +6,12 @@ envConfig();
 
 export const config = {
   type: 'postgres',
-  host: process.env.DATABASE_HOST || 'localhost',
-  port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
-  username: process.env.DATABASE_USER || 'postgres',
-  password: process.env.DATABASE_PASSWORD || 'postgres',
-  database: process.env.DATABASE_NAME || 'timemanagementsystem',
+  url: process.env.DATABASE_URL || '',
+  // host: process.env.DATABASE_HOST || 'localhost',
+  // port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
+  // username: process.env.DATABASE_USER || 'postgres',
+  // password: process.env.DATABASE_PASSWORD || 'postgres',
+  // database: process.env.DATABASE_NAME || 'timemanagementsystem',
   synchronize: false, // Set to false in production environments
   logging: true, // Enable logging if needed,
   autoLoadEntities: true,
