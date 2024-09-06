@@ -1,0 +1,5 @@
+export enum ActivityStatus {
+  NOT_COMPLETED = 'NOT_COMPLETED',
+  COMPLETED = 'COMPLETED',
+  CANCELED = 'CANCELED',
+}
